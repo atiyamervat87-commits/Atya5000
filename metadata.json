@@ -1,0 +1,6 @@
+{
+  "name": "عقل المستشار عطية الهلباوي",
+  "description": "منظومة الذكاء الاصطناعي والاستدلال القانوني المستقلة المتخصصة في القانون المصري واللغة العربية وصياغة المذكرات والعقود والمحاكمة المعرفية.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

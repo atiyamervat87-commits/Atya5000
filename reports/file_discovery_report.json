@@ -1,0 +1,75 @@
+{
+  "summary": {
+    "system_name": "عقل المستشار عطية الهلباوي - وحدة فحص واكتشاف الملفات",
+    "phase": "المرحلة 1: اكتشاف الملفات وتصنيفها وتوثيق مساراتها",
+    "scanned_root": "/app/applet",
+    "execution_timestamp": "2026-10-23T01:48:59.761124",
+    "duration_seconds": 0.009,
+    "metrics": {
+      "total_discovered_files": 3,
+      "pdf_files_count": 0,
+      "docx_files_count": 0,
+      "total_size_mb": 0.0,
+      "duplicate_groups_count": 0,
+      "errors_count": 0
+    },
+    "extension_breakdown": {
+      ".json": 3
+    },
+    "legal_branch_breakdown": {
+      "عام_غير_مصنف": 3
+    },
+    "duplicates_detected": {},
+    "errors": []
+  },
+  "files": [
+    {
+      "file_name": "metadata.json",
+      "relative_path": "metadata.json",
+      "absolute_path": "/app/applet/metadata.json",
+      "extension": ".json",
+      "size_bytes": 447,
+      "size_kb": 0.44,
+      "size_mb": 0.0,
+      "mime_type": "application/json",
+      "is_pdf": false,
+      "is_docx": false,
+      "legal_branch": "عام_غير_مصنف",
+      "sha256": "fb9c973fd1f55e9a8ae9cacea3c60196541bbc73c74af8b67180192b85cfce36",
+      "created_at": "2026-10-23T01:46:46.374176",
+      "modified_at": "2026-10-23T01:46:46.374176"
+    },
+    {
+      "file_name": "package.json",
+      "relative_path": "package.json",
+      "absolute_path": "/app/applet/package.json",
+      "extension": ".json",
+      "size_bytes": 899,
+      "size_kb": 0.88,
+      "size_mb": 0.001,
+      "mime_type": "application/json",
+      "is_pdf": false,
+      "is_docx": false,
+      "legal_branch": "عام_غير_مصنف",
+      "sha256": "a08978696c4d5aae0f87900ec6d654a63ca665389b509238dc25f99d9bc2411c",
+      "created_at": "2026-10-23T01:46:46.382439",
+      "modified_at": "2026-10-23T01:46:46.382439"
+    },
+    {
+      "file_name": "tsconfig.json",
+      "relative_path": "tsconfig.json",
+      "absolute_path": "/app/applet/tsconfig.json",
+      "extension": ".json",
+      "size_bytes": 538,
+      "size_kb": 0.53,
+      "size_mb": 0.001,
+      "mime_type": "application/json",
+      "is_pdf": false,
+      "is_docx": false,
+      "legal_branch": "عام_غير_مصنف",
+      "sha256": "6624845b5855cb0c547da44d56785371aaf4f77920440f93b685484456952468",
+      "created_at": "2026-10-23T01:46:46.377779",
+      "modified_at": "2026-10-23T01:46:46.377779"
+    }
+  ]
+}

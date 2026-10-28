@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-cairo: 'Cairo', system-ui, -apple-system, sans-serif;
+    --font-amiri: 'Amiri', serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Royal Legal Palette */
+    --royal-brown: #2B1914;
+    --royal-dark: #3A241B;
+    --royal-gold: #D4AF37;
+    --royal-lightgold: #E7C779;
+    --royal-ivory: #F5E5BD;
+  }
+
+  body {
+    font-family: var(--font-cairo);
+    background-color: #1a0f0c;
+    color: #f5e5bd;
+    direction: rtl;
+    text-align: right;
+  }
+}
+
+.font-amiri {
+  font-family: var(--font-amiri);
+}
+
+.font-cairo {
+  font-family: var(--font-cairo);
+}
+
+.font-code {
+  font-family: var(--font-mono);
+}
+
+/* Royal Styling Utilities */
+.bg-royal-brown {
+  background-color: #2B1914;
+}
+
+.bg-royal-dark {
+  background-color: #1f120e;
+}
+
+.bg-royal-panel {
+  background-color: rgba(43, 25, 20, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.text-royal-gold {
+  color: #D4AF37;
+}
+
+.text-royal-lightgold {
+  color: #E7C779;
+}
+
+.text-royal-ivory {
+  color: #F5E5BD;
+}
+
+.border-royal-gold {
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+.border-royal-gold-strong {
+  border-color: rgba(212, 175, 55, 0.7);
+}
+
+.shadow-royal-gold {
+  box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+}
+
+.royal-gradient {
+  background: linear-gradient(135deg, #2B1914 0%, #3A241B 50%, #1a0e0b 100%);
+}
+
+.royal-gold-gradient {
+  background: linear-gradient(135deg, #D4AF37 0%, #E7C779 50%, #B89228 100%);
+}
+
+.royal-gold-border {
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.08);
+}
+
+/* Custom Royal Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #190e0b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3A241B;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D4AF37;
+}
+
+/* Print Optimization for Court and Law Reports */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .printable-area {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+  .printable-area * {
+    color: #000000 !important;
+    border-color: #999999 !important;
+  }
+}
