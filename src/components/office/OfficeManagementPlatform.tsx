@@ -27,9 +27,14 @@ import {
   FileCheck,
   ChevronLeft,
   BookOpen,
+  Crown,
+  Cpu,
 } from 'lucide-react';
 import { LegalIndexDisplay } from './LegalIndexDisplay';
 import { EgyptianLawsIndex } from './EgyptianLawsIndex';
+import { SmartContractLibrary } from './SmartContractLibrary';
+import { SubscriptionSettings } from './SubscriptionSettings';
+import { CentralBrainTrainer } from './CentralBrainTrainer';
 import {
   Client,
   LegalCase,
@@ -52,6 +57,7 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
   onOpenConsultation,
 }) => {
   const [activeSection, setActiveSection] = useState<string>('dashboard');
+  const [settingsSubTab, setSettingsSubTab] = useState<'profile' | 'subscription'>('profile');
 
   // Office Data State
   const [stats, setStats] = useState<any>(null);
@@ -109,6 +115,51 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
   const showToast = (msg: string) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 3000);
+  };
+
+  const getCaseTypeBadge = (type: string) => {
+    const t = (type || '').toLowerCase();
+    if (t.includes('جنائ') || t.includes('جنح') || t.includes('جناي')) {
+      return {
+        label: type,
+        className: 'bg-rose-950/80 text-rose-300 border border-rose-500/50',
+        dot: 'bg-rose-400',
+      };
+    }
+    if (t.includes('إدار') || t.includes('مجلس الدولة') || t.includes('تأديب')) {
+      return {
+        label: type,
+        className: 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/50',
+        dot: 'bg-emerald-400',
+      };
+    }
+    if (t.includes('أسرة') || t.includes('أحوال') || t.includes('نفقة')) {
+      return {
+        label: type,
+        className: 'bg-purple-950/80 text-purple-300 border border-purple-500/50',
+        dot: 'bg-purple-400',
+      };
+    }
+    if (t.includes('تجار') || t.includes('شركات') || t.includes('إفلاس') || t.includes('اقتصاد')) {
+      return {
+        label: type,
+        className: 'bg-amber-950/80 text-amber-300 border border-amber-500/50',
+        dot: 'bg-amber-400',
+      };
+    }
+    if (t.includes('عمال') || t.includes('عمل')) {
+      return {
+        label: type,
+        className: 'bg-orange-950/80 text-orange-300 border border-orange-500/50',
+        dot: 'bg-orange-400',
+      };
+    }
+    // Default: مدني
+    return {
+      label: type,
+      className: 'bg-blue-950/80 text-blue-300 border border-blue-500/50',
+      dot: 'bg-blue-400',
+    };
   };
 
   const fetchAllData = async () => {
@@ -380,6 +431,9 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
 
   const navSections = [
     { id: 'dashboard', label: 'لوحة التحكم', icon: Briefcase },
+    { id: 'central_brain', label: 'العقل المركزي وتدريب النموذج', icon: Cpu, badge: 'AI', highlight: true },
+    { id: 'subscription', label: 'خطة الاشتراك والشهر المجاني', icon: Crown, badge: 'تجربة', highlight: true },
+    { id: 'smart_contracts', label: 'مكتبة العقود الذكية', icon: FileCheck, badge: 8, highlight: true },
     { id: 'egyptian_laws', label: 'فهرس القوانين المصرية', icon: BookOpen, badge: 8, highlight: true },
     { id: 'clients', label: 'العملاء والموكلين', icon: Users, badge: clients.length },
     { id: 'cases', label: 'القضايا والدعاوى', icon: Scale, badge: cases.length },
@@ -418,11 +472,11 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
                 برنامج إدارة المحاماة — المستشار عطيه الهلباوي
               </h2>
               <span className="text-[10px] px-2 py-0.5 rounded bg-[#D4AF37]/20 text-[#E7C779] border border-[#D4AF37]/40 font-mono font-bold">
-                15 قسماً تخصصياً وموسوعة القوانين
+                16 قسماً تخصصياً ومكتبة العقود الذكية
               </span>
             </div>
             <p className="text-xs text-[#F5E5BD]/70 mt-0.5">
-              إدارة القضايا والعملاء والجلسات والحسابات، وفهرس القوانين المصرية والتقارير الذكية
+              إدارة القضايا والعملاء والجلسات والحسابات، ونماذج العقود الذكية وفهرس القوانين المصرية
             </p>
           </div>
         </div>
@@ -430,10 +484,37 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
         {/* Quick Actions in Toolbar */}
         <div className="flex items-center gap-2 text-xs flex-wrap">
           <button
-            onClick={() => setActiveSection('egyptian_laws')}
+            onClick={() => setActiveSection('central_brain')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500/20 via-[#3A241B] to-emerald-950/40 hover:from-amber-500/30 text-[#E7C779] border border-[#D4AF37]/50 font-bold transition cursor-pointer shadow-sm"
+          >
+            <Cpu className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span>تدريب العقل المركزي</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveSection('settings');
+              setSettingsSubTab('subscription');
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#D4AF37]/20 to-[#3A241B] hover:from-[#D4AF37]/30 text-[#E7C779] border border-[#D4AF37]/40 font-semibold transition cursor-pointer"
+          >
+            <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span>خطة الاشتراك (شهر مجاني)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveSection('smart_contracts')}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#E7C779] text-[#2B1914] font-bold hover:brightness-105 transition cursor-pointer shadow-sm"
           >
-            <BookOpen className="w-3.5 h-3.5" />
+            <FileCheck className="w-3.5 h-3.5" />
+            <span>مكتبة العقود الذكية</span>
+          </button>
+
+          <button
+            onClick={() => setActiveSection('egyptian_laws')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#3A241B] hover:bg-[#4d3023] text-[#F5E5BD] border border-[#D4AF37]/40 font-semibold transition cursor-pointer"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
             <span>فهرس القوانين المصرية</span>
           </button>
 
@@ -735,7 +816,17 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
                         </td>
                         <td className="p-3 font-semibold text-[#D4AF37]">{cs.clientName}</td>
                         <td className="p-3 text-[11px]">{cs.opponentName}</td>
-                        <td className="p-3 text-[11px]">{cs.type}</td>
+                        <td className="p-3">
+                          {(() => {
+                            const badge = getCaseTypeBadge(cs.type);
+                            return (
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1.5 shadow-sm ${badge.className}`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${badge.dot}`}></span>
+                                <span>{badge.label}</span>
+                              </span>
+                            );
+                          })()}
+                        </td>
                         <td className="p-3">
                           <span
                             className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
@@ -1261,17 +1352,49 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
             </div>
           )}
 
-          {/* SECTION 13: SETTINGS */}
+          {/* SECTION 13: SETTINGS & ACCOUNT SUBSCRIPTION */}
           {activeSection === 'settings' && settings && (
             <div className="space-y-6">
-              <div className="border-b border-[#D4AF37]/20 pb-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#D4AF37]/20 pb-3">
                 <h3 className="font-bold text-lg font-amiri text-[#F5E5BD] flex items-center gap-2">
                   <Settings className="w-5 h-5 text-[#D4AF37]" />
-                  <span>إعدادات وبيانات مكتب المستشار عطيه الهلباوي</span>
+                  <span>إعدادات الحساب والمكتب والاشتراكات</span>
                 </h3>
+
+                {/* Sub-tabs selector inside Settings */}
+                <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#2B1914] border border-[#D4AF37]/30 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setSettingsSubTab('profile')}
+                    className={`px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                      settingsSubTab === 'profile'
+                        ? 'bg-[#D4AF37] text-[#2B1914] shadow-md'
+                        : 'text-[#F5E5BD]/70 hover:text-white'
+                    }`}
+                  >
+                    <Settings className="w-3.5 h-3.5" />
+                    <span>بيانات المنشأة والمكتب</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSettingsSubTab('subscription')}
+                    className={`px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                      settingsSubTab === 'subscription'
+                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#E7C779] text-[#2B1914] shadow-md font-bold'
+                        : 'text-[#E7C779] hover:text-white'
+                    }`}
+                  >
+                    <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span>خطة الاشتراك والشهر المجاني (30 يوماً)</span>
+                  </button>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              {settingsSubTab === 'subscription' ? (
+                <SubscriptionSettings onUpgradeSuccess={() => fetchAllData()} />
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
                   <label className="block text-[#F5E5BD]/70 mb-1">اسم المنشأة والمكتب:</label>
                   <input
@@ -1327,6 +1450,7 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
                   />
                 </div>
               </div>
+              )}
             </div>
           )}
 
@@ -1379,9 +1503,31 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
             </div>
           )}
 
+          {/* SECTION: SMART CONTRACT LIBRARY */}
+          {activeSection === 'smart_contracts' && (
+            <SmartContractLibrary
+              clients={clients}
+              cases={cases}
+              onSaveToDocuments={() => {
+                showToast('تم حفظ العقد بنجاح في مستندات ومذكرات المكتب');
+                fetchAllData();
+              }}
+            />
+          )}
+
           {/* SECTION: EGYPTIAN LAWS INDEX & SEARCH (LegalIndexDisplay) */}
           {activeSection === 'egyptian_laws' && (
             <LegalIndexDisplay />
+          )}
+
+          {/* SECTION: CENTRAL COGNITIVE BRAIN & LLM TRAINING STUDIO */}
+          {activeSection === 'central_brain' && (
+            <CentralBrainTrainer />
+          )}
+
+          {/* SECTION: SUBSCRIPTION & ACCOUNT PLAN */}
+          {activeSection === 'subscription' && (
+            <SubscriptionSettings onUpgradeSuccess={() => fetchAllData()} />
           )}
         </div>
       </div>
@@ -1516,6 +1662,41 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div>
+              <label className="block text-[#F5E5BD]/70 mb-1">نوع وتصنيف القضية *</label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 mb-2">
+                {[
+                  { label: 'مدني كلي', color: 'bg-blue-950/80 text-blue-300 border-blue-500/50' },
+                  { label: 'جنائي (جنح/جنايات)', color: 'bg-rose-950/80 text-rose-300 border-rose-500/50' },
+                  { label: 'قضاء إداري (مجلس الدولة)', color: 'bg-emerald-950/80 text-emerald-300 border-emerald-500/50' },
+                  { label: 'أسرة وأحوال شخصية', color: 'bg-purple-950/80 text-purple-300 border-purple-500/50' },
+                  { label: 'تجاري واقتصادي', color: 'bg-amber-950/80 text-amber-300 border-amber-500/50' },
+                  { label: 'عمال وتأمينات', color: 'bg-orange-950/80 text-orange-300 border-orange-500/50' },
+                ].map((typePreset) => (
+                  <button
+                    key={typePreset.label}
+                    type="button"
+                    onClick={() => setNewCaseType(typePreset.label)}
+                    className={`px-2 py-1.5 rounded-lg border text-[11px] font-bold text-center transition cursor-pointer truncate ${
+                      newCaseType === typePreset.label
+                        ? `${typePreset.color} ring-2 ring-[#D4AF37]`
+                        : 'bg-[#1f120e] text-[#F5E5BD]/60 border-[#D4AF37]/20 hover:text-white'
+                    }`}
+                  >
+                    {typePreset.label}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="text"
+                required
+                value={newCaseType}
+                onChange={(e) => setNewCaseType(e.target.value)}
+                placeholder="أو اكتب تصنيفاً مخصصاً (مثل: مدني تعويضات، جنحة شيك، طعن إلغاء)..."
+                className="w-full px-3 py-2 rounded-xl bg-[#1f120e] border border-[#D4AF37]/30 text-white text-xs"
+              />
             </div>
 
             <div>

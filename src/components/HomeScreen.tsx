@@ -186,7 +186,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectUnit, onOpenAndr
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <span>تسجيل صوتي وإرفاق ملفات PDF وDOCX</span>
+                  <span>إملاء صوتي باللغة العربية (Voice-to-Text) بدون استخدام اليدين</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>تسجيل صوتي وإرفاق ملفات PDF وDOCX والكاميرا المباشرة</span>
                 </div>
               </div>
             </div>
@@ -223,15 +227,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectUnit, onOpenAndr
               <div className="space-y-1.5 text-[11px] text-[#F5E5BD]/60 pt-2 border-t border-[#D4AF37]/15">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <span>14 قسماً تخصصياً لإدارة العمل القضائي</span>
+                  <span>استوديو تدريب العقل المركزي والنموذج اللغوي الخاص بالمستشار</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <span>وحدة التقارير الذكية حسب طلب المستخدم</span>
+                  <span>خطة التجربة الملكية المجانية (شهر كامل 30 يوماً) وإدارة الاشتراكات</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  <span>النسخ الاحتياطي والاستعادة والطباعة الملكية</span>
+                  <span>16 قسماً تخصصياً لإدارة العمل القضائي ومكتبة العقود الذكية</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>نماذج عقود قانونية مصرية مع التعبئة التلقائية للبيانات</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>وحدة التقارير الذكية والنسخ الاحتياطي والطباعة الملكية</span>
                 </div>
               </div>
             </div>

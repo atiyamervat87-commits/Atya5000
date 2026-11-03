@@ -33,8 +33,11 @@ interface EgyptianLawsIndexProps {
 export const EgyptianLawsIndex: React.FC<EgyptianLawsIndexProps> = ({
   onSelectArticleForMemo,
 }) => {
-  // Navigation View: 'laws_index' | 'articles_search' | 'cassation_rulings'
-  const [viewMode, setViewMode] = useState<'laws_index' | 'articles_search' | 'cassation_rulings'>('laws_index');
+  // Navigation View: 'laws_index' | 'full_law_reader' | 'articles_search' | 'cassation_rulings'
+  const [viewMode, setViewMode] = useState<'laws_index' | 'full_law_reader' | 'articles_search' | 'cassation_rulings'>('laws_index');
+  const [selectedLawForFullReading, setSelectedLawForFullReading] = useState<EgyptianLawOverview>(MAJOR_EGYPTIAN_LAWS[0]);
+  const [lawArticlesFilter, setLawArticlesFilter] = useState('');
+  const [lawStatusFilter, setLawStatusFilter] = useState<'all' | 'ساري' | 'معدل'>('all');
 
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
@@ -152,6 +155,88 @@ ${article.cassationPrinciples && article.cassationPrinciples.length > 0 ? `\nم�
     printWindow.document.close();
   };
 
+  // Print entire law formatted as a complete official booklet
+  const handlePrintEntireLaw = (law: EgyptianLawOverview, articles: LegalArticle[]) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html dir="rtl" lang="ar">
+      <head>
+        <meta charset="utf-8" />
+        <title>${law.name} (رقم ${law.number} لسنة ${law.year}) - نصوص المواد كاملة</title>
+        <style>
+          body { font-family: 'Amiri', 'Times New Roman', serif; padding: 40px; color: #1c1917; line-height: 1.8; }
+          .header { border-bottom: 3px double #b45309; padding-bottom: 20px; margin-bottom: 30px; text-align: center; }
+          .title { font-size: 24px; font-weight: bold; color: #78350f; margin-bottom: 5px; }
+          .subtitle { font-size: 14px; color: #57534e; margin-bottom: 10px; }
+          .meta { font-size: 13px; color: #78350f; background: #fef3c7; padding: 8px 16px; border-radius: 6px; display: inline-block; font-weight: bold; }
+          .article-box { background: #fafaf9; border: 1px solid #d6d3d1; padding: 20px; border-radius: 8px; margin-bottom: 25px; page-break-inside: avoid; }
+          .article-header { display: flex; justify-content: space-between; border-bottom: 1px solid #e7e5e4; padding-bottom: 8px; margin-bottom: 12px; }
+          .article-num { font-size: 18px; font-weight: bold; color: #92400e; }
+          .article-status { font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 4px; background: #e0f2fe; color: #0369a1; }
+          .content { font-size: 16px; text-align: justify; margin-bottom: 12px; }
+          .modifications { background: #fffbeb; border-right: 3px solid #d97706; padding: 8px 12px; font-size: 13px; color: #92400e; margin-top: 10px; }
+          .principles { background: #f5f5f4; border-top: 1px dashed #d6d3d1; padding: 12px; margin-top: 12px; border-radius: 6px; }
+          .principles-title { font-size: 14px; font-weight: bold; color: #44403c; margin-bottom: 6px; }
+          .principles ul { margin: 0; padding-right: 20px; font-size: 13px; color: #292524; }
+          .footer { margin-top: 50px; font-size: 12px; text-align: center; color: #78716c; border-top: 1px solid #e7e5e4; padding-top: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h2>مكتب المستشار عطيه الهلباوي</h2>
+          <p class="subtitle">المحامي بالنقض والدستورية العليا والإدارية العليا — الموسوعة التشريعية الكاملة</p>
+          <div class="title">${law.name}</div>
+          <div class="meta">قانون رقم ${law.number} لسنة ${law.year} • تاريخ الإصدار: ${law.promulgationDate} • إجمالي المواد المعتمدة: ${articles.length} مادة</div>
+          <p style="font-size: 13px; color: #44403c; max-width: 700px; margin: 15px auto 0;">${law.description}</p>
+        </div>
+        ${articles.map((art) => `
+          <div class="article-box">
+            <div class="article-header">
+              <div class="article-num">مادة (${art.articleNumber})${art.title ? ` : ${art.title}` : ''}</div>
+              <div class="article-status">${art.status}</div>
+            </div>
+            <div class="content">${art.content}</div>
+            ${art.modifications ? `<div class="modifications"><strong>التعديل التشريعي:</strong> ${art.modifications}</div>` : ''}
+            ${art.cassationPrinciples && art.cassationPrinciples.length > 0 ? `
+              <div class="principles">
+                <div class="principles-title">قضاء ومبادئ محكمة النقض المستقرة:</div>
+                <ul>${art.cassationPrinciples.map((p) => `<li>${p}</li>`).join('')}</ul>
+              </div>
+            ` : ''}
+          </div>
+        `).join('')}
+        <div class="footer">
+          تم استخراج هذا المرجع التشريعي بالكامل بواسطة منصة عبقرينو الملكية لإدارة المحاماة — المستشار عطيه الهلباوي
+        </div>
+        <script>window.onload = function() { window.print(); };</script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
+  // Copy entire law
+  const handleCopyEntireLaw = (law: EgyptianLawOverview, articles: LegalArticle[]) => {
+    const text = `【الموسوعة التشريعية الكاملة - مكتب المستشار عطيه الهلباوي】
+${law.name} (قانون رقم ${law.number} لسنة ${law.year})
+تاريخ الإصدار: ${law.promulgationDate}
+نطاق القانون: ${law.description}
+إجمالي المواد: ${articles.length} مادة
+
+${articles.map((art) => `----------------------------------------
+مادة (${art.articleNumber})${art.title ? ` - ${art.title}` : ''} [${art.status}]:
+"${art.content}"
+${art.modifications ? `[التعديل التشريعي]: ${art.modifications}\n` : ''}${art.cassationPrinciples && art.cassationPrinciples.length > 0 ? `[مبادئ النقض المرتبطة]:\n${art.cassationPrinciples.map((p) => `• ${p}`).join('\n')}\n` : ''}`).join('\n')}
+----------------------------------------
+تم الاستخراج من منصة المستشار عطيه الهلباوي - المحامي بالنقض والدستورية العليا`;
+
+    navigator.clipboard.writeText(text);
+    alert(`تم نسخ كافة مواد ${law.name} (${articles.length} مادة) إلى الحافظة بنجاح.`);
+  };
+
   return (
     <div className="space-y-6">
       {/* Component Header with Royal Styling */}
@@ -204,6 +289,18 @@ ${article.cassationPrinciples && article.cassationPrinciples.length > 0 ? `\nم�
         >
           <BookMarked className="w-4 h-4" />
           <span>فهرس القوانين والتشريعات ({MAJOR_EGYPTIAN_LAWS.length})</span>
+        </button>
+
+        <button
+          onClick={() => setViewMode('full_law_reader')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
+            viewMode === 'full_law_reader'
+              ? 'bg-[#D4AF37] text-[#2B1914] shadow-md shadow-black/40'
+              : 'bg-[#2B1914] text-[#F5E5BD]/80 hover:bg-[#3A241B] hover:text-[#F5E5BD] border border-[#D4AF37]/30'
+          }`}
+        >
+          <BookOpen className="w-4 h-4" />
+          <span>عرض مواد القانون كاملة ({selectedLawForFullReading.name})</span>
         </button>
 
         <button
@@ -292,25 +389,27 @@ ${article.cassationPrinciples && article.cassationPrinciples.length > 0 ? `\nم�
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-[#D4AF37]/20 flex items-center justify-between">
-                    <button
-                      onClick={() => handleBrowseLawArticles(law)}
-                      className="flex items-center gap-1.5 text-xs font-bold text-[#2B1914] bg-[#D4AF37] hover:bg-[#E7C779] px-3.5 py-1.5 rounded-lg transition cursor-pointer shadow-sm"
-                    >
-                      <Search className="w-3.5 h-3.5" />
-                      <span>تصفح وبحث في نصوص القانون</span>
-                    </button>
-
+                  <div className="pt-3 border-t border-[#D4AF37]/20 flex items-center justify-between gap-2 flex-wrap">
                     <button
                       onClick={() => {
-                        setSelectedLawId(law.name);
-                        setViewMode('articles_search');
+                        setSelectedLawForFullReading(law);
+                        setViewMode('full_law_reader');
                       }}
-                      className="text-xs font-semibold text-[#E7C779] hover:text-[#F5E5BD] flex items-center gap-1 transition cursor-pointer"
+                      className="flex items-center gap-1.5 text-xs font-bold text-[#2B1914] bg-gradient-to-r from-[#D4AF37] to-[#E7C779] hover:from-[#E7C779] hover:to-[#D4AF37] px-4 py-2 rounded-xl transition cursor-pointer shadow-md"
                     >
-                      <span>عرض المواد ({articleCount})</span>
-                      <ChevronDown className="w-3.5 h-3.5 -rotate-90" />
+                      <BookOpen className="w-3.5 h-3.5" />
+                      <span>عرض مواد القانون كاملة ({articleCount})</span>
                     </button>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleBrowseLawArticles(law)}
+                        className="flex items-center gap-1 text-xs font-semibold text-[#E7C779] hover:text-[#F5E5BD] bg-[#1f120e] border border-[#D4AF37]/30 px-3 py-1.5 rounded-lg transition cursor-pointer"
+                      >
+                        <Search className="w-3.5 h-3.5" />
+                        <span>بحث في نصوصه</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -320,7 +419,309 @@ ${article.cassationPrinciples && article.cassationPrinciples.length > 0 ? `\nم�
       )}
 
       {/* ==================================================== */}
-      {/* VIEW 2: SEARCH ACROSS LEGAL ARTICLES                 */}
+      {/* VIEW 2: FULL LAW ARTICLES READER (COMPLETE VIEW)     */}
+      {/* ==================================================== */}
+      {viewMode === 'full_law_reader' && selectedLawForFullReading && (() => {
+        const fullLawArticles = EGYPTIAN_LEGAL_ARTICLES.filter(
+          (a) => a.lawName === selectedLawForFullReading.name
+        );
+        const filteredFullLawArticles = fullLawArticles.filter((art) => {
+          if (lawStatusFilter !== 'all' && art.status !== lawStatusFilter) return false;
+          if (!lawArticlesFilter.trim()) return true;
+          const q = lawArticlesFilter.trim().toLowerCase();
+          return (
+            art.articleNumber.includes(q) ||
+            (art.title && art.title.toLowerCase().includes(q)) ||
+            art.content.toLowerCase().includes(q) ||
+            art.keywords.some((k) => k.toLowerCase().includes(q))
+          );
+        });
+
+        return (
+          <div className="space-y-6">
+            {/* Full Law Reader Banner */}
+            <div className="p-6 rounded-2xl bg-gradient-to-r from-[#2B1914] via-[#3A241B] to-[#2B1914] border-2 border-[#D4AF37] shadow-2xl space-y-4">
+              <div className="flex items-start justify-between gap-4 flex-wrap">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-mono font-bold px-3 py-1 rounded-lg bg-[#D4AF37] text-[#2B1914] shadow-sm">
+                      قانون رقم {selectedLawForFullReading.number} لسنة {selectedLawForFullReading.year}
+                    </span>
+                    <span className="text-xs font-mono text-[#F5E5BD]/70 flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      تاريخ الإصدار: {selectedLawForFullReading.promulgationDate}
+                    </span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#1f120e] text-[#E7C779] border border-[#D4AF37]/30">
+                      الموسوعة القضائية
+                    </span>
+                  </div>
+
+                  <h3 className="text-2xl sm:text-3xl font-bold font-amiri text-[#F5E5BD]">
+                    {selectedLawForFullReading.name}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-[#F5E5BD]/85 leading-relaxed max-w-4xl text-justify">
+                    {selectedLawForFullReading.description}
+                  </p>
+                </div>
+
+                {/* Law Switcher Dropdown & Actions */}
+                <div className="flex flex-col items-end gap-2.5 shrink-0 self-stretch sm:self-auto">
+                  <div className="w-full sm:w-auto">
+                    <label className="block text-[11px] text-[#F5E5BD]/60 mb-1">الانتقال لتشريع آخر:</label>
+                    <select
+                      value={selectedLawForFullReading.id}
+                      onChange={(e) => {
+                        const target = MAJOR_EGYPTIAN_LAWS.find((l) => l.id === e.target.value);
+                        if (target) {
+                          setSelectedLawForFullReading(target);
+                          setLawArticlesFilter('');
+                          setLawStatusFilter('all');
+                        }
+                      }}
+                      className="px-3 py-2 rounded-xl bg-[#1f120e] border border-[#D4AF37]/50 text-xs font-bold text-[#F5E5BD] focus:outline-none focus:border-[#D4AF37] cursor-pointer"
+                    >
+                      {MAJOR_EGYPTIAN_LAWS.map((l) => (
+                        <option key={l.id} value={l.id}>
+                          {l.name} ({l.number}/{l.year})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <button
+                      onClick={() => handlePrintEntireLaw(selectedLawForFullReading, fullLawArticles)}
+                      className="flex items-center gap-1.5 text-xs px-3.5 py-2 rounded-xl bg-[#D4AF37] hover:bg-[#E7C779] text-[#2B1914] font-bold transition cursor-pointer shadow-md"
+                      title="طباعة نصوص مواد هذا القانون بالكامل"
+                    >
+                      <Printer className="w-4 h-4" />
+                      <span>طباعة مواد القانون كاملة ({fullLawArticles.length})</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleCopyEntireLaw(selectedLawForFullReading, fullLawArticles)}
+                      className="flex items-center gap-1.5 text-xs px-3 py-2 rounded-xl bg-[#1f120e] hover:bg-[#3A241B] text-[#F5E5BD] border border-[#D4AF37]/40 transition cursor-pointer"
+                      title="نسخ جميع مواد القانون للحافظة"
+                    >
+                      <Copy className="w-4 h-4 text-[#D4AF37]" />
+                      <span>نسخ الكل</span>
+                    </button>
+
+                    <button
+                      onClick={() => setViewMode('laws_index')}
+                      className="text-xs px-3 py-2 rounded-xl bg-[#2B1914] hover:bg-[#3A241B] text-[#F5E5BD]/70 hover:text-white border border-[#D4AF37]/20 transition cursor-pointer"
+                    >
+                      الرجوع للقائمة
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Article Jumper (مؤشر الانتقال السريع لمواد القانون) */}
+              <div className="pt-3 border-t border-[#D4AF37]/30 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-[#D4AF37] flex items-center gap-1.5 font-amiri">
+                    <BookMarked className="w-4 h-4 text-[#D4AF37]" />
+                    <span>فهرس الانتقال السريع لمواد القانون ({fullLawArticles.length} مادة):</span>
+                  </span>
+                  <span className="text-[11px] text-[#F5E5BD]/60">انقر للقفز المباشر لنص المادة</span>
+                </div>
+
+                <div className="flex items-center gap-1.5 flex-wrap max-h-24 overflow-y-auto p-2 rounded-xl bg-[#1f120e] border border-[#D4AF37]/20">
+                  {fullLawArticles.map((art) => (
+                    <a
+                      key={art.id}
+                      href={`#law-idx-art-${art.id}`}
+                      className="px-2.5 py-1 rounded-lg bg-[#2B1914] hover:bg-[#D4AF37] text-[#E7C779] hover:text-[#2B1914] border border-[#D4AF37]/30 font-mono text-xs font-bold transition shadow-sm"
+                    >
+                      م {art.articleNumber}
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* In-Law Search & Filter Bar */}
+              <div className="pt-2 flex items-center justify-between gap-3 flex-wrap border-t border-[#D4AF37]/20">
+                <div className="flex-1 min-w-[240px] relative">
+                  <Search className="w-4 h-4 text-[#D4AF37] absolute right-3 top-2.5" />
+                  <input
+                    type="text"
+                    value={lawArticlesFilter}
+                    onChange={(e) => setLawArticlesFilter(e.target.value)}
+                    placeholder={`ابحث داخل مواد ${selectedLawForFullReading.name} برقم المادة أو بالكلمات...`}
+                    className="w-full pr-9 pl-3 py-2 rounded-xl bg-[#1f120e] border border-[#D4AF37]/40 text-xs text-[#F5E5BD] placeholder-[#F5E5BD]/40 focus:outline-none focus:border-[#D4AF37]"
+                  />
+                  {lawArticlesFilter && (
+                    <button
+                      onClick={() => setLawArticlesFilter('')}
+                      className="absolute left-3 top-2 text-xs text-[#F5E5BD]/60 hover:text-white"
+                    >
+                      مسح
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-[#F5E5BD]/70">حالة السريان:</span>
+                  {(['all', 'ساري', 'معدل'] as const).map((st) => (
+                    <button
+                      key={st}
+                      onClick={() => setLawStatusFilter(st)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                        lawStatusFilter === st
+                          ? 'bg-[#D4AF37] text-[#2B1914] font-bold'
+                          : 'bg-[#1f120e] text-[#F5E5BD]/70 border border-[#D4AF37]/25 hover:text-white'
+                      }`}
+                    >
+                      {st === 'all' ? 'الكل' : st}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Articles Stream */}
+            <div className="space-y-5">
+              <div className="flex items-center justify-between text-xs text-[#F5E5BD]/70 px-1">
+                <span>
+                  عرض <strong className="text-[#D4AF37] font-mono text-sm">{filteredFullLawArticles.length}</strong> من أصل <strong className="text-[#E7C779] font-mono text-sm">{fullLawArticles.length}</strong> مادة قانونية
+                </span>
+                {lawArticlesFilter && (
+                  <button onClick={() => setLawArticlesFilter('')} className="text-[#D4AF37] hover:underline">
+                    عرض كامل المواد بدون تصفية
+                  </button>
+                )}
+              </div>
+
+              {filteredFullLawArticles.map((article) => {
+                const isCopied = copiedArticleId === article.id;
+                return (
+                  <div
+                    key={article.id}
+                    id={`law-idx-art-${article.id}`}
+                    className="p-6 rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37]/40 hover:border-[#D4AF37] transition shadow-xl space-y-4 scroll-mt-20"
+                  >
+                    {/* Header */}
+                    <div className="flex items-start justify-between gap-4 flex-wrap border-b border-[#D4AF37]/20 pb-3">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-mono font-bold px-3 py-1 rounded-lg bg-[#D4AF37] text-[#2B1914] shadow-sm">
+                            مادة ({article.articleNumber})
+                          </span>
+                          <span className="text-xs font-semibold text-[#E7C779]">
+                            {article.lawName}
+                          </span>
+                          <span
+                            className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold ${
+                              article.status === 'ساري'
+                                ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/40'
+                                : 'bg-amber-950 text-amber-300 border border-amber-500/40'
+                            }`}
+                          >
+                            {article.status}
+                          </span>
+                        </div>
+                        {article.title && (
+                          <h4 className="text-lg font-bold font-amiri text-[#F5E5BD] pt-0.5">
+                            {article.title}
+                          </h4>
+                        )}
+                      </div>
+
+                      {/* Action buttons */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={() => handleCopyArticle(article)}
+                          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-[#3A241B] hover:bg-[#4d3023] text-[#F5E5BD] border border-[#D4AF37]/30 transition cursor-pointer"
+                          title="نسخ نص المادة"
+                        >
+                          {isCopied ? (
+                            <>
+                              <Check className="w-3.5 h-3.5 text-emerald-400" />
+                              <span className="text-emerald-300 font-bold">تم النسخ</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3.5 h-3.5 text-[#D4AF37]" />
+                              <span>نسخ المادة</span>
+                            </>
+                          )}
+                        </button>
+
+                        <button
+                          onClick={() => handlePrintArticle(article)}
+                          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-[#3A241B] hover:bg-[#4d3023] text-[#F5E5BD] border border-[#D4AF37]/30 transition cursor-pointer"
+                          title="طباعة رسمية للسند"
+                        >
+                          <Printer className="w-3.5 h-3.5 text-[#D4AF37]" />
+                          <span>طباعة</span>
+                        </button>
+
+                        {onSelectArticleForMemo && (
+                          <button
+                            onClick={() => onSelectArticleForMemo(article)}
+                            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-[#D4AF37] hover:bg-[#E7C779] text-[#2B1914] font-bold transition cursor-pointer"
+                          >
+                            <span>إدراج بالمذكرة</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Official Article Text */}
+                    <div className="p-4 rounded-xl bg-[#1f120e] border border-[#D4AF37]/25 text-[#F5E5BD] leading-loose text-base font-amiri text-justify select-text">
+                      <p className="indent-4">{article.content}</p>
+                    </div>
+
+                    {/* Modifications Note */}
+                    {article.modifications && (
+                      <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-600/35 text-amber-200 text-xs leading-relaxed">
+                        <strong className="text-[#E7C779]">التعديل التشريعي والقضائي: </strong>
+                        <span>{article.modifications}</span>
+                      </div>
+                    )}
+
+                    {/* Cassation Precedents */}
+                    {article.cassationPrinciples && article.cassationPrinciples.length > 0 && (
+                      <div className="p-4 rounded-xl bg-[#251511] border border-[#D4AF37]/30 space-y-2">
+                        <div className="text-xs font-bold text-[#D4AF37] flex items-center gap-1.5 font-amiri">
+                          <Scale className="w-4 h-4 text-[#D4AF37]" />
+                          <span>قضاء محكمة النقض المستقر في تطبيق نص المادة:</span>
+                        </div>
+                        <ul className="space-y-1.5 text-xs text-[#F5E5BD]/90">
+                          {article.cassationPrinciples.map((cp, idx) => (
+                            <li key={idx} className="flex items-start gap-2 leading-relaxed">
+                              <span className="text-[#D4AF37] font-bold mt-0.5">•</span>
+                              <span>{cp}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Keywords */}
+                    <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                      <span className="text-[10px] text-[#F5E5BD]/50 font-mono">الكلمات المفتاحية:</span>
+                      {article.keywords.map((kw, i) => (
+                        <span
+                          key={i}
+                          className="text-[10px] px-2 py-0.5 rounded bg-[#1f120e] text-[#E7C779] border border-[#D4AF37]/20"
+                        >
+                          #{kw}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* ==================================================== */}
+      {/* VIEW 3: SEARCH ACROSS LEGAL ARTICLES                 */}
       {/* ==================================================== */}
       {viewMode === 'articles_search' && (
         <div className="space-y-6">

@@ -5,6 +5,7 @@ import { LegalArticle, CassationRuling } from '../types/legal';
 export const EgyptianLawLibrary: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBranch, setSelectedBranch] = useState('all');
+  const [selectedLaw, setSelectedLaw] = useState('all');
   const [articles, setArticles] = useState<LegalArticle[]>([]);
   const [precedents, setPrecedents] = useState<CassationRuling[]>([]);
   const [activeTab, setActiveTab] = useState<'articles' | 'precedents' | 'upload'>('articles');
@@ -22,6 +23,7 @@ export const EgyptianLawLibrary: React.FC = () => {
       const params = new URLSearchParams();
       if (searchTerm) params.append('q', searchTerm);
       if (selectedBranch && selectedBranch !== 'all') params.append('branch', selectedBranch);
+      if (selectedLaw && selectedLaw !== 'all') params.append('law', selectedLaw);
 
       const res = await fetch(`/api/library/search?${params.toString()}`);
       const data = await res.json();
@@ -36,7 +38,7 @@ export const EgyptianLawLibrary: React.FC = () => {
 
   useEffect(() => {
     fetchLibrary();
-  }, [searchTerm, selectedBranch]);
+  }, [searchTerm, selectedBranch, selectedLaw]);
 
   const handleUploadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,7 +88,7 @@ export const EgyptianLawLibrary: React.FC = () => {
       {/* Filter and Search Bar */}
       <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-          <div className="md:col-span-8 relative">
+          <div className="md:col-span-6 relative">
             <Search className="w-4 h-4 text-slate-400 absolute right-3.5 top-3" />
             <input
               type="text"
@@ -97,7 +99,27 @@ export const EgyptianLawLibrary: React.FC = () => {
             />
           </div>
 
-          <div className="md:col-span-4 flex items-center gap-2">
+          <div className="md:col-span-3 flex items-center gap-1.5">
+            <select
+              value={selectedLaw}
+              onChange={(e) => setSelectedLaw(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 focus:outline-none focus:border-amber-500"
+            >
+              <option value="all">كافة القوانين المصرية</option>
+              <option value="القانون المدني المصري">القانون المدني المصري (131/1948)</option>
+              <option value="قانون الإجراءات الجنائية">قانون الإجراءات الجنائية (150/1950)</option>
+              <option value="قانون العقوبات المصري">قانون العقوبات المصري (58/1937)</option>
+              <option value="قانون المرافعات المدنية والتجارية">قانون المرافعات (13/1968)</option>
+              <option value="قانون الإثبات في المواد المدنية والتجارية">قانون الإثبات (25/1968)</option>
+              <option value="قانون المحاماة المصري">قانون المحاماة (17/1983)</option>
+              <option value="قانون العمل المصري الموحد">قانون العمل الموحد (12/2003)</option>
+              <option value="قانون التجارة المصري">قانون التجارة (17/1999)</option>
+              <option value="الأحوال الشخصية">قانون الأحوال الشخصية (1/2000)</option>
+              <option value="مجلس الدولة">قانون مجلس الدولة (47/1972)</option>
+            </select>
+          </div>
+
+          <div className="md:col-span-3 flex items-center gap-2">
             <Filter className="w-4 h-4 text-slate-400 shrink-0" />
             <select
               value={selectedBranch}
@@ -110,6 +132,8 @@ export const EgyptianLawLibrary: React.FC = () => {
               <option value="criminal">العقوبات والإجراءات الجنائية</option>
               <option value="labor">قانون العمل</option>
               <option value="commercial">القانون التجاري</option>
+              <option value="personal_status">الأحوال الشخصية</option>
+              <option value="administrative">القضاء الإداري</option>
             </select>
           </div>
         </div>

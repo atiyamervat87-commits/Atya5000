@@ -1,0 +1,15 @@
+{
+  "model_type": "AlWaleedDecoderOnly",
+  "model_name": "عقل الوليد — Al-Waleed v1.0",
+  "vocab_size": 2528,
+  "d_model": 128,
+  "n_layers": 3,
+  "n_heads": 4,
+  "d_ff": 512,
+  "max_seq_len": 128,
+  "weight_tying": true,
+  "bias": true,
+  "dropout": 0.1,
+  "total_parameters": 918656,
+  "charter": "ميثاق الوليد: الصدق، الأمانة، الرحمة، العدل، التواضع، الحكمة، النفع، المسؤولية، الاستقلال، الشفافية"
+}

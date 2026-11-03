@@ -28,9 +28,11 @@ export interface LegalArticle {
 export interface CassationRuling {
   id: string;
   court: 'محكمة النقض المصرية' | 'المحكمة الإدارية العليا' | 'المحكمة الدستورية العليا';
+  circuit?: string; // الدائرة القضائية (مثل: الدائرة المدنية)
   rulingNumber: string;
   judicialYear: string;
   sessionDate: string;
+  legalSubject?: string;
   principle: string;
   branch: LegalBranch;
   relatedArticles: string[];

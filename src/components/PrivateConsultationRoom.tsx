@@ -23,8 +23,10 @@ import {
   Eye,
   SwitchCamera,
   Trash2,
+  BookOpen,
 } from 'lucide-react';
 import { ChatMessage, PaymentVerification, UserRole } from '../types/office';
+import { VoiceDictationBadge } from './VoiceDictationBadge';
 
 interface PrivateConsultationRoomProps {
   userRole: UserRole;
@@ -60,6 +62,7 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLegalReadingMode, setIsLegalReadingMode] = useState(false);
 
   // Attachments state
   const [attachedFiles, setAttachedFiles] = useState<{ name: string; url: string; type: string; size: string }[]>([]);
@@ -407,6 +410,11 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
     setIsLoading(true);
 
     try {
+      const historyPayload = messages.slice(-8).map((m) => ({
+        role: m.sender === 'user' ? 'user' : 'model',
+        text: m.text,
+      }));
+
       const res = await fetch('/api/consultation/private', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -415,6 +423,7 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
           message: text,
           attachments: userMessage.attachments,
           audioUrl: userMessage.audioUrl,
+          history: historyPayload,
         }),
       });
 
@@ -595,34 +604,49 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
 
   // --- Render Unlocked Private Room ---
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <div className="w-full max-w-5xl mx-auto px-2 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6 flex-1 overflow-hidden box-border">
       {/* Top Judicial Banner */}
-      <div className="p-5 rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37]/50 shadow-xl flex flex-wrap items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37]/50 shadow-xl flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-[#D4AF37]/25 border border-[#D4AF37]/60 flex items-center justify-center text-[#D4AF37] shadow-inner">
-            <Lock className="w-6 h-6" />
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#D4AF37]/25 border border-[#D4AF37]/60 flex items-center justify-center text-[#D4AF37] shadow-inner shrink-0">
+            <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold font-amiri text-[#F5E5BD]">
+              <h2 className="text-lg sm:text-xl font-bold font-amiri text-[#F5E5BD]">
                 غرفة الاستشارة الخاصة والمشفرة
               </h2>
               <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 font-mono font-bold">
                 مفعلة ومعتمدة ✓
               </span>
             </div>
-            <p className="text-xs text-[#F5E5BD]/70 mt-0.5">
+            <p className="text-[11px] sm:text-xs text-[#F5E5BD]/70 mt-0.5">
               جلسة سرية مع المستشار عطيه الهلباوي • دعم الكاميرا المباشرة والصوت والمستندات
             </p>
           </div>
         </div>
 
         {/* Tools and Lock Status */}
-        <div className="flex items-center gap-2 text-xs">
+        <div className="flex items-center gap-2 text-xs flex-wrap">
+          {/* Legal Reading Mode Toggle */}
+          <button
+            onClick={() => setIsLegalReadingMode(!isLegalReadingMode)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition cursor-pointer ${
+              isLegalReadingMode
+                ? 'bg-[#D4AF37] text-[#2B1914] border-[#D4AF37] font-bold shadow-md'
+                : 'bg-[#1f120e] hover:bg-[#3A241B] text-[#E7C779] border-[#D4AF37]/30'
+            }`}
+            title="تفعيل نمط القراءة القضائية المريح بنصوص أوضح وخط أميري"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{isLegalReadingMode ? 'نمط القراءة القضائية: مفعل' : 'نمط القراءة القضائية'}</span>
+            <span className="sm:hidden">{isLegalReadingMode ? 'قراءة: مفعل' : 'قراءة'}</span>
+          </button>
+
           {userRole === 'owner' && (
             <button
               onClick={() => setShowAdminReview(!showAdminReview)}
-              className="px-3 py-1.5 rounded-lg bg-[#1f120e] hover:bg-[#3A241B] text-[#D4AF37] border border-[#D4AF37]/30 transition cursor-pointer"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#1f120e] hover:bg-[#3A241B] text-[#D4AF37] border border-[#D4AF37]/30 transition cursor-pointer"
             >
               طلبات الدفع ({allPayments.filter((p) => p.status === 'under_review').length})
             </button>
@@ -630,7 +654,7 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
 
           <button
             onClick={handlePrint}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1f120e] hover:bg-[#3A241B] text-[#F5E5BD] border border-[#D4AF37]/30 transition cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#1f120e] hover:bg-[#3A241B] text-[#F5E5BD] border border-[#D4AF37]/30 transition cursor-pointer"
             title="طباعة الجلسة بالكامل"
           >
             <Printer className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -805,10 +829,12 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
               </div>
 
               <div
-                className={`max-w-[90%] sm:max-w-[80%] p-4 rounded-2xl text-xs sm:text-sm leading-relaxed whitespace-pre-wrap shadow-md ${
+                className={`max-w-[92%] sm:max-w-[85%] p-3.5 sm:p-5 rounded-2xl whitespace-pre-wrap shadow-md ${
                   isUser
-                    ? 'bg-[#3A241B] text-[#F5E5BD] border border-[#D4AF37]/30 rounded-tr-none'
-                    : 'bg-[#2B1914] text-[#F5E5BD] border-2 border-[#D4AF37]/60 rounded-tl-none font-sans'
+                    ? 'bg-[#3A241B] text-[#F5E5BD] border border-[#D4AF37]/30 rounded-tr-none text-xs sm:text-sm leading-relaxed'
+                    : isLegalReadingMode
+                    ? 'bg-[#2B1914] text-[#FFF9E6] border-2 border-[#D4AF37] rounded-tl-none font-amiri text-sm sm:text-base leading-loose sm:leading-loose tracking-wide shadow-lg'
+                    : 'bg-[#2B1914] text-[#F5E5BD] border-2 border-[#D4AF37]/60 rounded-tl-none font-sans text-xs sm:text-sm leading-relaxed'
                 }`}
               >
                 {msg.text}
@@ -985,63 +1011,88 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
       )}
 
       {/* Multi-modal Input Controls (Text + Camera + Mic + Attachments) */}
-      <div className="p-3 sm:p-4 rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37]/50 shadow-xl space-y-3 no-print">
-        <div className="flex items-center gap-2">
-          {/* Hidden File Input */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-            onChange={handleFileSelect}
-            className="hidden"
-          />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSendMessage();
+        }}
+        className="w-full box-border p-3 sm:p-4 rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37]/50 shadow-xl space-y-2.5 sm:space-y-3 no-print overflow-hidden"
+        style={{ width: '100%', boxSizing: 'border-box' }}
+      >
+        {/* Hidden File Input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+          onChange={handleFileSelect}
+          className="hidden"
+        />
 
-          {/* Camera Button */}
-          <button
-            type="button"
-            onClick={openCamera}
-            className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-[#1f120e] hover:bg-[#3A241B] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-semibold transition cursor-pointer shrink-0"
-            title="فتح الكاميرا والتقاط صورة للمستند"
-          >
-            <Camera className="w-4 h-4" />
-            <span className="hidden sm:inline">فتح الكاميرا</span>
-          </button>
+        {/* Media Tools Row */}
+        <div className="flex items-center justify-between gap-1.5 sm:gap-2 overflow-x-auto pb-1 no-scrollbar w-full">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+            {/* Camera Button */}
+            <button
+              type="button"
+              onClick={openCamera}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#1f120e] hover:bg-[#3A241B] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-semibold transition cursor-pointer shrink-0"
+              title="فتح الكاميرا والتقاط صورة للمستند"
+            >
+              <Camera className="w-3.5 h-3.5" />
+              <span className="text-[11px] hidden xs:inline">الكاميرا</span>
+            </button>
 
-          {/* Mic Button */}
-          <button
-            type="button"
-            onClick={isRecordingAudio ? stopAudioRecording : startAudioRecording}
-            className={`flex items-center gap-1.5 px-3 py-2.5 rounded-xl border text-xs font-semibold transition cursor-pointer shrink-0 ${
-              isRecordingAudio
-                ? 'bg-rose-700 text-white border-rose-500 animate-pulse'
-                : 'bg-[#1f120e] hover:bg-[#3A241B] text-[#D4AF37] border-[#D4AF37]/40'
-            }`}
-            title="تسجيل رسالة صوتية عبر الميكروفون"
-          >
-            <Mic className="w-4 h-4" />
-            <span className="hidden sm:inline">{isRecordingAudio ? 'إيقاف التسجيل' : 'تسجيل صوتي'}</span>
-          </button>
+            {/* Mic Button */}
+            <button
+              type="button"
+              onClick={isRecordingAudio ? stopAudioRecording : startAudioRecording}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg border text-xs font-semibold transition cursor-pointer shrink-0 ${
+                isRecordingAudio
+                  ? 'bg-rose-700 text-white border-rose-500 animate-pulse'
+                  : 'bg-[#1f120e] hover:bg-[#3A241B] text-[#D4AF37] border-[#D4AF37]/40'
+              }`}
+              title="تسجيل رسالة صوتية عبر الميكروفون"
+            >
+              <Mic className="w-3.5 h-3.5" />
+              <span className="text-[11px] hidden xs:inline">{isRecordingAudio ? 'إيقاف' : 'تسجيل'}</span>
+            </button>
 
-          {/* Attachment Button */}
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-[#1f120e] hover:bg-[#3A241B] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-semibold transition cursor-pointer shrink-0"
-            title="إرفاق مستندات PDF أو DOCX أو صور"
-          >
-            <Paperclip className="w-4 h-4" />
-            <span className="hidden sm:inline">إرفاق مستند</span>
-          </button>
+            {/* Attachment Button */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#1f120e] hover:bg-[#3A241B] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-semibold transition cursor-pointer shrink-0"
+              title="إرفاق مستندات PDF أو DOCX أو صور"
+            >
+              <Paperclip className="w-3.5 h-3.5" />
+              <span className="text-[11px] hidden xs:inline">إرفاق</span>
+            </button>
 
-          {/* Text Input */}
+            {/* Voice-to-Text Hands-Free Dictation */}
+            <VoiceDictationBadge
+              onAppendText={(dictatedChunk) => {
+                setInputText((prev) => (prev ? `${prev} ${dictatedChunk}` : dictatedChunk));
+              }}
+              buttonLabel="إملاء"
+              fieldLabel="الاستشارة والوقائع"
+            />
+          </div>
+
+          <span className="text-[10px] text-[#E7C779] font-mono hidden md:inline">
+            سرية تامة ومصادقة مشفرة
+          </span>
+        </div>
+
+        {/* Primary Input Row: 100% width, input flex-1 min-w-0, Send button firmly within bounds */}
+        <div className="flex items-center gap-2 w-full box-border" style={{ width: '100%', boxSizing: 'border-box' }}>
           <input
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             disabled={isLoading}
             placeholder="اكتب تفاصيل الاستشارة الخاصة أو استفسارات المستندات المرفقة..."
-            className="flex-1 px-4 py-2.5 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-xs sm:text-sm text-[#F5E5BD] placeholder-[#F5E5BD]/40 focus:outline-none focus:border-[#D4AF37]"
+            className="flex-1 min-w-0 w-full px-3.5 py-2.5 sm:py-3 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-xs sm:text-sm text-[#F5E5BD] placeholder-[#F5E5BD]/40 focus:outline-none focus:border-[#D4AF37] transition font-sans box-border"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault();
@@ -1052,21 +1103,20 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
 
           {/* Send Button */}
           <button
-            type="button"
-            onClick={handleSendMessage}
+            type="submit"
             disabled={isLoading || (!inputText.trim() && !recordedAudioUrl && attachedFiles.length === 0)}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] hover:from-[#E7C779] hover:to-[#D4AF37] disabled:opacity-40 text-[#2B1914] font-bold text-xs sm:text-sm flex items-center gap-2 transition cursor-pointer shadow-md shadow-black/40 shrink-0"
+            className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] hover:from-[#E7C779] hover:to-[#D4AF37] disabled:opacity-40 text-[#2B1914] font-bold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 transition cursor-pointer shadow-md shadow-black/40 shrink-0"
           >
             <span>إرسال</span>
-            <Send className="w-4 h-4 rotate-180" />
+            <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4 -scale-x-100" />
           </button>
         </div>
 
-        <div className="flex items-center justify-between text-[11px] text-[#F5E5BD]/60 px-1">
-          <span>* الغرفة الخاصة تدعم الكاميرا والميكروفون وإرفاق ملفات PDF و DOCX والصور المشفرة.</span>
-          <span>رسوم الاستشارة: 200 ج.م معتمدة</span>
+        <div className="flex items-center justify-between text-[10px] sm:text-[11px] text-[#F5E5BD]/60 px-1 pt-0.5">
+          <span>* الغرفة الخاصة تدعم الكاميرا والميكروفون والمستندات المشفرة.</span>
+          <span className="text-[#D4AF37] font-semibold">رسوم الاستشارة: 200 ج.م معتمدة</span>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

@@ -10,6 +10,7 @@ import {
   UserCheck,
   Home,
   CheckCircle2,
+  Crown,
 } from 'lucide-react';
 import { UserRole } from '../types/office';
 
@@ -87,6 +88,16 @@ export const RoyalNavbar: React.FC<RoyalNavbarProps> = ({
               الموظف
             </button>
           </div>
+
+          {/* Quick Subscription Plan Status Indicator */}
+          <button
+            onClick={() => setCurrentScreen('office_management')}
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#1f120e] hover:bg-[#3A241B] text-[#E7C779] border border-[#D4AF37]/35 text-xs font-semibold cursor-pointer transition shadow-sm"
+            title="خطة التجربة الملكية النشطة (شهر مجاني)"
+          >
+            <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span>شهر مجاني (نشط ✓)</span>
+          </button>
 
           {/* Android APK Modal Button */}
           <button

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Scale, Sparkles, Send, Copy, Check, AlertTriangle, FileText, ArrowLeft, Clock, ShieldAlert, BookOpen, Layers } from 'lucide-react';
+import { VoiceDictationBadge } from './VoiceDictationBadge';
 
 const PRESET_CASES = [
   {
@@ -179,23 +180,36 @@ export const ConsultationRoom: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center justify-between">
-            <span>سرد الوقائع المادية وتواريخها (Chronological Facts):</span>
-            <span className="text-[11px] text-slate-500">كلما كانت التواريخ والمبالغ والأدلة دقيقة كلما كان التحليل أكثر إحكاماً</span>
-          </label>
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+            <label className="block text-xs font-medium text-slate-300">
+              <span>سرد الوقائع المادية وتواريخها (Chronological Facts):</span>
+            </label>
+            <VoiceDictationBadge
+              onAppendText={(text) => setFacts((prev) => (prev ? `${prev} ${text}` : text))}
+              buttonLabel="إملاء الوقائع صوتياً"
+              fieldLabel="وقائع الدعوى"
+            />
+          </div>
           <textarea
             rows={4}
             value={facts}
             onChange={(e) => setFacts(e.target.value)}
-            placeholder="اكتب وقائع القضية بالتفصيل: التواريخ، العقود، المبالغ المسددة، الإنذارات، الإجراءات التي تمت..."
+            placeholder="اكتب وقائع القضية بالتفصيل: التواريخ، العقود، المبالغ المسددة، الإنذارات، الإجراءات التي تمت... أو استخدم زر الإملاء الصوتي للتحدث مباشرة"
             className="w-full p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition leading-relaxed font-sans"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1.5">
-            المسألة القانونية أو السؤال المطلوب إجابته:
-          </label>
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+            <label className="block text-xs font-medium text-slate-300">
+              المسألة القانونية أو السؤال المطلوب إجابته:
+            </label>
+            <VoiceDictationBadge
+              onAppendText={(text) => setQuestion((prev) => (prev ? `${prev} ${text}` : text))}
+              buttonLabel="إملاء السؤال صوتياً"
+              fieldLabel="المسألة القانونية"
+            />
+          </div>
           <input
             type="text"
             value={question}

@@ -107,6 +107,42 @@ export const AndroidPackageModal: React.FC<AndroidPackageModalProps> = ({ isOpen
             </div>
           </div>
 
+          {/* HTML to APK Feature Card */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-[#24140f] to-[#3A241B] border-2 border-[#D4AF37]/50 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">⚡</span>
+                <span className="font-bold text-white text-xs sm:text-sm font-amiri">
+                  ملف indx.html جاهز للتحويل الفوري عبر برامج (HTML to APK)
+                </span>
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 font-mono font-bold">
+                جاهز 100%
+              </span>
+            </div>
+            <p className="text-[11px] text-[#F5E5BD]/80 leading-relaxed">
+              إذا كنت تستخدم برامج تحويل ملفات HTML لتطبيقات أندرويد (مثل <strong>Website 2 APK Builder</strong> أو <strong>HTML to Android APK</strong>)، فقد أنشأنا ملفاً شاملاً ومستقلاً باسم <code>indx.html</code> يتضمن كامل واجهات البرنامج، الاستشارات، إدارة المكتب، وفهرس القوانين المصرية مع ميزة الإملاء الصوتي باللغة العربية!
+            </p>
+            <div className="flex flex-wrap gap-2 pt-1">
+              <a
+                href="/download/indx.html"
+                download="indx.html"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] hover:from-[#E7C779] hover:to-[#D4AF37] text-[#2B1914] font-bold text-xs flex items-center gap-1.5 shadow"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>تحميل ملف indx.html المباشر</span>
+              </a>
+              <a
+                href="/indx.html"
+                target="_blank"
+                rel="noreferrer"
+                className="px-3.5 py-2 rounded-xl bg-[#1f120e] hover:bg-[#2B1914] text-[#E7C779] border border-[#D4AF37]/40 text-xs flex items-center gap-1"
+              >
+                <span>معاينة indx.html في المتصفح</span>
+              </a>
+            </div>
+          </div>
+
           {/* Transparent Environment Report */}
           <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-600/40 text-[11px] space-y-2 text-amber-200">
             <div className="flex items-center gap-2 font-bold text-amber-300">
@@ -123,7 +159,7 @@ export const AndroidPackageModal: React.FC<AndroidPackageModalProps> = ({ isOpen
           {/* Copyable Build Command */}
           <div className="p-3.5 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 space-y-2 font-mono">
             <div className="flex items-center justify-between text-[11px] text-[#F5E5BD]/70">
-              <span>أمر بناء APK النهائي:</span>
+              <span>أمر بناء APK النهائي (عبر Gradle):</span>
               <button
                 onClick={handleCopy}
                 className="flex items-center gap-1 text-[#D4AF37] hover:underline cursor-pointer"

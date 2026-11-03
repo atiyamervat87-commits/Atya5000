@@ -60,10 +60,15 @@ export const PublicConsultationRoom: React.FC = () => {
     setIsLoading(true);
 
     try {
+      const historyPayload = messages.slice(-8).map((m) => ({
+        role: m.sender === 'user' ? 'user' : 'model',
+        text: m.text,
+      }));
+
       const response = await fetch('/api/consultation/public', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: content }),
+        body: JSON.stringify({ message: content, history: historyPayload }),
       });
 
       const data = await response.json();
@@ -241,7 +246,7 @@ export const PublicConsultationRoom: React.FC = () => {
                 {!isUser && (
                   <div className="pt-3 mt-3 border-t border-[#D4AF37]/20 flex items-center justify-between gap-3 text-xs no-print">
                     <span className="text-[10px] text-[#D4AF37]/80">
-                      استشارة قضائية معتمدة
+                      استدلال قانوني استرشادي وفق نصوص القانون المصري
                     </span>
                     <div className="flex items-center gap-2">
                       <button
@@ -324,7 +329,7 @@ export const PublicConsultationRoom: React.FC = () => {
             className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] hover:from-[#E7C779] hover:to-[#D4AF37] disabled:opacity-40 text-[#2B1914] font-bold text-xs sm:text-sm flex items-center gap-2 transition cursor-pointer shadow-md shadow-black/40 shrink-0"
           >
             <span>إرسال</span>
-            <Send className="w-4 h-4 rotate-180" />
+            <Send className="w-4 h-4 -scale-x-100" />
           </button>
         </div>
 

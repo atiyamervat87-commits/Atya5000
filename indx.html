@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>المستشار عطيه الهلباوي | عبقرينو — المنصة الملكية الذكية لإدارة المحاماة</title>
+  
+  <!-- Android & Mobile Web App Meta Tags for HTML-to-APK -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#2B1914" />
+  <meta name="application-name" content="المستشار عطيه الهلباوي" />
+  <meta name="format-detection" content="telephone=no" />
+  
+  <!-- Google Fonts: Cairo & Amiri -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            royal: {
+              brown: '#2B1914',
+              dark: '#1a0e0b',
+              surface: '#3A241B',
+              card: '#24140f',
+              gold: '#D4AF37',
+              goldLight: '#E7C779',
+              ivory: '#F5E5BD',
+            }
+          },
+          fontFamily: {
+            amiri: ['Amiri', 'serif'],
+            cairo: ['Cairo', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #1a0e0b;
+      color: #F5E5BD;
+      overflow-x: hidden;
+      user-select: text;
+    }
+    .font-amiri {
+      font-family: 'Amiri', serif;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1a0e0b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D4AF37;
+      border-radius: 4px;
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: white !important;
+        color: black !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#1a0e0b] text-[#F5E5BD] antialiased selection:bg-[#D4AF37]/30 selection:text-[#E7C779]">
+
+  <!-- Top Royal Header -->
+  <header class="sticky top-0 z-50 bg-[#2B1914]/95 backdrop-blur border-b border-[#D4AF37]/30 shadow-xl px-4 py-3 no-print">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8c701e] flex items-center justify-center text-[#2B1914] font-bold text-lg shadow-md border border-[#E7C779]">
+          ⚖️
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold font-amiri text-[#F5E5BD] leading-tight">
+            المستشار عطيه الهلباوي
+          </h1>
+          <p class="text-[10px] sm:text-xs text-[#D4AF37]">
+            عبقرينو — المنصة الملكية الذكية لإدارة المحاماة والقضايا
+          </p>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons (Desktop) -->
+      <nav class="hidden md:flex items-center gap-2">
+        <button onclick="navigateTo('home')" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#3A241B] transition" data-target="home">الرئيسية</button>
+        <button onclick="navigateTo('public_chat')" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#3A241B] transition" data-target="public_chat">الاستشارة العامة</button>
+        <button onclick="navigateTo('private_chat')" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#3A241B] transition" data-target="private_chat">الاستشارة الخاصة (🔒 200 ج.م)</button>
+        <button onclick="navigateTo('office')" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#3A241B] transition" data-target="office">إدارة المحاماة</button>
+        <button onclick="navigateTo('laws')" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#3A241B] transition" data-target="laws">فهرس القوانين</button>
+      </nav>
+
+      <!-- Quick Actions -->
+      <div class="flex items-center gap-2">
+        <button onclick="window.print()" class="p-2 rounded-lg bg-[#3A241B] text-[#D4AF37] hover:bg-[#2B1914] border border-[#D4AF37]/30 text-xs flex items-center gap-1 cursor-pointer" title="طباعة">
+          🖨️ <span class="hidden sm:inline">طباعة</span>
+        </button>
+        <span class="text-[11px] px-2 py-1 rounded bg-[#3A241B] text-[#E7C779] border border-[#D4AF37]/40 font-mono hidden sm:inline">
+          01153747612
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Screen Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 pb-24">
+
+    <!-- SCREEN 1: HOME -->
+    <section id="screen-home" class="screen-view space-y-6">
+      <!-- Hero Welcome Banner -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#2B1914] via-[#3A241B] to-[#2B1914] border-2 border-[#D4AF37]/50 p-6 sm:p-10 shadow-2xl">
+        <div class="max-w-3xl space-y-4">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#E7C779] text-xs font-semibold">
+            <span>🛡️ المنظومة الملكية المعتمدة لعام 2026</span>
+          </div>
+          <h2 class="text-2xl sm:text-4xl font-bold font-amiri text-[#F5E5BD] leading-tight">
+            أهلاً بكم في المنصة القانونية للمستشار عطيه الهلباوي
+          </h2>
+          <p class="text-xs sm:text-sm text-[#F5E5BD]/80 leading-relaxed">
+            محامٍ بالنقض والدستورية العليا والإدارية العليا. منصة ذكية شاملة تجمع بين الاستشارات القضائية الدقيقة، والتحليل الآلي للوقائع، وإدارة المكاتب والقضايا، وفهرس القوانين المصرية مع ميزة الإملاء الصوتي باللغة العربية.
+          </p>
+          <div class="flex flex-wrap gap-3 pt-2">
+            <button onclick="navigateTo('public_chat')" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] text-[#2B1914] font-bold text-xs sm:text-sm shadow-lg hover:brightness-110 transition cursor-pointer flex items-center gap-2">
+              💬 الاستشارة العامة المباشرة
+            </button>
+            <button onclick="navigateTo('private_chat')" class="px-5 py-2.5 rounded-xl bg-[#24140f] border border-[#D4AF37] text-[#E7C779] font-bold text-xs sm:text-sm shadow hover:bg-[#3A241B] transition cursor-pointer flex items-center gap-2">
+              🔒 الاستشارة الخاصة المشفرة (200 ج.م)
+            </button>
+            <button onclick="navigateTo('office')" class="px-5 py-2.5 rounded-xl bg-[#3A241B] text-[#F5E5BD] font-semibold text-xs sm:text-sm hover:bg-[#2B1914] border border-[#D4AF37]/40 transition cursor-pointer flex items-center gap-2">
+              📂 برنامج إدارة المحاماة
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- The 3 Core Pillars -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Pillar 1: Public -->
+        <div class="p-6 rounded-2xl bg-[#2B1914] border border-[#D4AF37]/40 shadow-xl flex flex-col justify-between hover:border-[#D4AF37] transition">
+          <div class="space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center text-2xl">
+              ⚖️
+            </div>
+            <h3 class="text-lg font-bold font-amiri text-[#F5E5BD]">الوحدة الأولى: الاستشارة العامة</h3>
+            <p class="text-xs text-[#F5E5BD]/70 leading-relaxed">
+              غرفة المحادثة القضائية المباشرة للإجابة عن الاستفسارات القانونية وتكييف الدعاوى وأحكام النقض، مع حفظ وسجل التصدير والطباعة.
+            </p>
+          </div>
+          <button onclick="navigateTo('public_chat')" class="mt-4 w-full py-2.5 rounded-xl bg-[#3A241B] hover:bg-[#D4AF37] hover:text-[#2B1914] text-[#E7C779] font-bold text-xs transition border border-[#D4AF37]/30 cursor-pointer">
+            دخول الاستشارة العامة ←
+          </button>
+        </div>
+
+        <!-- Pillar 2: Private -->
+        <div class="p-6 rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37]/60 shadow-xl flex flex-col justify-between hover:border-[#D4AF37] transition relative overflow-hidden">
+          <div class="absolute -top-3 -left-3 bg-[#D4AF37] text-[#2B1914] font-bold text-[10px] px-4 py-1 rounded-full shadow">
+            رسوم 200 ج.م
+          </div>
+          <div class="space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-[#D4AF37]/30 border border-[#D4AF37]/60 flex items-center justify-center text-2xl">
+              🔒
+            </div>
+            <h3 class="text-lg font-bold font-amiri text-[#F5E5BD]">الوحدة الثانية: الاستشارة الخاصة</h3>
+            <p class="text-xs text-[#F5E5BD]/70 leading-relaxed">
+              بوابة مشفرة للمسائل الدقيقة والمعقدة. تدعم الإملاء الصوتي باللغة العربية، فحص الكاميرا المباشرة للمستندات، وتسجيل الصوت، مع بوابة سداد المحفظة (01153747612).
+            </p>
+          </div>
+          <button onclick="navigateTo('private_chat')" class="mt-4 w-full py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] text-[#2B1914] font-bold text-xs shadow hover:brightness-110 transition cursor-pointer">
+            دخول الاستشارة الخاصة (مشفرة) ←
+          </button>
+        </div>
+
+        <!-- Pillar 3: Office Management -->
+        <div class="p-6 rounded-2xl bg-[#2B1914] border border-[#D4AF37]/40 shadow-xl flex flex-col justify-between hover:border-[#D4AF37] transition">
+          <div class="space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center text-2xl">
+              📂
+            </div>
+            <h3 class="text-lg font-bold font-amiri text-[#F5E5BD]">الوحدة الثالثة: برنامج إدارة المحاماة</h3>
+            <p class="text-xs text-[#F5E5BD]/70 leading-relaxed">
+              منظومة المكاتب المتكاملة: سجل القضايا والدعاوى، جدول الجلسات والمواعيد، إدارة الموكلين، الحسابات والأتعاب، والنسخ الاحتياطي المحلي.
+            </p>
+          </div>
+          <button onclick="navigateTo('office')" class="mt-4 w-full py-2.5 rounded-xl bg-[#3A241B] hover:bg-[#D4AF37] hover:text-[#2B1914] text-[#E7C779] font-bold text-xs transition border border-[#D4AF37]/30 cursor-pointer">
+            فتح إدارة المحاماة ←
+          </button>
+        </div>
+      </div>
+
+      <!-- APK & Mobile Readiness Card -->
+      <div class="p-5 rounded-2xl bg-[#24140f] border border-[#D4AF37]/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="text-3xl">📱</div>
+          <div>
+            <h4 class="text-sm font-bold text-[#F5E5BD]">ملف indx.html مهيأ وجاهز لعمل تطبيق أندرويد (APK)</h4>
+            <p class="text-xs text-[#F5E5BD]/70">
+              يمكنك استخدام برامج مثل "Website 2 APK Builder" أو "HTML to APK" وتحويل هذا الملف مباشرة لتطبيق أندرويد يعمل بدون إنترنت!
+            </p>
+          </div>
+        </div>
+        <button onclick="downloadStandaloneCopy()" class="px-4 py-2 rounded-xl bg-[#D4AF37] hover:bg-[#E7C779] text-[#2B1914] text-xs font-bold transition cursor-pointer shadow">
+          📥 حفظ نسخة مستقلة للـ APK
+        </button>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: PUBLIC CHAT -->
+    <section id="screen-public_chat" class="screen-view hidden space-y-4">
+      <div class="p-4 rounded-2xl bg-[#2B1914] border border-[#D4AF37]/40 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">💬</span>
+          <div>
+            <h2 class="text-base sm:text-lg font-bold font-amiri text-[#F5E5BD]">غرفة الاستشارة العامة — المستشار عطيه الهلباوي</h2>
+            <p class="text-xs text-[#F5E5BD]/70">تكييف قانوني سريع، أحكام محكمة النقض، ونصوص المواد القانونية</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="exportPublicChat('txt')" class="px-3 py-1.5 rounded-lg bg-[#3A241B] hover:bg-[#1a0e0b] text-[#E7C779] border border-[#D4AF37]/30 text-xs">تصدير TXT</button>
+          <button onclick="exportPublicChat('json')" class="px-3 py-1.5 rounded-lg bg-[#3A241B] hover:bg-[#1a0e0b] text-[#E7C779] border border-[#D4AF37]/30 text-xs">تصدير JSON</button>
+          <button onclick="window.print()" class="px-3 py-1.5 rounded-lg bg-[#3A241B] hover:bg-[#1a0e0b] text-[#E7C779] border border-[#D4AF37]/30 text-xs">طباعة</button>
+        </div>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <div id="public-chat-box" class="h-[460px] overflow-y-auto p-4 rounded-2xl bg-[#24140f] border border-[#D4AF37]/30 space-y-4">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Input Bar (Mandatory Send Button Only in Public Room) -->
+      <form onsubmit="handleSendPublicChat(event)" class="p-3 rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37]/40 flex items-center gap-3">
+        <input 
+          type="text" 
+          id="public-input-text" 
+          placeholder="اكتب استفسارك القانوني العام هنا (مثال: نزاع عقد بيع، إيصال أمانة، مواعيد استئناف)..." 
+          class="flex-1 px-4 py-3 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-xs sm:text-sm text-[#F5E5BD] placeholder-[#F5E5BD]/40 focus:outline-none focus:border-[#D4AF37]"
+          required
+        />
+        <button 
+          type="submit" 
+          class="px-6 py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] hover:from-[#E7C779] hover:to-[#D4AF37] text-[#2B1914] font-bold text-xs sm:text-sm flex items-center gap-2 shadow cursor-pointer"
+        >
+          <span>إرسال</span>
+          <span>←</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- SCREEN 3: PRIVATE CHAT (WITH VOICE DICTATION & CAMERA) -->
+    <section id="screen-private_chat" class="screen-view hidden space-y-4">
+      <div class="p-4 rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37]/50 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🔒</span>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-base sm:text-lg font-bold font-amiri text-[#F5E5BD]">غرفة الاستشارة الخاصة المشفرة</h2>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40">مفعلة رسمياً</span>
+            </div>
+            <p class="text-xs text-[#F5E5BD]/70">
+              رسوم الجلسة: 200 ج.م • المحفظة: 01153747612 • دعم الإملاء الصوتي والكاميرا والمرفقات
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="toggleVoiceDictation('private-input-text')" id="voice-dictate-btn" class="px-3 py-1.5 rounded-lg bg-[#3A241B] hover:bg-rose-900 text-[#E7C779] border border-[#D4AF37]/40 text-xs font-semibold flex items-center gap-1.5 transition">
+            <span id="voice-icon">🎤</span>
+            <span id="voice-status-text">إملاء صوتي</span>
+          </button>
+          <button onclick="toggleCameraCapture()" class="px-3 py-1.5 rounded-lg bg-[#3A241B] hover:bg-[#1a0e0b] text-[#E7C779] border border-[#D4AF37]/40 text-xs flex items-center gap-1">
+            📷 فحص المستند بالكاميرا
+          </button>
+        </div>
+      </div>
+
+      <!-- Voice Listening Active Indicator Banner -->
+      <div id="voice-indicator-banner" class="hidden p-3 rounded-xl bg-rose-950/80 border border-rose-500 text-rose-200 text-xs flex items-center justify-between animate-pulse">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-rose-500 animate-ping"></span>
+          <span class="font-bold">جاري الاستماع لصوتك باللغة العربية... تحدث بالوقائع والملاحظات الآن:</span>
+          <span id="voice-interim-text" class="italic text-white underline"></span>
+        </div>
+        <button onclick="stopVoiceDictation()" class="px-2 py-1 rounded bg-rose-800 text-white text-[11px] font-bold">إيقاف</button>
+      </div>
+
+      <!-- Live Camera Preview Box -->
+      <div id="camera-box" class="hidden p-4 rounded-2xl bg-[#1a0e0b] border border-[#D4AF37]/40 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-[#D4AF37]">فحص المستند والعقد عبر كاميرا الهاتف:</span>
+          <button onclick="closeCameraCapture()" class="text-rose-400 text-xs">إغلاق الكاميرا ✕</button>
+        </div>
+        <video id="camera-video" autoplay playsinline class="w-full max-h-64 object-contain rounded-xl bg-black border border-[#D4AF37]/30"></video>
+        <div class="flex items-center justify-center gap-3">
+          <button onclick="snapPhoto()" class="px-5 py-2 rounded-xl bg-[#D4AF37] text-[#2B1914] font-bold text-xs">التقاط صورة المستند 📸</button>
+        </div>
+        <canvas id="camera-canvas" class="hidden"></canvas>
+      </div>
+
+      <!-- Private Chat Messages Box -->
+      <div id="private-chat-box" class="h-[440px] overflow-y-auto p-4 rounded-2xl bg-[#24140f] border border-[#D4AF37]/30 space-y-4">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Multi-Modal Input Bar -->
+      <form onsubmit="handleSendPrivateChat(event)" class="p-3 sm:p-4 rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37]/50 space-y-3">
+        <div class="flex items-center gap-2">
+          <!-- Voice Dictation Quick Toggle -->
+          <button 
+            type="button" 
+            onclick="toggleVoiceDictation('private-input-text')" 
+            class="p-2.5 rounded-xl bg-[#1a0e0b] hover:bg-[#3A241B] border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold flex items-center gap-1.5 shrink-0" 
+            title="تحدث ليتحول كلامك لنص مكتوب فوراً"
+          >
+            <span>🎙️</span>
+            <span class="hidden sm:inline">تحدث بصوتك</span>
+          </button>
+
+          <!-- Text Input -->
+          <input 
+            type="text" 
+            id="private-input-text" 
+            placeholder="اكتب وقائع القضية وتفاصيل المستندات... أو اضغط 'تحدث بصوتك' للإملاء الصوتي" 
+            class="flex-1 px-4 py-2.5 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-xs sm:text-sm text-[#F5E5BD] placeholder-[#F5E5BD]/40 focus:outline-none focus:border-[#D4AF37]"
+            required
+          />
+
+          <!-- Send Button -->
+          <button 
+            type="submit" 
+            class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] text-[#2B1914] font-bold text-xs sm:text-sm shadow flex items-center gap-1.5 shrink-0"
+          >
+            <span>إرسال</span>
+            <span>←</span>
+          </button>
+        </div>
+        <div class="flex items-center justify-between text-[11px] text-[#F5E5BD]/60 px-1">
+          <span>* الغرفة الخاصة مشفرة محلياً وفق معايير السرية المهنية للمحاماة.</span>
+          <span>رقم المحفظة المعتمد: 01153747612</span>
+        </div>
+      </form>
+    </section>
+
+    <!-- SCREEN 4: OFFICE MANAGEMENT -->
+    <section id="screen-office" class="screen-view hidden space-y-6">
+      <div class="p-4 rounded-2xl bg-[#2B1914] border border-[#D4AF37]/40 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold font-amiri text-[#F5E5BD]">برنامج إدارة مكتب المحاماة — المستشار عطيه الهلباوي</h2>
+          <p class="text-xs text-[#F5E5BD]/70">إدارة القضايا، الجلسات، الموكلين، الحسابات، والأرشيف (حفظ محلي في التطبيق)</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="showModal('modal-add-case')" class="px-3.5 py-1.5 rounded-xl bg-[#D4AF37] text-[#2B1914] font-bold text-xs shadow hover:bg-[#E7C779]">
+            + إضافة دعوى / قضية
+          </button>
+          <button onclick="showModal('modal-add-client')" class="px-3.5 py-1.5 rounded-xl bg-[#3A241B] text-[#E7C779] border border-[#D4AF37]/40 text-xs font-bold">
+            + موكل جديد
+          </button>
+          <button onclick="showModal('modal-add-hearing')" class="px-3.5 py-1.5 rounded-xl bg-[#3A241B] text-[#E7C779] border border-[#D4AF37]/40 text-xs font-bold">
+            + جلسة رول
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Office Stats -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="p-4 rounded-xl bg-[#24140f] border border-[#D4AF37]/30 text-center">
+          <span class="text-xs text-[#F5E5BD]/60">إجمالي القضايا النشطة</span>
+          <div id="stat-cases-count" class="text-2xl font-bold font-mono text-[#D4AF37] mt-1">0</div>
+        </div>
+        <div class="p-4 rounded-xl bg-[#24140f] border border-[#D4AF37]/30 text-center">
+          <span class="text-xs text-[#F5E5BD]/60">الموكلين المسجلين</span>
+          <div id="stat-clients-count" class="text-2xl font-bold font-mono text-[#D4AF37] mt-1">0</div>
+        </div>
+        <div class="p-4 rounded-xl bg-[#24140f] border border-[#D4AF37]/30 text-center">
+          <span class="text-xs text-[#F5E5BD]/60">جلسات الرول القادمة</span>
+          <div id="stat-hearings-count" class="text-2xl font-bold font-mono text-[#D4AF37] mt-1">0</div>
+        </div>
+        <div class="p-4 rounded-xl bg-[#24140f] border border-[#D4AF37]/30 text-center">
+          <span class="text-xs text-[#F5E5BD]/60">إجمالي الأتعاب المحصلة</span>
+          <div id="stat-revenue" class="text-2xl font-bold font-mono text-emerald-400 mt-1">0 ج.م</div>
+        </div>
+      </div>
+
+      <!-- Office Tabs Navigation -->
+      <div class="flex items-center gap-2 border-b border-[#D4AF37]/20 pb-2 overflow-x-auto text-xs">
+        <button onclick="switchOfficeTab('cases')" class="office-tab-btn px-4 py-2 rounded-xl bg-[#D4AF37] text-[#2B1914] font-bold" data-tab="cases">القضايا والدعاوى</button>
+        <button onclick="switchOfficeTab('hearings')" class="office-tab-btn px-4 py-2 rounded-xl bg-[#2B1914] text-[#F5E5BD]" data-tab="hearings">جدول الجلسات والمواعيد</button>
+        <button onclick="switchOfficeTab('clients')" class="office-tab-btn px-4 py-2 rounded-xl bg-[#2B1914] text-[#F5E5BD]" data-tab="clients">دليل الموكلين</button>
+        <button onclick="switchOfficeTab('finances')" class="office-tab-btn px-4 py-2 rounded-xl bg-[#2B1914] text-[#F5E5BD]" data-tab="finances">الحسابات والمالية</button>
+      </div>
+
+      <!-- Tab Content: Cases -->
+      <div id="office-tab-cases" class="office-subview space-y-3">
+        <div class="flex items-center justify-between gap-3">
+          <input 
+            type="text" 
+            id="search-cases-input" 
+            oninput="renderOfficeCases()" 
+            placeholder="بحث برقم القضية، المحكمة، أو اسم الموكل..." 
+            class="flex-1 px-4 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-xs text-[#F5E5BD]"
+          />
+        </div>
+        <div id="cases-list-container" class="space-y-3">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Tab Content: Hearings -->
+      <div id="office-tab-hearings" class="office-subview hidden space-y-3">
+        <div id="hearings-list-container" class="space-y-3">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Tab Content: Clients -->
+      <div id="office-tab-clients" class="office-subview hidden space-y-3">
+        <div id="clients-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Tab Content: Finances -->
+      <div id="office-tab-finances" class="office-subview hidden space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-[#F5E5BD]/70">سجل الإيصالات والمعاملات المالية للأتعاب:</span>
+          <button onclick="showModal('modal-add-trx')" class="px-3 py-1 rounded bg-[#D4AF37] text-[#2B1914] text-xs font-bold">+ تسجيل دفعة أتعاب</button>
+        </div>
+        <div id="finances-list-container" class="space-y-2">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5: EGYPTIAN LAWS INDEX -->
+    <section id="screen-laws" class="screen-view hidden space-y-4">
+      <div class="p-4 rounded-2xl bg-[#2B1914] border border-[#D4AF37]/40 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold font-amiri text-[#F5E5BD]">فهرس نصوص القوانين المصرية الرئيسية</h2>
+          <p class="text-xs text-[#F5E5BD]/70">بحث فوري في نصوص ومواد القانون المدني، الجنائي، المرافعات، الإثبات، العمل، والمحاماة</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="filterLaws('all')" class="law-filter-btn px-3 py-1 rounded-lg bg-[#D4AF37] text-[#2B1914] text-xs font-bold" data-branch="all">الكل</button>
+          <button onclick="filterLaws('civil')" class="law-filter-btn px-3 py-1 rounded-lg bg-[#3A241B] text-[#E7C779] text-xs" data-branch="civil">المدني</button>
+          <button onclick="filterLaws('criminal')" class="law-filter-btn px-3 py-1 rounded-lg bg-[#3A241B] text-[#E7C779] text-xs" data-branch="criminal">الجنائي</button>
+          <button onclick="filterLaws('procedural')" class="law-filter-btn px-3 py-1 rounded-lg bg-[#3A241B] text-[#E7C779] text-xs" data-branch="procedural">المرافعات</button>
+          <button onclick="filterLaws('labor')" class="law-filter-btn px-3 py-1 rounded-lg bg-[#3A241B] text-[#E7C779] text-xs" data-branch="labor">العمل</button>
+        </div>
+      </div>
+
+      <!-- Live Search Box -->
+      <div class="flex items-center gap-2">
+        <input 
+          type="text" 
+          id="laws-search-input" 
+          oninput="renderLawsArticles()" 
+          placeholder="ابحث برقم المادة أو بالكلمات (مثل: العقد شريعة المتعاقدين، إيصال أمانة، التقادم، التعويض، الفصل)..." 
+          class="flex-1 px-4 py-2.5 rounded-xl bg-[#24140f] border border-[#D4AF37]/30 text-xs sm:text-sm text-[#F5E5BD] placeholder-[#F5E5BD]/40 focus:outline-none focus:border-[#D4AF37]"
+        />
+      </div>
+
+      <!-- Laws Grid Container -->
+      <div id="laws-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Mobile Navigation Bar for Android APK (Visible on small screens) -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#2B1914]/95 backdrop-blur border-t border-[#D4AF37]/40 px-2 py-2 flex items-center justify-around md:hidden no-print">
+    <button onclick="navigateTo('home')" class="mobile-nav-btn flex flex-col items-center gap-1 text-[10px] text-[#D4AF37]" data-target="home">
+      <span class="text-lg">🏛️</span>
+      <span>الرئيسية</span>
+    </button>
+    <button onclick="navigateTo('public_chat')" class="mobile-nav-btn flex flex-col items-center gap-1 text-[10px] text-[#F5E5BD]/70" data-target="public_chat">
+      <span class="text-lg">💬</span>
+      <span>عامة</span>
+    </button>
+    <button onclick="navigateTo('private_chat')" class="mobile-nav-btn flex flex-col items-center gap-1 text-[10px] text-[#F5E5BD]/70" data-target="private_chat">
+      <span class="text-lg">🔒</span>
+      <span>خاصة</span>
+    </button>
+    <button onclick="navigateTo('office')" class="mobile-nav-btn flex flex-col items-center gap-1 text-[10px] text-[#F5E5BD]/70" data-target="office">
+      <span class="text-lg">📂</span>
+      <span>المحاماة</span>
+    </button>
+    <button onclick="navigateTo('laws')" class="mobile-nav-btn flex flex-col items-center gap-1 text-[10px] text-[#F5E5BD]/70" data-target="laws">
+      <span class="text-lg">📜</span>
+      <span>القوانين</span>
+    </button>
+  </nav>
+
+  <!-- MODAL: ADD CASE -->
+  <div id="modal-add-case" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="w-full max-w-lg rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37] p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-[#D4AF37]/30 pb-3">
+        <h3 class="text-base font-bold text-[#F5E5BD]">إضافة دعوى / قضية جديدة</h3>
+        <button onclick="hideModal('modal-add-case')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <form onsubmit="handleSaveCase(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">رقم القضية / السنة *</label>
+          <div class="flex gap-2">
+            <input type="text" id="case-num" placeholder="مثال: 1452" required class="flex-1 px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+            <input type="text" id="case-year" value="2024" required class="w-24 px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">المحكمة والدائرة *</label>
+          <input type="text" id="case-court" value="محكمة جنوب القاهرة الابتدائية — الدائرة 5 مدني" required class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">موضوع الدعوى *</label>
+          <input type="text" id="case-title" placeholder="مثال: دعوى صحة ونفاذ عقد بيع شقة سكنية" required class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">اسم الموكل وصفته *</label>
+          <input type="text" id="case-client" placeholder="مثال: الحاج رجب عبد الرحمن (مدعي)" required class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">الخصم وصفته</label>
+          <input type="text" id="case-opponent" placeholder="مثال: شركة التطوير العقاري الحديث (مدعى عليه)" class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-[#F5E5BD]/70">ملاحظات ودفوع القضية</label>
+            <button type="button" onclick="toggleVoiceDictation('case-notes')" class="text-[#D4AF37] hover:underline flex items-center gap-1">
+              🎤 إملاء صوتي
+            </button>
+          </div>
+          <textarea id="case-notes" rows="3" placeholder="اكتب ملاحظات وطلبات الجلسة الأولى أو أملها بالصوت..." class="w-full p-2.5 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white"></textarea>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-3">
+          <button type="button" onclick="hideModal('modal-add-case')" class="px-4 py-2 rounded-xl bg-[#1a0e0b] text-slate-300">إلغاء</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-[#D4AF37] text-[#2B1914] font-bold">حفظ القضية</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD CLIENT -->
+  <div id="modal-add-client" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37] p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-[#D4AF37]/30 pb-3">
+        <h3 class="text-base font-bold text-[#F5E5BD]">إضافة موكل جديد</h3>
+        <button onclick="hideModal('modal-add-client')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <form onsubmit="handleSaveClient(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">الاسم الكامل *</label>
+          <input type="text" id="client-name" required class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">رقم الهاتف *</label>
+          <input type="text" id="client-phone" required placeholder="01xxxxxxxxx" class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">ملاحظات الموكل والتوكيل</label>
+          <input type="text" id="client-notes" placeholder="رقم التوكيل الرسمي، العنوان..." class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-3">
+          <button type="button" onclick="hideModal('modal-add-client')" class="px-4 py-2 rounded-xl bg-[#1a0e0b] text-slate-300">إلغاء</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-[#D4AF37] text-[#2B1914] font-bold">حفظ الموكل</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD HEARING -->
+  <div id="modal-add-hearing" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37] p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-[#D4AF37]/30 pb-3">
+        <h3 class="text-base font-bold text-[#F5E5BD]">إضافة جلسة رول قادمة</h3>
+        <button onclick="hideModal('modal-add-hearing')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <form onsubmit="handleSaveHearing(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">رقم القضية *</label>
+          <input type="text" id="hearing-casenum" required placeholder="1452 لسنة 2024" class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">المحكمة *</label>
+          <input type="text" id="hearing-court" required value="محكمة جنوب القاهرة" class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">تاريخ الجلسة *</label>
+          <input type="date" id="hearing-date" required class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-[#F5E5BD]/70">المطلوب بالجلسة (القرارات والمستندات)</label>
+            <button type="button" onclick="toggleVoiceDictation('hearing-req')" class="text-[#D4AF37] hover:underline">🎤 إملاء صوتي</button>
+          </div>
+          <input type="text" id="hearing-req" placeholder="مثال: تقديم أصل عقد البيع وإعلان شواهد التزوير" class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-3">
+          <button type="button" onclick="hideModal('modal-add-hearing')" class="px-4 py-2 rounded-xl bg-[#1a0e0b] text-slate-300">إلغاء</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-[#D4AF37] text-[#2B1914] font-bold">تسجيل الجلسة</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD TRANSACTION -->
+  <div id="modal-add-trx" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-2xl bg-[#2B1914] border-2 border-[#D4AF37] p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-[#D4AF37]/30 pb-3">
+        <h3 class="text-base font-bold text-[#F5E5BD]">تسجيل دفعة أتعاب أو مصروفات</h3>
+        <button onclick="hideModal('modal-add-trx')" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <form onsubmit="handleSaveTrx(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">المبلغ بالجنيه المصري *</label>
+          <input type="number" id="trx-amount" required placeholder="5000" class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">نوع المعاملة</label>
+          <select id="trx-type" class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white">
+            <option value="أتعاب محاماة">أتعاب محاماة</option>
+            <option value="رسوم ومصروفات قضائية">رسوم ومصروفات قضائية</option>
+            <option value="استشارة خاصة">استشارة خاصة</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[#F5E5BD]/70 mb-1">ملاحظات وبيان المعاملة</label>
+          <input type="text" id="trx-note" placeholder="دفعة مقدمة عن دعوى صحة ونفاذ..." class="w-full px-3 py-2 rounded-xl bg-[#1a0e0b] border border-[#D4AF37]/30 text-white" />
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-3">
+          <button type="button" onclick="hideModal('modal-add-trx')" class="px-4 py-2 rounded-xl bg-[#1a0e0b] text-slate-300">إلغاء</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-[#D4AF37] text-[#2B1914] font-bold">حفظ المعاملة</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- APPLICATION SCRIPTS (STANDALONE OFFLINE ENGINE) -->
+  <script>
+    // --- Local Database Engine (LocalStorage for Offline APK) ---
+    const DB = {
+      getCases: () => JSON.parse(localStorage.getItem('abq_cases') || '[]'),
+      saveCases: (arr) => localStorage.setItem('abq_cases', JSON.stringify(arr)),
+      getClients: () => JSON.parse(localStorage.getItem('abq_clients') || '[]'),
+      saveClients: (arr) => localStorage.setItem('abq_clients', JSON.stringify(arr)),
+      getHearings: () => JSON.parse(localStorage.getItem('abq_hearings') || '[]'),
+      saveHearings: (arr) => localStorage.setItem('abq_hearings', JSON.stringify(arr)),
+      getTrx: () => JSON.parse(localStorage.getItem('abq_trx') || '[]'),
+      saveTrx: (arr) => localStorage.setItem('abq_trx', JSON.stringify(arr)),
+      getPublicChat: () => JSON.parse(localStorage.getItem('abq_public_chat') || 'null'),
+      savePublicChat: (arr) => localStorage.setItem('abq_public_chat', JSON.stringify(arr)),
+      getPrivateChat: () => JSON.parse(localStorage.getItem('abq_private_chat') || 'null'),
+      savePrivateChat: (arr) => localStorage.setItem('abq_private_chat', JSON.stringify(arr)),
+    };
+
+    // Initialize Default Seed Data if Empty
+    function initSeedData() {
+      if (DB.getCases().length === 0) {
+        DB.saveCases([
+          { id: '1', number: '1452', year: '2024', court: 'جنوب القاهرة الابتدائية', title: 'صحة ونفاذ عقد بيع شقة', client: 'الحاج رجب عبد الرحمن', status: 'متداولة' },
+          { id: '2', number: '8910', year: '2023', court: 'جنح قصر النيل', title: 'جنحة خيانة أمانة (إيصال)', client: 'المهندس مصطفى كامل', status: 'محكوم فيها بالبراءة' },
+          { id: '3', number: '312', year: '2024', court: 'محكمة استئناف القاهرة', title: 'استئناف مدني تجاري', client: 'شركة الأهرام للتوريدات', status: 'متداولة' },
+        ]);
+      }
+      if (DB.getClients().length === 0) {
+        DB.saveClients([
+          { id: '1', name: 'الحاج رجب عبد الرحمن', phone: '01012345678', notes: 'توكيل خاص رقم 142 لسنة 2022' },
+          { id: '2', name: 'المهندس مصطفى كامل', phone: '01198765432', notes: 'نزاع شراكة وإيصال أمانة' },
+          { id: '3', name: 'شركة الأهرام للتوريدات', phone: '01234567890', notes: 'سجل تجاري 45124 القاهرة' },
+        ]);
+      }
+      if (DB.getHearings().length === 0) {
+        DB.saveHearings([
+          { id: '1', caseNumber: '1452 لسنة 2024', court: 'جنوب القاهرة الدائرة 5', date: '2026-11-25', decision: 'لتقديم أصل العقد وسداد أمانة الخبير', req: 'مستندات وأصل العقد' },
+          { id: '2', caseNumber: '312 لسنة 2024', court: 'استئناف القاهرة الدائرة 12', date: '2026-12-04', decision: 'للمرافعة الختامية', req: 'مذكرة دفاع نهائية' },
+        ]);
+      }
+      if (DB.getTrx().length === 0) {
+        DB.saveTrx([
+          { id: '1', amount: 15000, type: 'أتعاب محاماة', date: '2026-10-15', note: 'دفعة مقدمة في دعوى صحة ونفاذ' },
+          { id: '2', amount: 8000, type: 'أتعاب محاماة', date: '2026-10-22', note: 'أتعاب استئناف مدني' },
+        ]);
+      }
+      if (!DB.getPublicChat()) {
+        DB.savePublicChat([
+          { id: '1', sender: 'counselor', text: 'بسم الله الرحمن الرحيم\nأهلاً ومرحباً بحضرتكم في غرفة الاستشارة العامة للمستشار عطيه الهلباوي.\nتفضلوا بكتابة استفساركم وسيقوم المحرك القضائي بتحليله طبقاً لأحدث أحكام محكمة النقض ونصوص القانون المصري.', time: '09:00' }
+        ]);
+      }
+      if (!DB.getPrivateChat()) {
+        DB.savePrivateChat([
+          { id: '1', sender: 'counselor', text: 'أهلاً بكم في غرفة الاستشارة الخاصة للمستشار عطيه الهلباوي (رسوم 200 ج.م معتمدة).\nيمكنكم التحدث بالصوت مباشرة عبر زر الإملاء الصوتي 🎙️ أو إرفاق المستندات لفحصها بدقة بالغة.', time: '09:00' }
+        ]);
+      }
+    }
+
+    // --- Embedded Egyptian Laws Database ---
+    const EGYPTIAN_LAWS = [
+      {
+        id: 'civil-147',
+        law: 'القانون المدني (رقم 131 لسنة 1948)',
+        articleNum: '147',
+        branch: 'civil',
+        title: 'القوة الملزمة للعقد (العقد شريعة المتعاقدين)',
+        text: 'العقد شريعة المتعاقدين، فلا يجوز نقضه ولا تعديله إلا باتفاق الطرفين، أو للأسباب التي يقررها القانون. ومع ذلك إذا طرأت حوادث استثنائية عامة لم يكن في الوسع توقعها وترتب على حدوثها أن تنفيذ الالتزام التعاقدي، وإن لم يصبح مستحيلاً، صار يرهق المدين بحيث يهدده بخسارة فادحة، جاز للقاضي طبقاً للعدالة وبعد الموازنة بين مصلحة الطرفين أن يرد الالتزام المرهق إلى الحد المعقول.',
+        cassation: 'محكمة النقض: العقد شريعة المتعاقدين، وخطأ الحكم في تأويل نصوصه يوجب نقضه (الطعن 1420 لسنة 49 ق).'
+      },
+      {
+        id: 'civil-148',
+        law: 'القانون المدني (رقم 131 لسنة 1948)',
+        articleNum: '148',
+        branch: 'civil',
+        title: 'تنفيذ العقد بحسن نية والالتزامات التبعية',
+        text: 'يجب تنفيذ العقد طبقاً لما اشتمل عليه وبطريقة تتفق مع ما يوجبه حسن النية. ولا يقتصر العقد على إلزام المتعاقد بما ورد فيه، ولكن يتناول أيضاً ما هو من مستلزماته، وفقاً للقانون والعرف والعدالة بحسب طبيعة الالتزام.',
+        cassation: 'محكمة النقض: حسن النية في تنفيذ العقود من الأصول العامة التي تخضع لرقابة القضاء (الطعن 89 لسنة 52 ق).'
+      },
+      {
+        id: 'civil-163',
+        law: 'القانون المدني (رقم 131 لسنة 1948)',
+        articleNum: '163',
+        branch: 'civil',
+        title: 'المسؤولية التقصيرية والتعويض عن الخطأ الضار',
+        text: 'كل خطأ سبَّب ضرراً للغير يُلزم من ارتكبه بالتعويض.',
+        cassation: 'أركان المسؤولية التقصيرية ثلاثة: خطأ، وضرر، وعلاقة سببية بينهما. وتقدير التعويض الجابر للضرر من سلطة محكمة الموضوع.'
+      },
+      {
+        id: 'civil-374',
+        law: 'القانون المدني (رقم 131 لسنة 1948)',
+        articleNum: '374',
+        branch: 'civil',
+        title: 'التقادم المسقط العام للحقوق والالتزامات (15 سنة)',
+        text: 'يتقادم الالتزام بانقضاء خمس عشرة سنة فيما عدا الحالات التي ورد عنها نص خاص في القانون والديون الدورية المتجددة والتجارية.',
+        cassation: 'التقادم من النظام العام متى تمسك به الخصم، وسريان المدة يبدأ من تاريخ استحقاق الدين (الطعن 610 لسنة 58 ق).'
+      },
+      {
+        id: 'penal-341',
+        law: 'قانون العقوبات (رقم 58 لسنة 1937)',
+        articleNum: '341',
+        branch: 'criminal',
+        title: 'جنحة خيانة الأمانة وعقود الأمانة الخمسة (إيصال الأمانة)',
+        text: 'كل من اختلس أو استعمل أو بدد مبالغ أو أمتعة أو بضائع أو نقوداً أو تذاكر أو كتابات أخرى مشتملة على تمسك أو مخالصة أو غير ذلك إضراراً بمالكيها أو أصحابها أو واضعي اليد عليها وكانت الأشياء المذكورة لم تسلم له إلا على وجه الوديعة أو الإجارة أو على سبيل عارية الاستعمال أو الرهن أو كانت سلمت له بصفة كونه وكيلاً بأجرة أو مجاناً بقصد عرضها للبيع أو استعمالها في أمر معين لمنفعة المالك لها أو غيره يحكم عليه بالحبس ويجوز أن يزاد عليه غرامة لا تتجاوز مائة جنيه مصري.',
+        cassation: 'محكمة النقض: جريمة خيانة الأمانة لا تقوم إلا إذا كان تسليم المال للمتهم قد تم بناءً على أحد عقود الأمانة الحصرية الواردة بنص المادة 341 عقوبات، فإذا انتفى التسليم الفعلي أو كان الإيصال ضماناً لمعاملة مدنية انتفت الجريمة (الطعن 2154 لسنة 74 ق).'
+      },
+      {
+        id: 'crimproc-15',
+        law: 'قانون الإجراءات الجنائية (رقم 150 لسنة 1950)',
+        articleNum: '15',
+        branch: 'criminal',
+        title: 'انقضاء الدعوى الجنائية بمضي المدة (التقادم الجنائي)',
+        text: 'تنقضي الدعوى الجنائية في مواد الجنايات بمضي عشر سنين من يوم وقوع الجريمة، وفي مواد الجنح بمضي ثلاث سنين، وفي مواد المخالفات بمضي سنة واحدة، ما لم ينص القانون على خلاف ذلك.',
+        cassation: 'انقضاء الدعوى الجنائية بمضي المدة متعلق بالنظام العام، وتقضي به المحكمة من تلقاء نفسها في أية حالة كانت عليها الدعوى ولو لأول مرة أمام النقض.'
+      },
+      {
+        id: 'plead-108',
+        law: 'قانون المرافعات المدنية والتجارية (رقم 13 لسنة 1968)',
+        articleNum: '108',
+        branch: 'procedural',
+        title: 'الدفوع الشكلية وترتيب إبدائها قبل الكلام في الموضوع',
+        text: 'الدفع بعدم الاختصاص المحلي والدفع بإحالة الدعوى إلى محكمة أخرى لقيام ذات النزاع أمامها أو للارتباط، والدفع بالبطلان وسائر الدفوع المتعلقة بالإجراءات يجب إبداؤها معاً قبل إبداء أي دفع إجرائي آخر أو طلب أو دفاع في الدعوى أو دفع بعدم القبول وإلا سقط الحق فيها.',
+        cassation: 'سقوط الدفوع الشكلية غير المتعلقة بالنظام العام بالكلام في الموضوع قاعدة آمرة تحتم إبداء الدفع الشكلي أولاً قبل أي دفاع موضوعي.'
+      },
+      {
+        id: 'labor-69',
+        law: 'قانون العمل المصري (رقم 12 لسنة 2003)',
+        articleNum: '69',
+        branch: 'labor',
+        title: 'الحالات الحصرية لفصل العامل والفصل التعسفي',
+        text: 'لا يجوز فصل العامل إلا إذا ارتكب خطأ جسيماً، ويعتبر من قبيل الخطأ الجسيم: انتحال شخصية غير صحيحة، أو إذا ارتكب خطأ نشأت عنه خسارة مادية جسيمة لصاحب العمل بشرط إبلاغ الجهات المختصة خلال 24 ساعة، أو عدم مراعاة تعليمات السلامة، أو الغياب بدون عذر أكثر من عشرين يوماً متقطعة خلال السنة أو أكثر من عشرة أيام متتالية بشرط سبق الإنذار.',
+        cassation: 'إنهاء عقد العمل دون مسوغ مشروع يعتبر فصلاً تعسفياً يوجب التعويض طبقاً للمادة 71 (الطعن 1120 لسنة 79 ق).'
+      }
+    ];
+
+    // --- Voice-to-Text Speech Recognition Module (ar-EG) ---
+    let speechRecognitionInstance = null;
+    let activeDictationTargetInputId = null;
+    let isVoiceListening = false;
+
+    function initSpeechEngine() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition;
+      if (!SpeechRecognition) return null;
+      try {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'ar-EG';
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.onstart = () => {
+          isVoiceListening = true;
+          updateVoiceUI(true);
+        };
+
+        recognition.onresult = (event) => {
+          let interim = '';
+          let finalChunk = '';
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalChunk += event.results[i][0].transcript;
+            } else {
+              interim += event.results[i][0].transcript;
+            }
+          }
+
+          if (finalChunk && activeDictationTargetInputId) {
+            const inputEl = document.getElementById(activeDictationTargetInputId);
+            if (inputEl) {
+              inputEl.value = inputEl.value ? `${inputEl.value} ${finalChunk.trim()}` : finalChunk.trim();
+            }
+          }
+
+          const bannerInterim = document.getElementById('voice-interim-text');
+          if (bannerInterim) {
+            bannerInterim.innerText = interim;
+          }
+        };
+
+        recognition.onerror = (event) => {
+          console.warn('Voice recognition error:', event.error);
+          if (event.error === 'not-allowed') {
+            alert('تم رفض إذن الميكروفون. يرجى السماح للتطبيق بالوصول للصوت.');
+          }
+          stopVoiceDictation();
+        };
+
+        recognition.onend = () => {
+          isVoiceListening = false;
+          updateVoiceUI(false);
+        };
+
+        return recognition;
+      } catch (e) {
+        console.error('Speech initialization failed', e);
+        return null;
+      }
+    }
+
+    function toggleVoiceDictation(targetInputId) {
+      if (isVoiceListening) {
+        stopVoiceDictation();
+      } else {
+        startVoiceDictation(targetInputId);
+      }
+    }
+
+    function startVoiceDictation(targetInputId) {
+      activeDictationTargetInputId = targetInputId;
+      if (!speechRecognitionInstance) {
+        speechRecognitionInstance = initSpeechEngine();
+      }
+      if (!speechRecognitionInstance) {
+        alert('ميزة الإملاء الصوتي غير مدعومة في هذا المتصفح/الجهاز. يرجى تجربة Google Chrome أو Android WebView.');
+        return;
+      }
+      try {
+        speechRecognitionInstance.start();
+        if (navigator.vibrate) navigator.vibrate(50);
+      } catch (err) {
+        // already started
+      }
+    }
+
+    function stopVoiceDictation() {
+      if (speechRecognitionInstance) {
+        try {
+          speechRecognitionInstance.stop();
+        } catch (e) {}
+      }
+      isVoiceListening = false;
+      updateVoiceUI(false);
+      if (navigator.vibrate) navigator.vibrate([30, 30]);
+    }
+
+    function updateVoiceUI(listening) {
+      const banner = document.getElementById('voice-indicator-banner');
+      const voiceIcon = document.getElementById('voice-icon');
+      const voiceText = document.getElementById('voice-status-text');
+      const voiceBtn = document.getElementById('voice-dictate-btn');
+
+      if (banner) {
+        if (listening) banner.classList.remove('hidden');
+        else banner.classList.add('hidden');
+      }
+      if (voiceBtn) {
+        if (listening) {
+          voiceBtn.classList.add('bg-rose-700', 'text-white', 'animate-pulse');
+          if (voiceText) voiceText.innerText = 'إيقاف الإملاء';
+          if (voiceIcon) voiceIcon.innerText = '🛑';
+        } else {
+          voiceBtn.classList.remove('bg-rose-700', 'text-white', 'animate-pulse');
+          if (voiceText) voiceText.innerText = 'إملاء صوتي';
+          if (voiceIcon) voiceIcon.innerText = '🎤';
+        }
+      }
+    }
+
+    // --- Camera Capture Module ---
+    let cameraMediaStream = null;
+
+    async function toggleCameraCapture() {
+      const box = document.getElementById('camera-box');
+      if (!box) return;
+      if (box.classList.contains('hidden')) {
+        box.classList.remove('hidden');
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' } },
+            audio: false,
+          });
+          cameraMediaStream = stream;
+          const video = document.getElementById('camera-video');
+          if (video) video.srcObject = stream;
+        } catch (err) {
+          alert('تعذر فتح الكاميرا: ' + err.message);
+          box.classList.add('hidden');
+        }
+      } else {
+        closeCameraCapture();
+      }
+    }
+
+    function closeCameraCapture() {
+      const box = document.getElementById('camera-box');
+      if (box) box.classList.add('hidden');
+      if (cameraMediaStream) {
+        cameraMediaStream.getTracks().forEach((track) => track.stop());
+        cameraMediaStream = null;
+      }
+    }
+
+    function snapPhoto() {
+      const video = document.getElementById('camera-video');
+      const canvas = document.getElementById('camera-canvas');
+      if (!video || !canvas) return;
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0);
+      const photoDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+
+      // Append photo as attachment to private chat
+      const privBox = document.getElementById('private-chat-box');
+      const chat = DB.getPrivateChat() || [];
+      const newMsg = {
+        id: 'msg-' + Date.now(),
+        sender: 'user',
+        text: '📷 [صورة مستند ملتقطة بالكاميرا المباشرة]',
+        photo: photoDataUrl,
+        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+      };
+      chat.push(newMsg);
+      DB.savePrivateChat(chat);
+      renderPrivateChat();
+      closeCameraCapture();
+      alert('تم التقاط صورة المستند وإرفاقها في الجلسة بنجاح.');
+    }
+
+    // --- Navigation System ---
+    function navigateTo(screenId) {
+      document.querySelectorAll('.screen-view').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById('screen-' + screenId);
+      if (target) {
+        target.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Update Nav buttons styling
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-target') === screenId) {
+          btn.classList.add('bg-[#D4AF37]', 'text-[#2B1914]');
+          btn.classList.remove('text-[#F5E5BD]');
+        } else {
+          btn.classList.remove('bg-[#D4AF37]', 'text-[#2B1914]');
+          btn.classList.add('text-[#F5E5BD]');
+        }
+      });
+
+      document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-target') === screenId) {
+          btn.classList.add('text-[#D4AF37]');
+          btn.classList.remove('text-[#F5E5BD]/70');
+        } else {
+          btn.classList.remove('text-[#D4AF37]');
+          btn.classList.add('text-[#F5E5BD]/70');
+        }
+      });
+
+      // Triggers per screen
+      if (screenId === 'public_chat') renderPublicChat();
+      if (screenId === 'private_chat') renderPrivateChat();
+      if (screenId === 'office') renderOfficeDashboard();
+      if (screenId === 'laws') renderLawsArticles();
+    }
+
+    // --- Public Consultation Chat ---
+    function renderPublicChat() {
+      const box = document.getElementById('public-chat-box');
+      if (!box) return;
+      const chat = DB.getPublicChat() || [];
+      box.innerHTML = chat.map(m => `
+        <div class="flex flex-col ${m.sender === 'user' ? 'items-start' : 'items-end'} space-y-1">
+          <div class="text-[10px] text-[#D4AF37] px-2 font-semibold">
+            ${m.sender === 'user' ? 'المستشير' : 'المستشار عطيه الهلباوي'} • ${m.time}
+          </div>
+          <div class="max-w-[85%] sm:max-w-[75%] p-3.5 rounded-2xl ${
+            m.sender === 'user' 
+              ? 'bg-[#1a0e0b] border border-[#D4AF37]/30 text-[#F5E5BD] rounded-tr-none' 
+              : 'bg-[#2B1914] border border-[#D4AF37]/60 text-[#F5E5BD] rounded-tl-none shadow-md'
+          } text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
+            ${m.text}
+          </div>
+        </div>
+      `).join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function handleSendPublicChat(e) {
+      e.preventDefault();
+      const input = document.getElementById('public-input-text');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const chat = DB.getPublicChat() || [];
+      chat.push({
+        id: 'user-' + Date.now(),
+        sender: 'user',
+        text: text,
+        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+      });
+      DB.savePublicChat(chat);
+      input.value = '';
+      renderPublicChat();
+
+      // Autonomous Judicial Reasoning Engine Response
+      setTimeout(() => {
+        const reply = generateJudicialOpinion(text);
+        chat.push({
+          id: 'counselor-' + Date.now(),
+          sender: 'counselor',
+          text: reply,
+          time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+        });
+        DB.savePublicChat(chat);
+        renderPublicChat();
+      }, 600);
+    }
+
+    function generateJudicialOpinion(query) {
+      const q = query.toLowerCase();
+      if (q.includes('بيع') || q.includes('شقة') || q.includes('عقد') || q.includes('تسليم')) {
+        return `المستشار عطيه الهلباوي:\n\nبشأن استفساركم حول عقد البيع والالتزامات المتبادلة:\n1. طبقاً للمادة 147 من القانون المدني، «العقد شريعة المتعاقدين»، فلا يجوز نقضه أو تعديله إلا باتفاق الطرفين.\n2. التزام البائع بتسليم المبيع في الموعد المحدد التزام بتحقيق غاية، والتأخير يرتب استحقاق الشرط الجزائي إن وجد ما لم يثبت البائع القوة القاهرة (المادة 215 مدني).\n3. ننصحكم بتوجيه إنذار رسمي على يد محضر بإلزام البائع بالتسليم وسداد غرامة التأخير، ثم إقامة دعوى صحة ونفاذ أو إلزام بالتسليم.`;
+      } else if (q.includes('إيصال') || q.includes('امانة') || q.includes('أمانة') || q.includes('شيك')) {
+        return `المستشار عطيه الهلباوي:\n\nبشأن الموقف في إيصال الأمانة:\n1. المادة 341 من قانون العقوبات تشترط لقيام جريمة خيانة الأمانة أن يكون تسليم المال قد تم على سبيل أحد عقود الأمانة الخمسة الواردة حصراً.\n2. قضت محكمة النقض (الطعن 2154 لسنة 74 ق) بأنه متى ثبت أن التوقيع كان على بياض أو ضماناً لتعامل تجاري أو مدني دون تسليم نقدي فعلي، انتفى القصد الجنائي ومدنية النزاع تدرأ العقوبة الجنائية.\n3. الدفع الجوهري الواجب إبداؤه: الدفع بانتفاء ركن التسليم ومدنية النزاع وطلب الإحالة للتحقيق لإثبات واقعة المعاملة.`;
+      } else if (q.includes('فصل') || q.includes('عمل') || q.includes('عمال') || q.includes('استقالة')) {
+        return `المستشار عطيه الهلباوي:\n\nبشأن حقوق العمل والفصل التعسفي:\n1. المادة 69 من قانون العمل 12 لسنة 2003 حددت حالات فصل العامل على سبيل الحصر. وأي فصل دون مسوغ قانوني يعد فصلاً تعسفياً.\n2. الميعاد الجوهري: يجب تقديم الشكوى لمكتب العمل المختص خلال 10 أيام من تاريخ الفصل، وإلا تعقدت الإجراءات الإدارية.\n3. حقوقكم: أجر مهلة الإخطار (شهرين أو ثلاثة)، والتعويض الجابر للضرر بما لا يقل عن أجر شهرين عن كل سنة خدمة (المادة 71)، ورصيد الإجازات.`;
+      } else {
+        return `المستشار عطيه الهلباوي:\n\nتم فحص استشارتكم بعناية:\nتتطلب المسألة المطروحة تدقيق المستندات والتواريخ والإنذارات الرسمية.\nالقاعدة الأصولية: «البينة على من ادعى، واليمين على من أنكر» طبقاً لقانون الإثبات المصري رقم 25 لسنة 1968.\nننصحكم بالاحتفاظ بكافة المراسلات والإيصالات الخطية، وللحصول على مراجعة دقيقة للمستندات يرجى استخدام الغرفة الخاصة لإرفاق العقود وسماع المشورة الكاملة.`;
+      }
+    }
+
+    function exportPublicChat(format) {
+      const chat = DB.getPublicChat() || [];
+      let text = 'استشارة المستشار عطيه الهلباوي\n\n' + chat.map(m => `[${m.sender === 'user' ? 'المستشير' : 'المستشار'} - ${m.time}]:\n${m.text}\n-------------------`).join('\n\n');
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `استشارة_${Date.now()}.${format === 'json' ? 'json' : 'txt'}`;
+      a.click();
+    }
+
+    // --- Private Consultation Chat ---
+    function renderPrivateChat() {
+      const box = document.getElementById('private-chat-box');
+      if (!box) return;
+      const chat = DB.getPrivateChat() || [];
+      box.innerHTML = chat.map(m => `
+        <div class="flex flex-col ${m.sender === 'user' ? 'items-start' : 'items-end'} space-y-1">
+          <div class="text-[10px] text-[#D4AF37] px-2 font-semibold">
+            ${m.sender === 'user' ? 'المستشير الخاص' : 'المستشار عطيه الهلباوي'} • ${m.time}
+          </div>
+          <div class="max-w-[85%] sm:max-w-[75%] p-3.5 rounded-2xl ${
+            m.sender === 'user' 
+              ? 'bg-[#1a0e0b] border border-[#D4AF37]/40 text-[#F5E5BD] rounded-tr-none' 
+              : 'bg-[#2B1914] border-2 border-[#D4AF37]/70 text-[#F5E5BD] rounded-tl-none shadow-md'
+          } text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
+            ${m.photo ? `<img src="${m.photo}" class="max-w-xs rounded-xl mb-2 border border-[#D4AF37]/50" />` : ''}
+            ${m.text}
+          </div>
+        </div>
+      `).join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function handleSendPrivateChat(e) {
+      e.preventDefault();
+      const input = document.getElementById('private-input-text');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const chat = DB.getPrivateChat() || [];
+      chat.push({
+        id: 'user-' + Date.now(),
+        sender: 'user',
+        text: text,
+        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+      });
+      DB.savePrivateChat(chat);
+      input.value = '';
+      renderPrivateChat();
+
+      setTimeout(() => {
+        const reply = `المستشار عطيه الهلباوي (استشارة خاصة وسرية):\n\nتم الاطلاع على الوقائع المشروحة في جلستكم المشفرة.\n1. التكييف القضائي السليم: الدعوى تندرج تحت قواعد المسؤولية العقدية والمطالبة بالتعويض.\n2. الإجراء العاجل: يجرى إعداد صحيفة افتتاح الدعوى والمذكرة الشارحة مع بيان الدفوع الإجرائية طبقاً للمادة 108 مرافعات.\n3. تم حفظ وقائع الجلسة في سجلات مكتبنا المعتمدة بأمان تام.`;
+        chat.push({
+          id: 'counselor-' + Date.now(),
+          sender: 'counselor',
+          text: reply,
+          time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+        });
+        DB.savePrivateChat(chat);
+        renderPrivateChat();
+      }, 700);
+    }
+
+    // --- Office Management Engine ---
+    function renderOfficeDashboard() {
+      const cases = DB.getCases();
+      const clients = DB.getClients();
+      const hearings = DB.getHearings();
+      const trxs = DB.getTrx();
+
+      document.getElementById('stat-cases-count').innerText = cases.length;
+      document.getElementById('stat-clients-count').innerText = clients.length;
+      document.getElementById('stat-hearings-count').innerText = hearings.length;
+
+      const totalRev = trxs.reduce((sum, t) => sum + Number(t.amount || 0), 0);
+      document.getElementById('stat-revenue').innerText = totalRev.toLocaleString('ar-EG') + ' ج.م';
+
+      renderOfficeCases();
+      renderOfficeHearings();
+      renderOfficeClients();
+      renderOfficeFinances();
+    }
+
+    function switchOfficeTab(tabName) {
+      document.querySelectorAll('.office-subview').forEach(v => v.classList.add('hidden'));
+      const activeView = document.getElementById('office-tab-' + tabName);
+      if (activeView) activeView.classList.remove('hidden');
+
+      document.querySelectorAll('.office-tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabName) {
+          btn.classList.add('bg-[#D4AF37]', 'text-[#2B1914]', 'font-bold');
+          btn.classList.remove('bg-[#2B1914]', 'text-[#F5E5BD]');
+        } else {
+          btn.classList.remove('bg-[#D4AF37]', 'text-[#2B1914]', 'font-bold');
+          btn.classList.add('bg-[#2B1914]', 'text-[#F5E5BD]');
+        }
+      });
+    }
+
+    function renderOfficeCases() {
+      const container = document.getElementById('cases-list-container');
+      if (!container) return;
+      const q = (document.getElementById('search-cases-input')?.value || '').toLowerCase();
+      const cases = DB.getCases().filter(c => 
+        (c.number && c.number.includes(q)) ||
+        (c.title && c.title.toLowerCase().includes(q)) ||
+        (c.client && c.client.toLowerCase().includes(q))
+      );
+
+      if (cases.length === 0) {
+        container.innerHTML = '<div class="p-8 text-center text-xs text-[#F5E5BD]/50">لا توجد قضايا مطابقة للبحث</div>';
+        return;
+      }
+
+      container.innerHTML = cases.map(c => `
+        <div class="p-4 rounded-xl bg-[#24140f] border border-[#D4AF37]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-[#D4AF37]/60 transition">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded bg-[#D4AF37]/20 text-[#E7C779] text-xs font-mono font-bold">
+                رقم ${c.number} لسنة ${c.year}
+              </span>
+              <span class="text-xs text-[#F5E5BD]/70 font-semibold">• ${c.court}</span>
+            </div>
+            <h4 class="text-sm font-bold text-[#F5E5BD] font-amiri">${c.title}</h4>
+            <p class="text-xs text-[#F5E5BD]/60">الموكل: <span class="text-[#E7C779]">${c.client}</span></p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-1 rounded-full bg-emerald-950/60 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold">
+              ${c.status || 'نشطة'}
+            </span>
+            <button onclick="deleteCase('${c.id}')" class="p-1.5 rounded-lg bg-rose-950/50 hover:bg-rose-900 text-rose-300 text-xs">
+              حذف 🗑️
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderOfficeHearings() {
+      const container = document.getElementById('hearings-list-container');
+      if (!container) return;
+      const list = DB.getHearings();
+      container.innerHTML = list.map(h => `
+        <div class="p-4 rounded-xl bg-[#24140f] border border-[#D4AF37]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-[#E7C779]">${h.caseNumber}</span>
+              <span class="text-xs text-[#F5E5BD]/60">• ${h.court}</span>
+            </div>
+            <div class="text-xs text-[#F5E5BD] font-semibold">تاريخ الجلسة: <span class="text-emerald-400 font-mono">${h.date}</span></div>
+            <div class="text-xs text-[#F5E5BD]/70">المطلوب بالجلسة: ${h.req || h.decision || 'المرافعة وسماع الشهود'}</div>
+          </div>
+          <button onclick="deleteHearing('${h.id}')" class="text-rose-400 text-xs">حذف ✕</button>
+        </div>
+      `).join('');
+    }
+
+    function renderOfficeClients() {
+      const container = document.getElementById('clients-list-container');
+      if (!container) return;
+      const list = DB.getClients();
+      container.innerHTML = list.map(c => `
+        <div class="p-4 rounded-xl bg-[#24140f] border border-[#D4AF37]/30 space-y-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-sm text-[#F5E5BD]">${c.name}</h4>
+            <span class="text-[11px] font-mono text-[#D4AF37]">${c.phone}</span>
+          </div>
+          <p class="text-xs text-[#F5E5BD]/60">${c.notes || 'لا توجد ملاحظات إضافية'}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderOfficeFinances() {
+      const container = document.getElementById('finances-list-container');
+      if (!container) return;
+      const list = DB.getTrx();
+      container.innerHTML = list.map(t => `
+        <div class="p-3 rounded-xl bg-[#24140f] border border-[#D4AF37]/25 flex items-center justify-between text-xs">
+          <div>
+            <div class="font-bold text-[#F5E5BD]">${t.type}</div>
+            <div class="text-[#F5E5BD]/60 text-[11px]">${t.note || ''} • ${t.date || ''}</div>
+          </div>
+          <div class="font-bold font-mono text-emerald-400 text-sm">
+            +${Number(t.amount).toLocaleString('ar-EG')} ج.م
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Modal Form Handlers
+    function handleSaveCase(e) {
+      e.preventDefault();
+      const cases = DB.getCases();
+      cases.push({
+        id: 'case-' + Date.now(),
+        number: document.getElementById('case-num').value,
+        year: document.getElementById('case-year').value,
+        court: document.getElementById('case-court').value,
+        title: document.getElementById('case-title').value,
+        client: document.getElementById('case-client').value,
+        opponent: document.getElementById('case-opponent').value,
+        notes: document.getElementById('case-notes').value,
+        status: 'متداولة'
+      });
+      DB.saveCases(cases);
+      hideModal('modal-add-case');
+      renderOfficeDashboard();
+      alert('تم حفظ القضية بنجاح.');
+    }
+
+    function handleSaveClient(e) {
+      e.preventDefault();
+      const list = DB.getClients();
+      list.push({
+        id: 'client-' + Date.now(),
+        name: document.getElementById('client-name').value,
+        phone: document.getElementById('client-phone').value,
+        notes: document.getElementById('client-notes').value,
+      });
+      DB.saveClients(list);
+      hideModal('modal-add-client');
+      renderOfficeDashboard();
+      alert('تم حفظ الموكل بنجاح.');
+    }
+
+    function handleSaveHearing(e) {
+      e.preventDefault();
+      const list = DB.getHearings();
+      list.push({
+        id: 'hearing-' + Date.now(),
+        caseNumber: document.getElementById('hearing-casenum').value,
+        court: document.getElementById('hearing-court').value,
+        date: document.getElementById('hearing-date').value,
+        req: document.getElementById('hearing-req').value,
+      });
+      DB.saveHearings(list);
+      hideModal('modal-add-hearing');
+      renderOfficeDashboard();
+      alert('تم تسجيل الجلسة بنجاح.');
+    }
+
+    function handleSaveTrx(e) {
+      e.preventDefault();
+      const list = DB.getTrx();
+      list.push({
+        id: 'trx-' + Date.now(),
+        amount: Number(document.getElementById('trx-amount').value),
+        type: document.getElementById('trx-type').value,
+        note: document.getElementById('trx-note').value,
+        date: new Date().toISOString().split('T')[0]
+      });
+      DB.saveTrx(list);
+      hideModal('modal-add-trx');
+      renderOfficeDashboard();
+      alert('تم تسجيل الدفعة بنجاح.');
+    }
+
+    function deleteCase(id) {
+      if (confirm('هل أنت متأكد من حذف هذه القضية؟')) {
+        DB.saveCases(DB.getCases().filter(c => c.id !== id));
+        renderOfficeDashboard();
+      }
+    }
+
+    function deleteHearing(id) {
+      if (confirm('هل أنت متأكد من حذف هذه الجلسة؟')) {
+        DB.saveHearings(DB.getHearings().filter(h => h.id !== id));
+        renderOfficeDashboard();
+      }
+    }
+
+    // --- Laws Index & Search Module ---
+    let currentLawBranchFilter = 'all';
+
+    function filterLaws(branch) {
+      currentLawBranchFilter = branch;
+      document.querySelectorAll('.law-filter-btn').forEach(btn => {
+        if (btn.getAttribute('data-branch') === branch) {
+          btn.classList.add('bg-[#D4AF37]', 'text-[#2B1914]', 'font-bold');
+          btn.classList.remove('bg-[#3A241B]', 'text-[#E7C779]');
+        } else {
+          btn.classList.remove('bg-[#D4AF37]', 'text-[#2B1914]', 'font-bold');
+          btn.classList.add('bg-[#3A241B]', 'text-[#E7C779]');
+        }
+      });
+      renderLawsArticles();
+    }
+
+    function renderLawsArticles() {
+      const container = document.getElementById('laws-cards-container');
+      if (!container) return;
+      const q = (document.getElementById('laws-search-input')?.value || '').toLowerCase();
+
+      const filtered = EGYPTIAN_LAWS.filter(art => {
+        const matchBranch = currentLawBranchFilter === 'all' || art.branch === currentLawBranchFilter;
+        const matchQuery = !q || 
+          art.title.toLowerCase().includes(q) ||
+          art.text.toLowerCase().includes(q) ||
+          art.law.toLowerCase().includes(q) ||
+          art.articleNum.includes(q) ||
+          (art.cassation && art.cassation.toLowerCase().includes(q));
+        return matchBranch && matchQuery;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="col-span-2 p-12 text-center text-xs text-[#F5E5BD]/50">لا توجد مواد قانونية مطابقة للبحث الحالي</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(art => `
+        <div class="p-5 rounded-2xl bg-[#24140f] border border-[#D4AF37]/35 space-y-3 hover:border-[#D4AF37] transition shadow-lg">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 rounded bg-[#D4AF37]/20 text-[#E7C779] text-xs font-mono font-bold">
+              المادة ${art.articleNum}
+            </span>
+            <span class="text-xs text-[#F5E5BD]/60">${art.law}</span>
+          </div>
+          <h4 class="text-sm font-bold text-[#F5E5BD] font-amiri">${art.title}</h4>
+          <p class="text-xs text-[#F5E5BD]/80 leading-relaxed bg-[#1a0e0b] p-3 rounded-xl border border-[#D4AF37]/20">
+            ${art.text}
+          </p>
+          ${art.cassation ? `
+            <div class="text-[11px] text-[#E7C779] bg-[#3A241B]/40 p-2.5 rounded-lg border-r-2 border-[#D4AF37]">
+              ⚖️ <span class="font-bold">مبدأ محكمة النقض:</span> ${art.cassation}
+            </div>
+          ` : ''}
+          <div class="flex items-center justify-end gap-2 pt-1">
+            <button onclick="navigator.clipboard.writeText('المادة ${art.articleNum} - ${art.law}\\n${art.text}'); alert('تم نسخ نص المادة');" class="px-3 py-1 rounded bg-[#3A241B] hover:bg-[#1a0e0b] text-[#D4AF37] text-xs">
+              نسخ النص 📋
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // --- Modal Helpers ---
+    function showModal(id) {
+      document.getElementById(id)?.classList.remove('hidden');
+    }
+    function hideModal(id) {
+      document.getElementById(id)?.classList.add('hidden');
+    }
+
+    // --- Download Standalone Copy ---
+    function downloadStandaloneCopy() {
+      const htmlContent = document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'indx.html';
+      a.click();
+    }
+
+    // --- Application Bootstrapping ---
+    window.addEventListener('DOMContentLoaded', () => {
+      initSeedData();
+      navigateTo('home');
+    });
+  </script>
+</body>
+</html>
