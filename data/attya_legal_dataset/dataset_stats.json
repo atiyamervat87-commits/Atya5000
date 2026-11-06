@@ -1,0 +1,23 @@
+{
+  "dataset_name": "ATTYA LEGAL DATASET",
+  "total_records": 5025,
+  "train_count": 4020,
+  "validation_count": 502,
+  "test_count": 503,
+  "benchmark_count": 100,
+  "categories_count": 15,
+  "jurisdiction": "القانون المصري - جمهورية مصر العربية",
+  "format": "JSONL (UTF-8)",
+  "fields": [
+    "id",
+    "category",
+    "topic",
+    "question",
+    "answer",
+    "source",
+    "jurisdiction",
+    "as_of",
+    "difficulty",
+    "verified"
+  ]
+}

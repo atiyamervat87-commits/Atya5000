@@ -63,6 +63,17 @@ function resolveConcisenessPolicy(intent: IntentType): ConcisenessPolicy {
           '[سياسة الفرح والتهاني والمناسبات: أجب بأحر وأصدق مشاعر الفرح والبهجة والتهاني والدعاء بالبركة للعروسين والافتخار والاعتزاز بالدعوة الكريمة كأخ وخبير مصري أصيل، ويُحظر تماماً أي استعراض قضائي أو مواد قانونية.]',
       };
 
+    case 'CONGRATULATIONS_PLATFORM':
+      return {
+        maxTokens: 250,
+        temperature: 0.25,
+        enforceDirectAnswer: true,
+        prohibitUnsolicitedLitigation: true,
+        allowedLineCount: 6,
+        antiDigressionPrompt:
+          '[سياسة التهنئة بالمنصة والمكتب: اشكر الموكل بتقدير ومودة وأكد تسخير المنصة لمحراب العدالة وتيسير الاستشارات دون أي نصوص زواج أو دفوع قضائية.]',
+      };
+
     case 'COLLOQUIAL_CHECKIN':
       return {
         maxTokens: 140,
@@ -184,6 +195,28 @@ function resolveConcisenessPolicy(intent: IntentType): ConcisenessPolicy {
           '[سياسة التناسب: رُد التحية في نصف سطر، ثم أجب عن المسألة القانونية المطروحة بدقة وتركيز على جوهر النزاع دون استطرادات ثانوية.]',
       };
 
+    case 'ZERO_HALLUCINATION':
+      return {
+        maxTokens: 350,
+        temperature: 0.1,
+        enforceDirectAnswer: true,
+        prohibitUnsolicitedLitigation: true,
+        allowedLineCount: 15,
+        antiDigressionPrompt:
+          '[سياسة الأمانة القضائية الصارمة: ارفض بحسم أي مواد أو أرقام طعون خيالية أو وهمية، ووضح حدود المواد الحقيقية في القانون المصري بالأمانة العلمية التامة دون اختلاق.]',
+      };
+
+    case 'MISSING_INFO_PROMPT':
+      return {
+        maxTokens: 450,
+        temperature: 0.25,
+        enforceDirectAnswer: true,
+        prohibitUnsolicitedLitigation: false,
+        allowedLineCount: 20,
+        antiDigressionPrompt:
+          '[سياسة الاستيضاح الذكي: اطرح الأسئلة القانونية الجوهرية لاستيفاء أركان الدعوى (مصدر الالتزام، ركن الخطأ، الضرر، والتقادم) دون مجرد عبارات عامة.]',
+      };
+
     case 'LEGAL':
     default:
       return {
@@ -279,26 +312,30 @@ export function counselorLinguisticMiddleware(req: Request, res: Response, next:
       intent === 'COLLOQUIAL_CHECKIN' ||
       intent === 'CONFIDENTIAL_PERSONAL' ||
       intent === 'CELEBRATION_INVITATION' ||
+      intent === 'CONGRATULATIONS_PLATFORM' ||
       intent === 'INTRO' ||
       intent === 'PERMISSION' ||
       intent === 'GRATITUDE';
 
     // إعداد الرد الفوري المباشر لتفادي أي استطراد سحابي أو تأخير غير مبرر
     let instantReply: string | undefined;
-    if (isConversationalOnly) {
+    if (isConversationalOnly || intent === 'ZERO_HALLUCINATION' || intent === 'MISSING_INFO_PROMPT' || intent === 'DRAFTING') {
       instantReply = generateCounselorAutonomousResponse(rawMessage, history, {
         isPrivateRoom: req.path.includes('private'),
       });
     }
 
-    // النيات البسيطة (تحية نقية، عامية، شكر، استئذان، شخصي، مناسبات سعيدة) تفضل الرد الفوري المباشر لمنع أي استطراد
+    // النيات التي تفضل الرد الفوري المباشر لمنع أي استطراد أو هلوسة خيالية
     const shouldBypassAiToPreventDigression =
       intent === 'GREETING' ||
       intent === 'GRATITUDE' ||
       intent === 'PERMISSION' ||
       intent === 'COLLOQUIAL_CHECKIN' ||
       intent === 'CONFIDENTIAL_PERSONAL' ||
-      intent === 'CELEBRATION_INVITATION';
+      intent === 'CELEBRATION_INVITATION' ||
+      intent === 'CONGRATULATIONS_PLATFORM' ||
+      intent === 'ZERO_HALLUCINATION' ||
+      intent === 'INTRO';
 
     const directive = `${buildIntentDirective(intent)}\n${policy.antiDigressionPrompt}`;
 

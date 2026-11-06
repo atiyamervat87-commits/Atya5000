@@ -29,12 +29,14 @@ import {
   BookOpen,
   Crown,
   Cpu,
+  GitMerge,
 } from 'lucide-react';
 import { LegalIndexDisplay } from './LegalIndexDisplay';
 import { EgyptianLawsIndex } from './EgyptianLawsIndex';
 import { SmartContractLibrary } from './SmartContractLibrary';
 import { SubscriptionSettings } from './SubscriptionSettings';
 import { CentralBrainTrainer } from './CentralBrainTrainer';
+import { LegalDataPipelineStudio } from './LegalDataPipelineStudio';
 import {
   Client,
   LegalCase,
@@ -431,6 +433,7 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
 
   const navSections = [
     { id: 'dashboard', label: 'لوحة التحكم', icon: Briefcase },
+    { id: 'legal_pipeline', label: 'خط أنابيب البيانات القانونية', icon: GitMerge, badge: '8 مراحل', highlight: true },
     { id: 'central_brain', label: 'العقل المركزي وتدريب النموذج', icon: Cpu, badge: 'AI', highlight: true },
     { id: 'subscription', label: 'خطة الاشتراك والشهر المجاني', icon: Crown, badge: 'تجربة', highlight: true },
     { id: 'smart_contracts', label: 'مكتبة العقود الذكية', icon: FileCheck, badge: 8, highlight: true },
@@ -483,6 +486,14 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
 
         {/* Quick Actions in Toolbar */}
         <div className="flex items-center gap-2 text-xs flex-wrap">
+          <button
+            onClick={() => setActiveSection('legal_pipeline')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-950/70 via-[#3A241B] to-amber-950/40 hover:from-emerald-900 text-emerald-300 border border-emerald-500/50 font-bold transition cursor-pointer shadow-sm"
+          >
+            <GitMerge className="w-3.5 h-3.5 text-emerald-400" />
+            <span>خط أنابيب البيانات القانونية (8 مراحل)</span>
+          </button>
+
           <button
             onClick={() => setActiveSection('central_brain')}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500/20 via-[#3A241B] to-emerald-950/40 hover:from-amber-500/30 text-[#E7C779] border border-[#D4AF37]/50 font-bold transition cursor-pointer shadow-sm"
@@ -1518,6 +1529,11 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
           {/* SECTION: EGYPTIAN LAWS INDEX & SEARCH (LegalIndexDisplay) */}
           {activeSection === 'egyptian_laws' && (
             <LegalIndexDisplay />
+          )}
+
+          {/* SECTION: LEGAL DATA PROCESSING PIPELINE (8 STAGES) */}
+          {activeSection === 'legal_pipeline' && (
+            <LegalDataPipelineStudio />
           )}
 
           {/* SECTION: CENTRAL COGNITIVE BRAIN & LLM TRAINING STUDIO */}

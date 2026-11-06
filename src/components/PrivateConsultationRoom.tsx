@@ -30,9 +30,10 @@ import { VoiceDictationBadge } from './VoiceDictationBadge';
 
 interface PrivateConsultationRoomProps {
   userRole: UserRole;
+  onOpenGlossary?: () => void;
 }
 
-export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = ({ userRole }) => {
+export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = ({ userRole, onOpenGlossary }) => {
   // Session & payment state
   const userId = 'user-current-session';
   const userName = 'المستشير الخاص';
@@ -628,6 +629,17 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
 
         {/* Tools and Lock Status */}
         <div className="flex items-center gap-2 text-xs flex-wrap">
+          {onOpenGlossary && (
+            <button
+              onClick={onOpenGlossary}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 text-[#E7C779] border border-[#D4AF37]/40 transition cursor-pointer font-medium"
+              title="فتح معجم المصطلحات والمفاهيم القانونية المصرية"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="hidden sm:inline">معجم المصطلحات</span>
+            </button>
+          )}
+
           {/* Legal Reading Mode Toggle */}
           <button
             onClick={() => setIsLegalReadingMode(!isLegalReadingMode)}

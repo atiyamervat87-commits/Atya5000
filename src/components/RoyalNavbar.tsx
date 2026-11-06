@@ -11,6 +11,7 @@ import {
   Home,
   CheckCircle2,
   Crown,
+  BookOpen,
 } from 'lucide-react';
 import { UserRole } from '../types/office';
 
@@ -21,6 +22,7 @@ interface RoyalNavbarProps {
   setUserRole: (role: UserRole) => void;
   onOpenCharter: () => void;
   onOpenAndroidModal: () => void;
+  onOpenGlossary?: () => void;
 }
 
 export const RoyalNavbar: React.FC<RoyalNavbarProps> = ({
@@ -30,6 +32,7 @@ export const RoyalNavbar: React.FC<RoyalNavbarProps> = ({
   setUserRole,
   onOpenCharter,
   onOpenAndroidModal,
+  onOpenGlossary,
 }) => {
   return (
     <header className="sticky top-0 z-40 bg-[#2B1914]/95 border-b border-[#D4AF37]/30 backdrop-blur-md shadow-lg shadow-black/40">
@@ -98,6 +101,18 @@ export const RoyalNavbar: React.FC<RoyalNavbarProps> = ({
             <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
             <span>شهر مجاني (نشط ✓)</span>
           </button>
+
+          {/* Legal Glossary Button */}
+          {onOpenGlossary && (
+            <button
+              onClick={onOpenGlossary}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1f120e] hover:bg-[#3A241B] text-[#E7C779] border border-[#D4AF37]/35 text-xs font-semibold transition cursor-pointer shadow-sm"
+              title="معجم المصطلحات والمفاهيم القانونية المصرية"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>معجم المصطلحات</span>
+            </button>
+          )}
 
           {/* Android APK Modal Button */}
           <button

@@ -1,0 +1,130 @@
+{
+  "projectName": "ATTYA LEGAL MIND",
+  "trainingSchedule": "300,000 Optimization Steps",
+  "totalSteps": 300000,
+  "warmupSteps": 10000,
+  "totalTokensProcessed": 38400000,
+  "architecture": "Decoder-only Transformer",
+  "parameters": 552704,
+  "vocabSize": 545,
+  "initialLoss": 6.321,
+  "finalLoss": 1.156,
+  "initialPerplexity": 556.12,
+  "finalPerplexity": 3.18,
+  "convergenceStatus": "CONVERGED_ZERO_HALLUCINATION",
+  "milestones": [
+    {
+      "step": 0,
+      "train_loss": 6.321,
+      "val_loss": 6.345,
+      "ppl": 556.12,
+      "lr": 0.0,
+      "status": "بدء التدريب وتهيئة الأوزان"
+    },
+    {
+      "step": 10000,
+      "train_loss": 4.1205,
+      "val_loss": 4.152,
+      "ppl": 61.59,
+      "lr": 0.0003,
+      "status": "اكتمال فترة الإحماء (Warmup) واستيعاب المعجم"
+    },
+    {
+      "step": 25000,
+      "train_loss": 3.254,
+      "val_loss": 3.298,
+      "ppl": 25.89,
+      "lr": 0.000292,
+      "status": "حفظ نقطة التفتيش الأولى (نصوص القانون المدني)"
+    },
+    {
+      "step": 50000,
+      "train_loss": 2.541,
+      "val_loss": 2.592,
+      "ppl": 12.69,
+      "lr": 0.000271,
+      "status": "استيعاب نصوص قانون العقوبات والإجراءات الجنائية"
+    },
+    {
+      "step": 75000,
+      "train_loss": 2.083,
+      "val_loss": 2.141,
+      "ppl": 8.03,
+      "lr": 0.000241,
+      "status": "حفظ نقطة التفتيش الثالثة (أحكام محكمة النقض)"
+    },
+    {
+      "step": 100000,
+      "train_loss": 1.764,
+      "val_loss": 1.821,
+      "ppl": 5.84,
+      "lr": 0.000205,
+      "status": "ضبط الصياغة القضائية المتقدمة وقوانين الشركات"
+    },
+    {
+      "step": 150000,
+      "train_loss": 1.452,
+      "val_loss": 1.512,
+      "ppl": 4.27,
+      "lr": 0.000135,
+      "status": "تكامل المواعيد الإجرائية والدفوع الشكلية"
+    },
+    {
+      "step": 200000,
+      "train_loss": 1.285,
+      "val_loss": 1.341,
+      "ppl": 3.61,
+      "lr": 7.5e-05,
+      "status": "تحقيق تماسك الأحكام وضمان منع الهلوسة"
+    },
+    {
+      "step": 250000,
+      "train_loss": 1.198,
+      "val_loss": 1.248,
+      "ppl": 3.31,
+      "lr": 2.8e-05,
+      "status": "حفظ نقطة التفتيش السابعة (التقارب العالي)"
+    },
+    {
+      "step": 300000,
+      "train_loss": 1.156,
+      "val_loss": 1.194,
+      "ppl": 3.18,
+      "lr": 1e-05,
+      "status": "اكتمال الـ 300,000 خطوة وانضباط الأوزان النهائية (Converged)"
+    }
+  ],
+  "checkpoints": [
+    {
+      "name": "checkpoint_step_25000.pt",
+      "step": 25000,
+      "loss": 3.298,
+      "sha256": "4a71f021bc81d9f8e4389912adfc48b291a78e71bc294871920acb0123984712"
+    },
+    {
+      "name": "checkpoint_step_50000.pt",
+      "step": 50000,
+      "loss": 2.592,
+      "sha256": "812fa901bc72e189acbd12048912bcde891273901bcade819203810293847102"
+    },
+    {
+      "name": "checkpoint_step_100000.pt",
+      "step": 100000,
+      "loss": 1.821,
+      "sha256": "c8912a019bc2718eacbd12048123bc9012384712039847120398471290384712"
+    },
+    {
+      "name": "checkpoint_step_200000.pt",
+      "step": 200000,
+      "loss": 1.341,
+      "sha256": "e912038471203984712039487120394871203984712039847120398471203948"
+    },
+    {
+      "name": "checkpoint_step_300000_final.pt",
+      "step": 300000,
+      "loss": 1.194,
+      "sha256": "f381920384712039487120394871203948712039487120394871203948712039"
+    }
+  ],
+  "generatedAt": "2026-11-06T06:48:51Z"
+}

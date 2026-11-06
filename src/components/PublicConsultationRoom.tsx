@@ -11,8 +11,13 @@ import {
   AlertCircle,
   FileText,
   Trash2,
+  BookOpen,
 } from 'lucide-react';
 import { ChatMessage } from '../types/office';
+
+interface PublicConsultationRoomProps {
+  onOpenGlossary?: () => void;
+}
 
 const QUICK_TOPICS = [
   'ما هي شروط صحة ونفاذ عقد بيع شقة وتكلفة التسجيل؟',
@@ -21,7 +26,7 @@ const QUICK_TOPICS = [
   'ما هو ميعاد الطعن بالاستئناف في الأحكام المدنية وسقوط الحق؟',
 ];
 
-export const PublicConsultationRoom: React.FC = () => {
+export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ onOpenGlossary }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome-msg',
@@ -170,6 +175,16 @@ export const PublicConsultationRoom: React.FC = () => {
 
         {/* Global Chat Tools */}
         <div className="flex items-center gap-2 text-xs">
+          {onOpenGlossary && (
+            <button
+              onClick={onOpenGlossary}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 text-[#E7C779] border border-[#D4AF37]/40 transition cursor-pointer font-medium"
+              title="فتح معجم المصطلحات القانونية المصرية"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="hidden sm:inline">معجم المصطلحات</span>
+            </button>
+          )}
           <button
             onClick={() => handleExport('txt')}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1f120e] hover:bg-[#3A241B] text-[#F5E5BD] border border-[#D4AF37]/30 transition cursor-pointer"

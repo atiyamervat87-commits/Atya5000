@@ -28,16 +28,19 @@ import {
   BrainHyperparameters,
   BrainMetrics,
 } from '../../types/subscriptionAndBrain';
+import { MagicMindGen2Dashboard } from '../MagicMindGen2Dashboard';
 
 export const CentralBrainTrainer: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
-    'train_new' | 'ingest_docs' | 'hyperparameters' | 'sandbox' | 'dataset_manager'
-  >('train_new');
+    'magic_mind' | 'train_new' | 'ingest_docs' | 'hyperparameters' | 'sandbox' | 'dataset_manager' | 'version_history' | 'llm_health'
+  >('magic_mind');
 
   const [metrics, setMetrics] = useState<BrainMetrics | null>(null);
   const [trainingPairs, setTrainingPairs] = useState<BrainTrainingPair[]>([]);
   const [ingestedDocs, setIngestedDocs] = useState<BrainIngestedDoc[]>([]);
   const [hyperparameters, setHyperparameters] = useState<BrainHyperparameters | null>(null);
+  const [versions, setVersions] = useState<any[]>([]);
+  const [llmHealth, setLlmHealth] = useState<any>(null);
 
   // New Training Pair Form State
   const [pairTitle, setPairTitle] = useState('');
@@ -56,10 +59,16 @@ export const CentralBrainTrainer: React.FC = () => {
 
   // Sandbox State
   const [sandboxPrompt, setSandboxPrompt] = useState(
-    'فرح بنت اختي يوم الخميس الجاي هتحضر معانا بجناب المستشار؟'
+    'صيغه عقد بيع شقة سكنية'
   );
   const [sandboxResult, setSandboxResult] = useState<any>(null);
+  const [editedReply, setEditedReply] = useState<string>('');
   const [isInferring, setIsInferring] = useState(false);
+  const [isApprovingGold, setIsApprovingGold] = useState(false);
+
+  // API Key & Health Settings State
+  const [customApiKey, setCustomApiKey] = useState('');
+  const [isSavingKey, setIsSavingKey] = useState(false);
 
   // Search in Dataset Manager
   const [datasetSearch, setDatasetSearch] = useState('');
@@ -75,17 +84,21 @@ export const CentralBrainTrainer: React.FC = () => {
 
   const fetchAllBrainData = async () => {
     try {
-      const [metricsRes, pairsRes, docsRes, paramsRes] = await Promise.all([
+      const [metricsRes, pairsRes, docsRes, paramsRes, versionsRes, healthRes] = await Promise.all([
         fetch('/api/brain/metrics'),
         fetch('/api/brain/training-data'),
         fetch('/api/brain/ingested-docs'),
         fetch('/api/brain/hyperparameters'),
+        fetch('/api/brain/versions'),
+        fetch('/api/brain/health'),
       ]);
 
       if (metricsRes.ok) setMetrics(await metricsRes.json());
       if (pairsRes.ok) setTrainingPairs(await pairsRes.json());
       if (docsRes.ok) setIngestedDocs(await docsRes.json());
       if (paramsRes.ok) setHyperparameters(await paramsRes.json());
+      if (versionsRes.ok) setVersions(await versionsRes.json());
+      if (healthRes.ok) setLlmHealth(await healthRes.json());
     } catch (err) {
       console.error('Failed to load brain data:', err);
     }
@@ -252,11 +265,84 @@ export const CentralBrainTrainer: React.FC = () => {
       if (res.ok) {
         const data = await res.json();
         setSandboxResult(data);
+        setEditedReply(data.inferredReply || '');
       }
     } catch (err) {
       console.error(err);
     } finally {
       setIsInferring(false);
+    }
+  };
+
+  // Direct Gold Standard Approval & Live Brain Training
+  const handleApproveGoldStandard = async () => {
+    if (!sandboxPrompt.trim() || !editedReply.trim()) return;
+    setIsApprovingGold(true);
+    try {
+      const res = await fetch('/api/brain/approve-gold-standard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `معيار ذهبي: ${sandboxPrompt.slice(0, 35)}...`,
+          category: sandboxResult?.detectedIntent || 'استشارة معتمدة',
+          userScenario: sandboxPrompt,
+          characterization: `تكييف قضائي معتمد للنية (${sandboxResult?.detectedIntent || 'عامة'})`,
+          idealResponse: editedReply,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        showToast(data.message || 'تم اعتماد الرد كمعيار ذهبي ملزم وتحديث العقل المركزي!');
+        fetchAllBrainData();
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsApprovingGold(false);
+    }
+  };
+
+  // Rollback to Selected Version
+  const handleRollback = async (versionId: string) => {
+    if (!window.confirm('هل أنت متأكد من الرغبة في التراجع إلى هذا الإصدار التدريبي؟')) return;
+    try {
+      const res = await fetch('/api/brain/rollback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ versionId }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        showToast(data.message);
+        fetchAllBrainData();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Save Custom Gemini API Key & Test Connection
+  const handleSaveApiKey = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customApiKey.trim()) return;
+    setIsSavingKey(true);
+    try {
+      const res = await fetch('/api/brain/settings/api-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey: customApiKey }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast(data.message);
+        fetchAllBrainData();
+      } else {
+        alert(data.error || 'تعذر حفظ مفتاح API.');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSavingKey(false);
     }
   };
 
@@ -349,14 +435,50 @@ export const CentralBrainTrainer: React.FC = () => {
         )}
       </div>
 
+      {/* Sovereign Technical Differentiation Banner */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-3.5 rounded-xl bg-[#2B1914] border border-[#D4AF37]/30 text-xs">
+        <div className="p-3 rounded-lg bg-[#1f120e] border border-amber-500/25 space-y-1">
+          <div className="flex items-center gap-2 font-bold text-amber-300">
+            <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+            <span>1. التوجيه بالأمثلة (Few-Shot)</span>
+          </div>
+          <p className="text-[11px] text-[#F5E5BD]/70 leading-relaxed">
+            سيناريوهات توجيهية فورية يتم إدراجها في سياق العقل المركزي لترسيخ الرد النموذجي وضبط النبرة.
+          </p>
+        </div>
+
+        <div className="p-3 rounded-lg bg-[#1f120e] border border-cyan-500/25 space-y-1">
+          <div className="flex items-center gap-2 font-bold text-cyan-300">
+            <BookOpen className="w-4 h-4 text-cyan-400" />
+            <span>2. استرجاع الوثائق والقوانين (RAG)</span>
+          </div>
+          <p className="text-[11px] text-[#F5E5BD]/70 leading-relaxed">
+            قاعدة المعرفة الحية للمذكرات والمواد وأحكام النقض الحقيقية تُسترجع بدقة عند طرح السؤال لمنع الهلوسة.
+          </p>
+        </div>
+
+        <div className="p-3 rounded-lg bg-[#1f120e] border border-emerald-500/25 space-y-1">
+          <div className="flex items-center gap-2 font-bold text-emerald-300">
+            <Cpu className="w-4 h-4 text-emerald-400" />
+            <span>3. تدريب الأوزان الفعلي (Fine-Tuning)</span>
+          </div>
+          <p className="text-[11px] text-[#F5E5BD]/70 leading-relaxed">
+            تصدير مجموعة البيانات بتنسيق JSONL لتدريب وضبط الأوزان العصبية للنموذج على منصات السحابة.
+          </p>
+        </div>
+      </div>
+
       {/* Studio Navigation Tabs */}
       <div className="flex items-center gap-1.5 p-1.5 rounded-xl bg-[#1f120e] border border-[#D4AF37]/30 text-xs overflow-x-auto">
         {[
-          { id: 'train_new', label: 'إضافة وتدريب مثال جديد', icon: Plus, badge: 'Few-Shot' },
-          { id: 'ingest_docs', label: 'تغذية مستندات ومذكرات المكتب', icon: BookOpen, badge: `${ingestedDocs.length}` },
-          { id: 'hyperparameters', label: 'أوزان الشخصية ومحددات الذكاء', icon: Sliders },
-          { id: 'sandbox', label: 'مختبر المحاكاة والاختبار الفوري', icon: Play, highlight: true },
-          { id: 'dataset_manager', label: 'مستودع بيانات التدريب والتصدير', icon: Download, badge: `${trainingPairs.length}` },
+          { id: 'magic_mind', label: 'عقل MAGIC MIND Gen-2 (المراحل الثلاث والتنزيل)', icon: Sparkles, highlight: true, badge: '552K' },
+          { id: 'sandbox', label: 'المختبر والتصحيح المباشر', icon: Play },
+          { id: 'train_new', label: 'توجيه الأمثلة (Few-Shot)', icon: Plus, badge: `${trainingPairs.length}` },
+          { id: 'ingest_docs', label: 'المعرفة والمذكرات (RAG)', icon: BookOpen, badge: `${ingestedDocs.length}` },
+          { id: 'hyperparameters', label: 'أوزان الشخصية والوقار', icon: Sliders },
+          { id: 'dataset_manager', label: 'تصدير الأوزان (Fine-Tuning)', icon: Download },
+          { id: 'version_history', label: 'سجل الإصدارات والتراجع', icon: RotateCcw, badge: `${versions.length}` },
+          { id: 'llm_health', label: 'حالة النموذج والـ API', icon: Zap },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -387,6 +509,9 @@ export const CentralBrainTrainer: React.FC = () => {
           );
         })}
       </div>
+
+      {/* TAB 0: MAGIC MIND GEN-2 DASHBOARD & THREE STAGE PIPELINE */}
+      {activeTab === 'magic_mind' && <MagicMindGen2Dashboard />}
 
       {/* TAB 1: TRAIN NEW EXAMPLE */}
       {activeTab === 'train_new' && (
@@ -910,33 +1035,56 @@ export const CentralBrainTrainer: React.FC = () => {
                 </div>
               )}
 
-              <div className="space-y-1.5">
-                <span className="text-xs font-bold text-white block">استجابة عقل المستشار عطيه:</span>
-                <div className="p-4 rounded-xl bg-[#1f120e] border border-[#D4AF37]/25 text-xs text-[#F5E5BD] whitespace-pre-wrap leading-relaxed font-sans shadow-inner">
-                  {sandboxResult.inferredReply}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-white block">
+                    استجابة عقل المستشار عطيه (قابلة للتعديل والاعتماد المباشر):
+                  </span>
+                  <span className="text-[10px] text-[#D4AF37]">
+                    يمكنك تعديل أي جملة هنا ثم الضغط على «اعتماد كمعيار ذهبي ملزم»
+                  </span>
                 </div>
+                <textarea
+                  rows={8}
+                  value={editedReply}
+                  onChange={(e) => setEditedReply(e.target.value)}
+                  className="w-full p-4 rounded-xl bg-[#1f120e] border border-[#D4AF37]/35 text-xs text-[#F5E5BD] leading-relaxed font-sans shadow-inner focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                />
               </div>
 
-              {/* Evaluation Actions */}
-              <div className="pt-2 flex items-center justify-between gap-3 text-[11px]">
-                <span className="text-[#F5E5BD]/60">ما هو تقييمك لجودة هذا الرد؟</span>
+              {/* Direct Gold Standard Approval Action */}
+              <div className="pt-2 flex flex-wrap items-center justify-between gap-3 text-[11px] border-t border-[#D4AF37]/20">
+                <span className="text-[#F5E5BD]/70">
+                  هل الرد دقيق وترغب في إلزامه كمعيار دائم للعقل المركزي؟
+                </span>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => showToast('شكراً لتقييمك! تم تأكيد جودة الرد (5/5)')}
-                    className="px-3 py-1.5 rounded-lg bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/40 cursor-pointer transition flex items-center gap-1"
+                    onClick={handleApproveGoldStandard}
+                    disabled={isApprovingGold}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:brightness-110 text-white font-bold cursor-pointer transition shadow flex items-center gap-1.5"
                   >
-                    <span>ممتاز (5/5) ✓</span>
+                    {isApprovingGold ? (
+                      <>
+                        <RotateCcw className="w-3.5 h-3.5 animate-spin" />
+                        <span>جارٍ الاعتماد والتدريب...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>اعتماد كمعيار ذهبي ملزم وتدريب العقل فوراً ✓</span>
+                      </>
+                    )}
                   </button>
                   <button
                     onClick={() => {
                       setPairScenario(sandboxPrompt);
-                      setPairIdealResponse(sandboxResult.inferredReply);
+                      setPairIdealResponse(editedReply);
                       setActiveTab('train_new');
                     }}
-                    className="px-3 py-1.5 rounded-lg bg-[#3A241B] hover:bg-[#4d3023] text-[#E7C779] border border-[#D4AF37]/40 cursor-pointer transition flex items-center gap-1"
+                    className="px-3 py-2 rounded-xl bg-[#3A241B] hover:bg-[#4d3023] text-[#E7C779] border border-[#D4AF37]/40 cursor-pointer transition flex items-center gap-1"
                   >
                     <Edit3 className="w-3.5 h-3.5" />
-                    <span>تعديل وحفظ كتدريب جديد</span>
+                    <span>نقل إلى نموذج التدريب الموسع</span>
                   </button>
                 </div>
               </div>
@@ -1043,6 +1191,163 @@ export const CentralBrainTrainer: React.FC = () => {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* TAB 6: VERSION HISTORY & ROLLBACK */}
+      {activeTab === 'version_history' && (
+        <div className="p-6 rounded-2xl bg-[#1f120e] border border-[#D4AF37]/30 space-y-5 text-xs text-right">
+          <div className="border-b border-[#D4AF37]/20 pb-3">
+            <h3 className="font-bold text-sm text-[#F5E5BD] flex items-center gap-2">
+              <RotateCcw className="w-4 h-4 text-[#D4AF37]" />
+              <span>سجل الإصدارات التدريبية وإدارة التراجع (Version History & Rollback):</span>
+            </h3>
+            <p className="text-[11px] text-[#F5E5BD]/60 mt-0.5">
+              كل اعتماد لمعيار ذهبي أو تدريب جديد ينشئ لقطة إصدار كاملة (Snapshot) للعقل المركزي، وتستطيع التراجع لأي إصدار سابق بنقرة واحدة.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {versions.length === 0 ? (
+              <div className="p-8 text-center text-[#F5E5BD]/60">
+                لا توجد لقطات إصدار مسجلة بعد.
+              </div>
+            ) : (
+              versions.map((ver, idx) => (
+                <div
+                  key={ver.id || idx}
+                  className="p-4 rounded-xl bg-[#2B1914] border border-[#D4AF37]/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-sm text-[#D4AF37] px-2.5 py-0.5 rounded bg-[#1f120e] border border-[#D4AF37]/30">
+                        {ver.versionTag}
+                      </span>
+                      {idx === 0 && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                          الإصدار النشط حالياً ✓
+                        </span>
+                      )}
+                      <span className="text-[11px] text-[#F5E5BD]/50 font-mono">
+                        {new Date(ver.timestamp).toLocaleString('ar-EG')}
+                      </span>
+                    </div>
+                    <p className="text-xs text-[#F5E5BD]/85">{ver.description}</p>
+                    <div className="flex items-center gap-3 text-[11px] text-[#F5E5BD]/60 pt-1">
+                      <span>أزواج التدريب: {ver.pairsCount}</span>
+                      <span>•</span>
+                      <span>المستندات المعرفية: {ver.docsCount}</span>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0">
+                    {idx === 0 ? (
+                      <span className="text-[11px] text-emerald-400 font-semibold px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-500/30 block text-center">
+                        النسخة الحالية
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleRollback(ver.id)}
+                        className="px-4 py-2 rounded-xl bg-[#3A241B] hover:bg-[#4d3023] text-[#E7C779] border border-[#D4AF37]/40 cursor-pointer transition flex items-center gap-1.5 font-bold shadow"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>استعادة هذا الإصدار (Rollback)</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* TAB 7: LLM CORE & API HEALTH */}
+      {activeTab === 'llm_health' && (
+        <div className="p-6 rounded-2xl bg-[#1f120e] border border-[#D4AF37]/30 space-y-6 text-xs text-right">
+          <div className="border-b border-[#D4AF37]/20 pb-3">
+            <h3 className="font-bold text-sm text-[#F5E5BD] flex items-center gap-2">
+              <Zap className="w-4 h-4 text-[#D4AF37]" />
+              <span>حالة اتصال النموذج اللغوي السحابي (Gemini 2.5 Flash Core):</span>
+            </h3>
+            <p className="text-[11px] text-[#F5E5BD]/60 mt-0.5">
+              تشخيص فوري لسلامة اتصال السحابة وحصص الاستخدام مع إمكانية تحديث مفتاح API في أي وقت.
+            </p>
+          </div>
+
+          {/* Status Diagnostic Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="p-4 rounded-xl bg-[#2B1914] border border-[#D4AF37]/25 space-y-1">
+              <span className="text-[11px] text-[#F5E5BD]/60 block">محرك الاستدلال النشط:</span>
+              <div className="text-sm font-bold text-white flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>
+                  {llmHealth?.hasActiveKey
+                    ? 'Gemini 2.5 Flash (سحابي متصل)'
+                    : 'Autonomous Judicial Core (محرك محلي ذاتي)'}
+                </span>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-[#2B1914] border border-[#D4AF37]/25 space-y-1">
+              <span className="text-[11px] text-[#F5E5BD]/60 block">زمن الاستجابة (Latency):</span>
+              <div className="text-sm font-bold font-mono text-[#E7C779]">
+                {llmHealth?.latencyMs ? `${llmHealth.latencyMs} ms` : 'استجابة فورية (< 50ms)'}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-[#2B1914] border border-[#D4AF37]/25 space-y-1">
+              <span className="text-[11px] text-[#F5E5BD]/60 block">حالة الحصة السحابية:</span>
+              <div className="text-sm font-bold text-emerald-400">
+                {llmHealth?.isQuotaBlocked
+                  ? 'تجاوز مؤقت للحصة (التحويل التلقائي للمحرك الذاتي نشط)'
+                  : 'متاحة وجاهزة ✓'}
+              </div>
+            </div>
+          </div>
+
+          {/* Diagnostic Message */}
+          {llmHealth?.message && (
+            <div className="p-3.5 rounded-xl bg-[#2B1914] border border-[#D4AF37]/30 text-xs text-[#F5E5BD]/90">
+              {llmHealth.message}
+            </div>
+          )}
+
+          {/* API Key Form */}
+          <form onSubmit={handleSaveApiKey} className="p-4 rounded-xl bg-[#2B1914] border border-[#D4AF37]/25 space-y-3">
+            <label className="block text-[#D4AF37] font-bold">
+              تحديث أو إدخال مفتاح API لـ Google Gemini:
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="password"
+                value={customApiKey}
+                onChange={(e) => setCustomApiKey(e.target.value)}
+                placeholder="AIzaSy..."
+                className="flex-1 px-3 py-2 rounded-xl bg-[#1f120e] border border-[#D4AF37]/30 text-white font-mono text-xs"
+              />
+              <button
+                type="submit"
+                disabled={isSavingKey}
+                className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] text-[#2B1914] font-bold cursor-pointer hover:brightness-110 shadow flex items-center gap-1.5"
+              >
+                {isSavingKey ? (
+                  <>
+                    <RotateCcw className="w-3.5 h-3.5 animate-spin" />
+                    <span>جارٍ الفحص والحفظ...</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#2B1914]" />
+                    <span>حفظ وفحص الاتصال</span>
+                  </>
+                )}
+              </button>
+            </div>
+            <p className="text-[11px] text-[#F5E5BD]/60">
+              يتم حفظ المفتاح في ذاكرة الخادم الآمنة وتفعيل الاتصال فورياً مع اختبار صحته. وفي حال عدم وجود مفتاح، يعمل العقل المركزي عبر المحرك الذاتي الداخلي دون أي انقطاع.
+            </p>
+          </form>
         </div>
       )}
     </div>

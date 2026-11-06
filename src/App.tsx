@@ -6,6 +6,7 @@ import { PrivateConsultationRoom } from './components/PrivateConsultationRoom';
 import { OfficeManagementPlatform } from './components/office/OfficeManagementPlatform';
 import { SystemCharterModal } from './components/SystemCharterModal';
 import { AndroidPackageModal } from './components/AndroidPackageModal';
+import { LegalGlossaryModal } from './components/LegalGlossaryModal';
 import { UserRole } from './types/office';
 import { Scale, Phone, ShieldCheck, Award } from 'lucide-react';
 
@@ -17,6 +18,7 @@ export default function App() {
   const [userRole, setUserRole] = useState<UserRole>('owner');
   const [isCharterOpen, setIsCharterOpen] = useState<boolean>(false);
   const [isAndroidModalOpen, setIsAndroidModalOpen] = useState<boolean>(false);
+  const [isGlossaryOpen, setIsGlossaryOpen] = useState<boolean>(false);
 
   return (
     <div className="min-h-screen bg-[#1a0f0c] text-[#F5E5BD] flex flex-col font-sans selection:bg-[#D4AF37]/30 selection:text-[#E7C779]">
@@ -28,6 +30,7 @@ export default function App() {
         setUserRole={setUserRole}
         onOpenCharter={() => setIsCharterOpen(true)}
         onOpenAndroidModal={() => setIsAndroidModalOpen(true)}
+        onOpenGlossary={() => setIsGlossaryOpen(true)}
       />
 
       {/* Main Screen Content */}
@@ -39,10 +42,15 @@ export default function App() {
           />
         )}
 
-        {currentScreen === 'public_consultation' && <PublicConsultationRoom />}
+        {currentScreen === 'public_consultation' && (
+          <PublicConsultationRoom onOpenGlossary={() => setIsGlossaryOpen(true)} />
+        )}
 
         {currentScreen === 'private_consultation' && (
-          <PrivateConsultationRoom userRole={userRole} />
+          <PrivateConsultationRoom
+            userRole={userRole}
+            onOpenGlossary={() => setIsGlossaryOpen(true)}
+          />
         )}
 
         {currentScreen === 'office_management' && (
@@ -63,6 +71,12 @@ export default function App() {
       <AndroidPackageModal
         isOpen={isAndroidModalOpen}
         onClose={() => setIsAndroidModalOpen(false)}
+      />
+
+      {/* Legal Glossary Modal */}
+      <LegalGlossaryModal
+        isOpen={isGlossaryOpen}
+        onClose={() => setIsGlossaryOpen(false)}
       />
 
       {/* Royal Judicial Footer */}

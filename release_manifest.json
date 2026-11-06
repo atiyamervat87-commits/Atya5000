@@ -1,0 +1,21 @@
+{
+  "release_title": "ATTYA LEGAL MIND — MAGIC MIND GEN-2 OFFICIAL RELEASE",
+  "timestamp": "2026-11-05T22:30:00Z",
+  "archives": [
+    {
+      "name": "ATTYA_LEGAL_MIND.zip",
+      "description": "العقل المستقل: الكود والأوزان والبيانات والقاموس وحزمة التقييم المعيارية المستقلة",
+      "parameters": 552704,
+      "size_mb": 0.86,
+      "sha256": "049d7986e46ea6eb1a0f52777df428a340afcaaab5539d45f4c0255f8baa301f",
+      "download_url": "/api/download/attya-legal-mind-zip"
+    },
+    {
+      "name": "ATTYA_LEGAL_ADVISOR_MAGIC_MIND.zip",
+      "description": "برنامج المستشار عطيه الهلباوي المطور بعد دمج العقل الجديد وخط المعالجة ثلاثي المراحل",
+      "size_mb": 2.98,
+      "sha256": "82fba27239d5491e6c717a9139858d5b18034eb93ff013fcee5b62573daeda80",
+      "download_url": "/api/download/attya-advisor-zip"
+    }
+  ]
+}

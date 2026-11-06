@@ -14,6 +14,9 @@ import {
   Users,
   CheckCircle2,
   Sparkles,
+  Cpu,
+  Layers,
+  Download,
 } from 'lucide-react';
 
 interface HomeScreenProps {
@@ -89,6 +92,34 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectUnit, onOpenAndr
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Special Feature Banner: MAGIC MIND Gen-2 Architectural Integration */}
+      <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-950/40 via-[#2B1914] to-emerald-950/40 border border-[#D4AF37]/50 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="space-y-1.5 text-right">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#D4AF37]">
+            <Cpu className="w-4 h-4 text-[#E7C779]" />
+            <span className="uppercase tracking-wider">مشروع هندسي مكتمل • MAGIC MIND Gen-2</span>
+            <span className="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-[10px] font-mono">
+              552,704 معلمات محققة
+            </span>
+          </div>
+          <h2 className="text-lg sm:text-xl font-bold font-amiri text-[#F5E5BD]">
+            عقل المستشار عطيه الهلباوي المدمج (ATTYA LEGAL MIND)
+          </h2>
+          <p className="text-xs text-[#F5E5BD]/75 max-w-2xl leading-relaxed">
+            تم دمج معمارية Transformer المستقلة (Decoder-only) بخط معالجة ثلاثي المراحل: التوليد الخام، وحارس الأمانة القضائية لمنع الهلوسة، والإجابة النهائية المعتمدة. كما تتوفر الحزمتان المضغوطتان للتنزيل الفوري مع بصمات SHA-256.
+          </p>
+        </div>
+
+        <button
+          onClick={() => onSelectUnit('office_management')}
+          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] hover:brightness-110 text-[#2B1914] font-bold text-xs flex items-center gap-2 shadow-lg transition cursor-pointer shrink-0"
+        >
+          <Layers className="w-4 h-4" />
+          <span>فتح استوديو MAGIC MIND والحزم</span>
+          <ChevronLeft className="w-4 h-4" />
+        </button>
       </div>
 
       {/* The Three Core Mandatory Units */}
@@ -225,6 +256,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectUnit, onOpenAndr
               </p>
 
               <div className="space-y-1.5 text-[11px] text-[#F5E5BD]/60 pt-2 border-t border-[#D4AF37]/15">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>خط أنابيب معالجة وهندسة البيانات القانونية المصرية (8 مراحل متكاملة)</span>
+                </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#D4AF37]" />
                   <span>استوديو تدريب العقل المركزي والنموذج اللغوي الخاص بالمستشار</span>
