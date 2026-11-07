@@ -30,6 +30,8 @@ import {
   Crown,
   Cpu,
   GitMerge,
+  BarChart3,
+  PieChart,
 } from 'lucide-react';
 import { LegalIndexDisplay } from './LegalIndexDisplay';
 import { EgyptianLawsIndex } from './EgyptianLawsIndex';
@@ -37,6 +39,7 @@ import { SmartContractLibrary } from './SmartContractLibrary';
 import { SubscriptionSettings } from './SubscriptionSettings';
 import { CentralBrainTrainer } from './CentralBrainTrainer';
 import { LegalDataPipelineStudio } from './LegalDataPipelineStudio';
+import { VisualCasesAnalyticsDashboard } from './VisualCasesAnalyticsDashboard';
 import {
   Client,
   LegalCase,
@@ -433,6 +436,7 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
 
   const navSections = [
     { id: 'dashboard', label: 'لوحة التحكم', icon: Briefcase },
+    { id: 'visual_analytics', label: 'المتابعة البصرية والرسوم (Dashboard)', icon: BarChart3, badge: 'تفاعلي', highlight: true },
     { id: 'legal_pipeline', label: 'خط أنابيب البيانات القانونية', icon: GitMerge, badge: '8 مراحل', highlight: true },
     { id: 'central_brain', label: 'العقل المركزي وتدريب النموذج', icon: Cpu, badge: 'AI', highlight: true },
     { id: 'subscription', label: 'خطة الاشتراك والشهر المجاني', icon: Crown, badge: 'تجربة', highlight: true },
@@ -486,6 +490,14 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
 
         {/* Quick Actions in Toolbar */}
         <div className="flex items-center gap-2 text-xs flex-wrap">
+          <button
+            onClick={() => setActiveSection('visual_analytics')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-950/80 via-[#3A241B] to-indigo-950/60 hover:from-blue-900 text-blue-200 border border-blue-500/50 font-bold transition cursor-pointer shadow-sm"
+          >
+            <BarChart3 className="w-3.5 h-3.5 text-blue-400" />
+            <span>لوحة المتابعة البصرية (Dashboard)</span>
+          </button>
+
           <button
             onClick={() => setActiveSection('legal_pipeline')}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-950/70 via-[#3A241B] to-amber-950/40 hover:from-emerald-900 text-emerald-300 border border-emerald-500/50 font-bold transition cursor-pointer shadow-sm"
@@ -724,7 +736,44 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
                   <span>تصفح وبحث في القوانين ←</span>
                 </button>
               </div>
+
+              {/* Visual Analytics Quick Showcase Card */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-950/40 via-[#2B1914] to-indigo-950/40 border border-blue-500/40 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-xl bg-blue-500/20 border border-blue-400/40 flex items-center justify-center text-blue-300 shrink-0">
+                    <BarChart3 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold font-amiri text-base text-[#F5E5BD] flex items-center gap-2">
+                      <span>لوحة المتابعة البصرية التفاعلية لحالة القضايا وتواريخ الجلسات</span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">جديد</span>
+                    </h4>
+                    <p className="text-xs text-[#F5E5BD]/70 mt-0.5">
+                      مخطط دائري تفاعلي (Donut Chart) لتوزيع حالات القضايا، رادار زمني للجلسات القادمة (خلال 48 ساعة، هذا الأسبوع، هذا الشهر)، وتوزيع القضايا حسب جهة الاختصاص والمحاكم.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setActiveSection('visual_analytics')}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition cursor-pointer shadow-md shrink-0"
+                >
+                  <PieChart className="w-3.5 h-3.5" />
+                  <span>فتح لوحة الرسوم البيانية التفاعلية ←</span>
+                </button>
+              </div>
             </div>
+          )}
+
+          {/* SECTION: VISUAL CASES & HEARINGS ANALYTICS DASHBOARD */}
+          {activeSection === 'visual_analytics' && (
+            <VisualCasesAnalyticsDashboard
+              cases={cases}
+              hearings={hearings}
+              onSelectCase={() => setActiveSection('cases')}
+              onOpenNewCase={() => setShowAddCaseModal(true)}
+              onOpenNewHearing={() => setShowAddHearingModal(true)}
+            />
           )}
 
           {/* SECTION 2: CLIENTS */}

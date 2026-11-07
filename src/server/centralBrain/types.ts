@@ -110,11 +110,15 @@ export interface LegalCassation {
 export interface ReasoningResult {
   detectedProblem: string;
   characterization: string; // التكييف القضائي
+  directAnswer?: string; // الجواب المباشر الحاسم والمخصص لسؤال المستشير
   statutoryBasis: LegalStatute[];
   cassationBasis: LegalCassation[];
   recommendedSteps: string[];
   risksAndWarnings: string[];
   missingCrucialFacts: string[];
+  isConceptualOrHistorical?: boolean;
+  detailedAnalysis?: string;
+  customAdvice?: string;
 }
 
 export interface BrainEngineResponse {

@@ -61,43 +61,101 @@ ${changeSummary}
   }
 
   /**
-   * صياغة الرد على استشارة نزاع موضوعي
+   * صياغة الرد على استشارة نزاع موضوعي أو مسألة فقهية / تاريخية
+   * تركز على الجواب المباشر الحاسم والمخصص لسؤال المستشير دون تكرار نمطي أو قوالب مدنية عامة
    */
   public formatLegalInquiryResponse(reasoning: ReasoningResult): string {
-    const statutesFormatted = reasoning.statutoryBasis
-      .map(s => `• **${s.officialReference}**:\n  «${s.text}»\n  *الأثر والتطبيق*: ${s.summary}`)
-      .join('\n\n');
+    // 1. معالجة الاستفسارات الفقهية المقارنة والمسائل التوثيقية والتاريخية القضائية
+    if (reasoning.isConceptualOrHistorical && reasoning.detailedAnalysis) {
+      const statutesFormatted = reasoning.statutoryBasis.length > 0
+        ? `\n\n📜 **السند التشريعي والتأصيل القانوني:**\n` +
+          reasoning.statutoryBasis
+            .map(s => `• **${s.officialReference}**:\n  «${s.text}»\n  *الأثر والتطبيق*: ${s.summary}`)
+            .join('\n\n')
+        : '';
 
-    const cassationFormatted = reasoning.cassationBasis.length > 0
-      ? `\n\n🏛️ **قضاء محكمة النقض المصرية المستقر في المسألة:**\n` +
-        reasoning.cassationBasis
-          .map(c => `• **${c.court} (${c.rulingNumber} لسنة ${c.judicialYear} - ${c.sessionDate})**:\n  «${c.principle}»`)
-          .join('\n\n')
-      : '';
+      const cassationFormatted = reasoning.cassationBasis.length > 0
+        ? `\n\n🏛️ **قضاء محكمة النقض والدستورية المستقر في المسألة:**\n` +
+          reasoning.cassationBasis
+            .map(c => `• **${c.court} (${c.rulingNumber} لسنة ${c.judicialYear} - ${c.sessionDate})**:\n  «${c.principle}»`)
+            .join('\n\n')
+        : '';
 
-    const stepsFormatted = reasoning.recommendedSteps
-      .map((step, idx) => `${idx + 1}. ${step}`)
-      .join('\n');
+      const stepsFormatted = reasoning.recommendedSteps.length > 0
+        ? `\n\n📋 **الخلاصة والآثار القانونية المترتبة:**\n` +
+          reasoning.recommendedSteps.map((step, idx) => `${idx + 1}. ${step}`).join('\n')
+        : '';
 
-    const warningsFormatted = reasoning.risksAndWarnings.length > 0
-      ? `\n\n⚠️ **تنبيهات ومخاطر إجرائية يجب تداركها فوراً:**\n` +
-        reasoning.risksAndWarnings.map(w => `• ${w}`).join('\n')
-      : '';
+      return `أهلاً ومرحباً بحضرتك يا فندم في رحاب المشورة القضائية للمستشار عطيه الهلباوي.
 
-    return `أهلاً بحضرتك يا فندم. بعد التأمل الدقيق في الوقائع المعروضة، إليك التكييف القضائي والتأصيل التشريعي الحاكم وخطة التحرك الإجرائية:
-
-⚖️ **أولاً: التكييف القضائي للواقعة:**
+⚖️ **التكييف القانوني والدراسة التأصيلية للمسألة:**
 ${reasoning.characterization}
 
-📜 **ثانياً: السند التشريعي في القانون المصري:**
+📖 **البيان الفقهي والقضائي والتأصيلي:**
+${reasoning.detailedAnalysis}
 ${statutesFormatted}
 ${cassationFormatted}
-
-📋 **ثالثاً: خارطة التحرك الإجرائي والدفاع العملي:**
 ${stepsFormatted}
-${warningsFormatted}
 
-إذا كان بحوزتكم أية مستندات أو محاضر رسمية محررة، تفضلوا بإرفاقها أو بيان تواريخها لنحدد خطوة الطعن أو الدفاع بدقة متناهية.`;
+إذا كان لديكم أي استفسار تكميلي أو مسألة تطبيقية ترغبون في بحثها، فتفضلوا بطرحها وسأكون معكم خطوة بخطوة.`;
+    }
+
+    // 2. صياغة إجابة مباشرة ومخصصة لمسألة المستشير (دون تكرار نمطي أو قوالب عامة)
+    const sections: string[] = [];
+
+    // افتتاحية رصينة ومباشرة
+    sections.push(`أهلاً بحضرتك يا فندم في رحاب المشورة القضائية.`);
+
+    // الجواب المباشر والواضح في صميم المسألة (Direct Actionable Answer)
+    if (reasoning.directAnswer) {
+      sections.push(`💡 **الرأي القانوني والجواب المباشر في مسألتكم:**\n${reasoning.directAnswer}`);
+    }
+
+    // التكييف القضائي الدقيق
+    if (reasoning.characterization) {
+      sections.push(`⚖️ **التكييف القضائي السليم:**\n${reasoning.characterization}`);
+    }
+
+    // فلترة السند التشريعي لمنع إقحام نصوص القانون المدني العامة في غير موضعها
+    // مثل (المادة 147 العقد شريعة المتعاقدين، أو المادة 4 و 5 في التعسف العام) ما لم يكن النزاع تعاقدياً صريحاً
+    const strictlyRelevantStatutes = (reasoning.statutoryBasis || []).filter(s => {
+      const isGeneralCivil147 = s.articleNumber?.toString().includes('147') && s.text.includes('شريعة المتعاقدين');
+      const isGeneralCivil4_5 = (s.articleNumber?.toString().includes('4') || s.articleNumber?.toString().includes('5')) && s.text.includes('استعمل حقه');
+      return !(isGeneralCivil147 || isGeneralCivil4_5);
+    });
+
+    if (strictlyRelevantStatutes.length > 0) {
+      const statutesFormatted = strictlyRelevantStatutes
+        .map(s => `• **${s.officialReference}**:\n  «${s.text}»\n  *الأثر والتطبيق*: ${s.summary}`)
+        .join('\n\n');
+      sections.push(`📜 **السند التشريعي المباشر في القانون المصري:**\n${statutesFormatted}`);
+    }
+
+    // أحكام محكمة النقض المؤصلة المتطابقة
+    if (reasoning.cassationBasis && reasoning.cassationBasis.length > 0) {
+      const cassationFormatted = reasoning.cassationBasis
+        .map(c => `• **${c.court} (${c.rulingNumber} لسنة ${c.judicialYear} - ${c.sessionDate})**:\n  «${c.principle}»`)
+        .join('\n\n');
+      sections.push(`🏛️ **قضاء محكمة النقض المصرية المستقر في هذه الواقعة:**\n${cassationFormatted}`);
+    }
+
+    // خطوات التحرك الإجرائي والدفاع العملي المخصصة
+    if (reasoning.recommendedSteps && reasoning.recommendedSteps.length > 0) {
+      const stepsFormatted = reasoning.recommendedSteps
+        .map((step, idx) => `${idx + 1}. ${step}`)
+        .join('\n');
+      sections.push(`📋 **خطة التصرف والتحرك الإجرائي الموصى بها:**\n${stepsFormatted}`);
+    }
+
+    // المحاذير والمخاطر الإجرائية الحقيقية
+    if (reasoning.risksAndWarnings && reasoning.risksAndWarnings.length > 0) {
+      const warningsFormatted = reasoning.risksAndWarnings.map(w => `• ${w}`).join('\n');
+      sections.push(`⚠️ **تنبيهات ومخاطر إجرائية يجب مراعاتها:**\n${warningsFormatted}`);
+    }
+
+    sections.push(`إذا كانت لديكم تواريخ محددة للواقعة أو أوراق ومحاضر رسمية محررة، تفضلوا ببيانها لنحدد الميعاد الإجرائي وخطوة الدفاع بدقة تامة.`);
+
+    return sections.join('\n\n');
   }
 
   /**

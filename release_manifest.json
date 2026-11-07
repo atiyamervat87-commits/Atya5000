@@ -6,15 +6,15 @@
       "name": "ATTYA_LEGAL_MIND.zip",
       "description": "العقل المستقل: الكود والأوزان والبيانات والقاموس وحزمة التقييم المعيارية المستقلة",
       "parameters": 552704,
-      "size_mb": 49.85,
-      "sha256": "afcc7f29c3a3df8dfd4adc768b90ee2125e79b87579fd20942a3a28b58dcb64f",
+      "size_mb": 40.78,
+      "sha256": "41cc824bb7e9bd7e0f5b2a03909b9a24f9117e6a32fb3b3f3ab51455dcf9bb1a",
       "download_url": "/api/download/attya-legal-mind-zip"
     },
     {
       "name": "ATTYA_LEGAL_ADVISOR_MAGIC_MIND.zip",
       "description": "برنامج المستشار عطيه الهلباوي المطور بعد دمج العقل الجديد وخط المعالجة ثلاثي المراحل",
-      "size_mb": 55.7,
-      "sha256": "721a390f225fbf0903e2feb8fb36e76357716836d38356270098eb2fd5edef38",
+      "size_mb": 46.66,
+      "sha256": "0379279ddbfa536804cdbfc287f7f4d77eb03961d3e72bd636bd4c0f85f26b15",
       "download_url": "/api/download/attya-advisor-zip"
     }
   ]
