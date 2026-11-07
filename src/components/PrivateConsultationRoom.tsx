@@ -438,6 +438,7 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
         sender: 'counselor',
         text: data.reply,
         timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+        mindMetadata: data.mindMetadata,
       };
 
       setMessages((prev) => [...prev, counselorMessage]);
@@ -613,16 +614,17 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
             <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-lg sm:text-xl font-bold font-amiri text-[#F5E5BD]">
                 غرفة الاستشارة الخاصة والمشفرة
               </h2>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 font-mono font-bold">
-                مفعلة ومعتمدة ✓
+              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 font-mono font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                متصل بالعقل اللغوي المستقل (552K Decoder)
               </span>
             </div>
             <p className="text-[11px] sm:text-xs text-[#F5E5BD]/70 mt-0.5">
-              جلسة سرية مع المستشار عطيه الهلباوي • دعم الكاميرا المباشرة والصوت والمستندات
+              جلسة سرية مع المستشار عطيه الهلباوي • مدعومة بخط المعالجة ثلاثي المراحل والتحقق القضائي الصارم
             </p>
           </div>
         </div>
@@ -889,39 +891,55 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
                   </div>
                 )}
 
-                {/* Response Action Tools */}
+                {/* Response Action Tools & Mind Verification */}
                 {!isUser && (
-                  <div className="pt-3 mt-3 border-t border-[#D4AF37]/20 flex items-center justify-between gap-3 text-xs no-print">
-                    <span className="text-[10px] text-[#D4AF37]/80">
-                      استشارة قضائية سرية ومحمية
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleCopy(msg.text, msg.id)}
-                        className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#1f120e] hover:bg-[#3A241B] text-[#F5E5BD]/80 hover:text-[#F5E5BD] border border-[#D4AF37]/30 text-[11px] transition cursor-pointer"
-                        title="نسخ رد المستشار"
-                      >
-                        {copiedId === msg.id ? (
-                          <>
-                            <Check className="w-3 h-3 text-emerald-400" />
-                            <span className="text-emerald-400">تم النسخ</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3 h-3 text-[#D4AF37]" />
-                            <span>نسخ الرد</span>
-                          </>
-                        )}
-                      </button>
+                  <div className="pt-3 mt-3 border-t border-[#D4AF37]/20 space-y-2 no-print">
+                    {msg.mindMetadata?.governingStatutes && msg.mindMetadata.governingStatutes.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {msg.mindMetadata.governingStatutes.map((stat, idx) => (
+                          <span
+                            key={idx}
+                            className="text-[9.5px] px-2 py-0.5 rounded bg-[#1f120e] border border-[#D4AF37]/30 text-[#E7C779]"
+                          >
+                            مادة ({stat.article}) — {stat.law}
+                          </span>
+                        ))}
+                      </div>
+                    )}
 
-                      <button
-                        onClick={handlePrint}
-                        className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#1f120e] hover:bg-[#3A241B] text-[#F5E5BD]/80 hover:text-[#F5E5BD] border border-[#D4AF37]/30 text-[11px] transition cursor-pointer"
-                        title="طباعة هذا الرد"
-                      >
-                        <Printer className="w-3 h-3 text-[#D4AF37]" />
-                        <span>طباعة</span>
-                      </button>
+                    <div className="flex items-center justify-between gap-3 text-xs">
+                      <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-mono">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                        {msg.mindMetadata?.zeroHallucinationStatus || 'العقل اللغوي المستقل (جلسة خاصة مشفرة • صفر هلوسة)'}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleCopy(msg.text, msg.id)}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#1f120e] hover:bg-[#3A241B] text-[#F5E5BD]/80 hover:text-[#F5E5BD] border border-[#D4AF37]/30 text-[11px] transition cursor-pointer"
+                          title="نسخ رد المستشار"
+                        >
+                          {copiedId === msg.id ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span className="text-emerald-400">تم النسخ</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3 text-[#D4AF37]" />
+                              <span>نسخ الرد</span>
+                            </>
+                          )}
+                        </button>
+
+                        <button
+                          onClick={handlePrint}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#1f120e] hover:bg-[#3A241B] text-[#F5E5BD]/80 hover:text-[#F5E5BD] border border-[#D4AF37]/30 text-[11px] transition cursor-pointer"
+                          title="طباعة هذا الرد"
+                        >
+                          <Printer className="w-3 h-3 text-[#D4AF37]" />
+                          <span>طباعة</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}

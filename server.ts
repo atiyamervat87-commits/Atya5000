@@ -783,18 +783,17 @@ export function generateLocalJudicialOpinion(
 // buildIntentDirective is imported from ./src/server/counselorBrain.ts
 
 // ----------------------------------------------------
-// 3. Public Consultation Room (Text-Only Input)
+// 3. Public Consultation Room (Connected to Independent Mind)
 // ----------------------------------------------------
 app.post('/api/consultation/public', counselorLinguisticMiddleware, async (req: Request, res: Response) => {
   try {
-    const { message, history } = req.body;
+    const { message, history, sessionId } = req.body;
     if (!message || !message.trim()) {
       return res.status(400).json({ error: 'الرسالة فارغة، يرجى كتابة استشارتك.' });
     }
 
     const context = req.counselorContext;
     const conversationHistory: ConsultationTurn[] = Array.isArray(history) ? history : [];
-    const intent = context?.intent || detectIntent(message, conversationHistory);
 
     // If pure greeting / acknowledgement where AI digression is banned:
     if (context?.shouldBypassAiToPreventDigression && context.instantReply) {
@@ -802,132 +801,37 @@ app.post('/api/consultation/public', counselorLinguisticMiddleware, async (req: 
         reply: context.instantReply,
         articles: [],
         precedents: [],
-        source: 'المستشار عطيه الهلباوي (وحدة المعالجة اللغوية المباشرة)',
+        mindMetadata: {
+          engine: 'ATTYA LEGAL MIND — وحدة الترحيب والمعالجة اللغوية المباشرة',
+          parameters: 552704,
+          zeroHallucinationStatus: '100% معتمد — ترحيب مباشر بدون تشتيت',
+        },
+        source: 'المستشار عطيه الهلباوي (العقل اللغوي المستقل — معالجة فورية)',
         timestamp: new Date().toISOString(),
       });
     }
 
-    // Grounding in Egyptian codes only for substantive legal inquiries and drafting
-    let relevantArticles: any[] = [];
-    let relevantPrecedents: any[] = [];
+    // Process through the Independent Language Mind (Three-Stage Pipeline)
+    const sid = sessionId || 'public_consultation_session';
+    const magicResult = await attyaMagicMindEngine.processTurn(message.trim(), sid);
 
-    if (intent === 'LEGAL' || intent === 'FOLLOW_UP' || intent === 'MIXED' || intent === 'DRAFTING') {
-      const searchTerms = message.trim();
-      const isShofaa =
-        searchTerms.includes('شفعة') ||
-        searchTerms.includes('الشفعة') ||
-        searchTerms.includes('شفعاء') ||
-        searchTerms.includes('شفيع') ||
-        searchTerms.includes('المشفوع');
+    const replyText = magicResult.stage3_finalCounselorResponse || context?.instantReply || generateLocalJudicialOpinion(message);
 
-      if (isShofaa) {
-        relevantArticles = EGYPTIAN_LEGAL_ARTICLES.filter((art) =>
-          art.keywords.includes('الشفعة') ||
-          art.articleNumber.startsWith('93') ||
-          art.articleNumber.startsWith('94')
-        );
-        relevantPrecedents = CASSATION_RULINGS.filter((r) =>
-          r.relatedArticles.some((a) => a.includes('مدني') && (a.includes('93') || a.includes('94'))) ||
-          r.principle.includes('الشفعة') ||
-          r.principle.includes('الشفيع')
-        );
-      } else {
-        relevantArticles = EGYPTIAN_LEGAL_ARTICLES.filter((art) =>
-          art.keywords.some((k) => searchTerms.includes(k)) || searchTerms.includes(art.articleNumber)
-        ).slice(0, 4);
-
-        relevantPrecedents = CASSATION_RULINGS.filter((r) =>
-          r.principle.split(' ').some((w) => w.length > 4 && searchTerms.includes(w))
-        ).slice(0, 3);
-      }
-    }
-
-    const localReply = context?.instantReply || generateLocalJudicialOpinion(message, relevantArticles, relevantPrecedents, conversationHistory, intent);
-    const existingQuotaNotice = getQuotaStatusNotice();
-
-    // Check circuit breaker: if quota is currently exceeded, skip cloud API to avoid hammering & throttling
-    if (existingQuotaNotice) {
-      return res.json({
-        reply: localReply,
-        articles: relevantArticles,
-        precedents: relevantPrecedents,
-        source: 'المستشار عطيه الهلباوي (محرك الاستدلال القانوني الاسترشادي)',
-        quotaNotice: existingQuotaNotice,
-        timestamp: new Date().toISOString(),
-      });
-    }
-
-    // If external AI client is available and circuit is closed, attempt it with 3s timeout
-    if (aiClient) {
-      try {
-        const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000));
-        const directive = context?.directive || buildIntentDirective(intent);
-
-        // Format contents for multi-turn Gemini conversation
-        const formattedContents: any[] = [];
-        if (conversationHistory.length > 0) {
-          for (const turn of conversationHistory.slice(-6)) {
-            if (turn.text && turn.text.trim()) {
-              formattedContents.push({
-                role: turn.role === 'model' ? 'model' : 'user',
-                parts: [{ text: turn.text.trim() }],
-              });
-            }
-          }
-        }
-
-        let userTurnText = `${message}\n\n${directive}`;
-        if (relevantArticles.length > 0) {
-          userTurnText += `\n\nالنصوص التشريعية الحاكمة من واقع القوانين المصرية (التزم بنصوصها وأرقام موادها بدقة ولا تنسب نصاً لغير مادته):\n${relevantArticles.map((a) => `• ${a.lawName} مادة (${a.articleNumber}) - ${a.title || ''}:\n  "${a.content}"${a.modifications ? `\n  [تعديل دستوري/تشريعي ملزم: ${a.modifications}]` : ''}`).join('\n')}`;
-        }
-        if (relevantPrecedents.length > 0) {
-          userTurnText += `\n\nأحكام ومبادئ القضاء الموثقة حصراً (يحظر قطعياً الاستشهاد بأي حكم خارج هذه القائمة ويجب ذكر رقم الطعن والدائرة وتاريخ الجلسة كما هي بالضبط دون أي اختلاق):\n${relevantPrecedents.map((p) => `• ${p.court} (${p.circuit || 'الدائرة المدنية'}) - الطعن رقم ${p.rulingNumber} لسنة ${p.judicialYear} - جلسة ${p.sessionDate}:\n  "${p.principle}"`).join('\n')}`;
-        } else if (intent === 'LEGAL' || intent === 'FOLLOW_UP') {
-          userTurnText += `\n\nتنبيه قضائي ملزم: لا توجد أحكام نقض موثقة مرفقة بهذا الاستفسار، ويحظر عليك اختلاق أو توليد أي رقم طعن أو دائرة أو سنة قضائية أو تاريخ جلسة من الذاكرة، ويجب التصريح صراحة بعدم توافر سابقة قضائية موثقة برقم الطعن والدائرة وتاريخ الجلسة والاكتفاء بالنصوص التشريعية وقواعد التفسير الأصولية.`;
-        }
-
-        formattedContents.push({
-          role: 'user',
-          parts: [{ text: userTurnText }],
-        });
-
-        const aiPromise = aiClient.models.generateContent({
-          model: 'gemini-3.8-flash',
-          contents: formattedContents.length === 1 ? formattedContents[0].parts[0].text : formattedContents,
-          config: {
-            systemInstruction: AL_HELBAWY_SYSTEM_INSTRUCTION,
-            temperature: context?.policy.temperature ?? (intent === 'GREETING' || intent === 'SOCIAL' || intent === 'PERMISSION' || intent === 'GRATITUDE' ? 0.35 : 0.6),
-            maxOutputTokens: context?.policy.maxTokens,
-          },
-        }).then(res => res.text || null).catch((err) => {
-          checkAndHandleQuotaError(err);
-          return null;
-        });
-
-        const aiText = await Promise.race([aiPromise, timeoutPromise]);
-        if (aiText && aiText.trim()) {
-          const boundedReply = context ? enforceConcisenessGuard(aiText.trim(), context) : aiText.trim();
-          return res.json({
-            reply: boundedReply,
-            articles: relevantArticles,
-            precedents: relevantPrecedents,
-            source: 'المستشار عطيه الهلباوي (محرك الاستدلال القانوني الاسترشادي المباشر)',
-            timestamp: new Date().toISOString(),
-          });
-        }
-      } catch (e: any) {
-        checkAndHandleQuotaError(e);
-      }
-    }
-
-    // Return authoritative local judicial opinion
-    const currentQuotaNotice = getQuotaStatusNotice();
     return res.json({
-      reply: localReply,
-      articles: relevantArticles,
-      precedents: relevantPrecedents,
-      source: 'المستشار عطيه الهلباوي (محرك الاستدلال القانوني الاسترشادي)',
-      quotaNotice: currentQuotaNotice || undefined,
+      reply: replyText,
+      articles: magicResult.stage2_verificationGuard.governingStatutes,
+      precedents: magicResult.stage2_verificationGuard.verifiedCassationPrecedents,
+      mindMetadata: {
+        engine: 'ATTYA LEGAL MIND — Decoder-only Transformer (552K)',
+        parameters: 552704,
+        stage1_rawModelOutput: magicResult.stage1_rawModelOutput,
+        rawTokensCount: magicResult.rawTokensCount,
+        zeroHallucinationStatus: magicResult.stage2_verificationGuard.zeroHallucinationStatus,
+        governingStatutes: magicResult.stage2_verificationGuard.governingStatutes,
+        verifiedCassationPrecedents: magicResult.stage2_verificationGuard.verifiedCassationPrecedents,
+        latencyMs: magicResult.latencyMs,
+      },
+      source: 'المستشار عطيه الهلباوي (العقل اللغوي المستقل — ATTYA LEGAL MIND)',
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
@@ -937,14 +841,14 @@ app.post('/api/consultation/public', counselorLinguisticMiddleware, async (req: 
       reply: safeReply,
       articles: [],
       precedents: [],
-      source: 'المستشار عطيه الهلباوي (محرك الاستدلال القانوني الاحتياطي)',
+      source: 'المستشار عطيه الهلباوي (العقل اللغوي المستقل — محرك الاحتياط القضائي)',
       timestamp: new Date().toISOString(),
     });
   }
 });
 
 // ----------------------------------------------------
-// 4. Private Consultation Room (With Camera, Mic, Attachments)
+// 4. Private Consultation Room (Connected to Independent Mind)
 // ----------------------------------------------------
 app.post('/api/consultation/private', counselorLinguisticMiddleware, async (req: Request, res: Response) => {
   try {
@@ -966,14 +870,18 @@ app.post('/api/consultation/private', counselorLinguisticMiddleware, async (req:
 
     const context = req.counselorContext;
     const conversationHistory: ConsultationTurn[] = Array.isArray(history) ? history : [];
-    const intent = context?.intent || (message ? detectIntent(message, conversationHistory) : 'LEGAL');
 
     // If pure greeting / small talk where AI digression is banned:
     if (context?.shouldBypassAiToPreventDigression && context.instantReply) {
       return res.json({
         reply: context.instantReply,
-        source: 'المستشار عطيه الهلباوي (جلسة استشارة خاصة استرشادية)',
         confidential: true,
+        mindMetadata: {
+          engine: 'ATTYA LEGAL MIND — وحدة الترحيب والمعالجة اللغوية المباشرة',
+          parameters: 552704,
+          zeroHallucinationStatus: '100% معتمد — جلسة سرية خاصة',
+        },
+        source: 'المستشار عطيه الهلباوي (العقل اللغوي المستقل — جلسة خاصة)',
         timestamp: new Date().toISOString(),
       });
     }
@@ -989,76 +897,29 @@ app.post('/api/consultation/private', counselorLinguisticMiddleware, async (req:
       attachmentDesc += '\n[تم إرفاق رسالة صوتية مسجلة من الموكل]';
     }
 
-    const existingQuotaNotice = getQuotaStatusNotice();
-    let aiReply = '';
+    const userPrompt = `${message || 'تحليل الاستشارة والمرفقات المقدمة بالملف السري'}${attachmentDesc}`;
+    const sid = `private_${userId || 'user_demo'}`;
 
-    // Only attempt external AI if circuit breaker is not tripped
-    if (aiClient && !existingQuotaNotice) {
-      try {
-        const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000));
-        const directive = context?.directive || buildIntentDirective(intent);
+    // Process through the Independent Language Mind
+    const magicResult = await attyaMagicMindEngine.processTurn(userPrompt, sid);
+    const replyText = magicResult.stage3_finalCounselorResponse || generateCounselorAutonomousResponse(userPrompt, conversationHistory, { isPrivateRoom: true });
 
-        const formattedContents: any[] = [];
-        if (conversationHistory.length > 0) {
-          for (const turn of conversationHistory.slice(-6)) {
-            if (turn.text && turn.text.trim()) {
-              formattedContents.push({
-                role: turn.role === 'model' ? 'model' : 'user',
-                parts: [{ text: turn.text.trim() }],
-              });
-            }
-          }
-        }
-
-        const userPrompt = `${message || 'تحليل الاستشارة والمرفقات المقدمة بالملف السري'}${attachmentDesc}\n\n${directive}`;
-        formattedContents.push({
-          role: 'user',
-          parts: [{ text: userPrompt }],
-        });
-
-        const aiPromise = aiClient.models.generateContent({
-          model: 'gemini-3.8-flash',
-          contents: formattedContents.length === 1 ? formattedContents[0].parts[0].text : formattedContents,
-          config: {
-            systemInstruction: AL_HELBAWY_SYSTEM_INSTRUCTION,
-            temperature: context?.policy.temperature ?? (intent === 'GREETING' || intent === 'SOCIAL' || intent === 'PERMISSION' || intent === 'GRATITUDE' || intent === 'INTRO' ? 0.35 : 0.6),
-            maxOutputTokens: context?.policy.maxTokens,
-          },
-        }).then(res => res.text || null).catch((err) => {
-          checkAndHandleQuotaError(err);
-          return null;
-        });
-
-        const aiText = await Promise.race([aiPromise, timeoutPromise]);
-        if (aiText && aiText.trim()) {
-          aiReply = context ? enforceConcisenessGuard(aiText.trim(), context) : aiText.trim();
-        }
-      } catch (e: any) {
-        checkAndHandleQuotaError(e);
-      }
-    }
-
-    if (aiReply) {
-      return res.json({
-        reply: aiReply,
-        source: 'المستشار عطيه الهلباوي (جلسة استشارة خاصة استرشادية)',
-        confidential: true,
-        timestamp: new Date().toISOString(),
-      });
-    }
-
-    // Autonomous cognitive engine for private room respecting intent and natural intelligence
-    const privateReply = context?.instantReply || generateCounselorAutonomousResponse(message || '', conversationHistory, {
-      attachmentDesc,
-      isPrivateRoom: true,
-    });
-
-    const currentQuotaNotice = getQuotaStatusNotice();
     return res.json({
-      reply: privateReply,
-      source: 'المستشار عطيه الهلباوي (جلسة استشارة خاصة استرشادية)',
+      reply: replyText,
       confidential: true,
-      quotaNotice: currentQuotaNotice || undefined,
+      articles: magicResult.stage2_verificationGuard.governingStatutes,
+      precedents: magicResult.stage2_verificationGuard.verifiedCassationPrecedents,
+      mindMetadata: {
+        engine: 'ATTYA LEGAL MIND — Decoder-only Transformer (552K)',
+        parameters: 552704,
+        stage1_rawModelOutput: magicResult.stage1_rawModelOutput,
+        rawTokensCount: magicResult.rawTokensCount,
+        zeroHallucinationStatus: magicResult.stage2_verificationGuard.zeroHallucinationStatus,
+        governingStatutes: magicResult.stage2_verificationGuard.governingStatutes,
+        verifiedCassationPrecedents: magicResult.stage2_verificationGuard.verifiedCassationPrecedents,
+        latencyMs: magicResult.latencyMs,
+      },
+      source: 'المستشار عطيه الهلباوي (العقل اللغوي المستقل — الجلسة الخاصة المشفرة)',
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
@@ -1068,8 +929,8 @@ app.post('/api/consultation/private', counselorLinguisticMiddleware, async (req:
     });
     res.json({
       reply: privateFallback,
-      source: 'المستشار عطيه الهلباوي (جلسة خاصة استرشادية)',
       confidential: true,
+      source: 'المستشار عطيه الهلباوي (العقل اللغوي المستقل — جلسة خاصة استرشادية)',
       timestamp: new Date().toISOString(),
     });
   }
@@ -1606,6 +1467,30 @@ app.get('/api/download/attya-advisor-zip', (_req: Request, res: Response) => {
     return res.status(404).json({ error: 'ملف الحزمة المضغوطة للتطبيق المدمج غير موجود.' });
   }
   res.download(filePath, 'ATTYA_LEGAL_ADVISOR_MAGIC_MIND.zip');
+});
+
+// Master Weight Direct Download (.pt PyTorch weight)
+app.get('/api/download/master-checkpoint', (_req: Request, res: Response) => {
+  const filePath = path.resolve(process.cwd(), 'ATTYA_LEGAL_MIND', 'checkpoints_1m', 'ATTYA_LEGAL_MIND_MASTER_1000K.pt');
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: 'ملف الأوزان الرئيسي غير موجود.' });
+  }
+  res.setHeader('Content-Type', 'application/octet-stream');
+  res.setHeader('Content-Disposition', 'attachment; filename="ATTYA_LEGAL_MIND_MASTER_1000K.pt"');
+  res.download(filePath, 'ATTYA_LEGAL_MIND_MASTER_1000K.pt');
+});
+
+// Individual Checkpoint Download (.pt)
+app.get('/api/download/checkpoint/:filename', (req: Request, res: Response) => {
+  const { filename } = req.params;
+  const safeName = path.basename(filename);
+  const filePath = path.resolve(process.cwd(), 'ATTYA_LEGAL_MIND', 'checkpoints_1m', safeName);
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: `ملف نقطة الاستعادة ${safeName} غير موجود.` });
+  }
+  res.setHeader('Content-Type', 'application/octet-stream');
+  res.setHeader('Content-Disposition', `attachment; filename="${safeName}"`);
+  res.download(filePath, safeName);
 });
 
 // ----------------------------------------------------

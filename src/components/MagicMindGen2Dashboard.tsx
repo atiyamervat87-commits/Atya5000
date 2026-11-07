@@ -1123,21 +1123,21 @@ export const MagicMindGen2Dashboard: React.FC = () => {
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Standalone Package 1 */}
-            <div className="p-5 rounded-xl bg-[#1a0f0c] border border-[#D4AF37]/30 space-y-4 flex flex-col justify-between">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Standalone Master PyTorch Weight (.pt) */}
+            <div className="p-5 rounded-xl bg-[#1a0f0c] border-2 border-[#D4AF37] space-y-4 flex flex-col justify-between shadow-xl ring-1 ring-[#D4AF37]/50">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="px-2 py-0.5 rounded bg-[#D4AF37]/20 text-[#E7C779] font-mono text-[10px] font-bold">
-                    المشروع الأول (Standalone Engine)
+                  <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 font-mono text-[10px] font-bold border border-emerald-500/40">
+                    ملف الوزن الأصلي المدرب (.pt)
                   </span>
-                  <span className="text-[11px] text-[#22c55e] font-mono font-bold">0.86 MB</span>
+                  <span className="text-[11px] text-[#22c55e] font-mono font-bold">4.16 MB</span>
                 </div>
                 <h4 className="font-bold text-sm text-[#F5E5BD]">
-                  ATTYA_LEGAL_MIND.zip
+                  ATTYA_LEGAL_MIND_MASTER_1000K.pt
                 </h4>
                 <p className="text-xs text-[#F5E5BD]/70 leading-relaxed">
-                  مستودع الكود الكامل لنموذج Transformer المستقل (552,704 معلمات)، ويتضمن سكربت منهج المليون خطوة `train_1m_curriculum.py`، وسكربت `train_300k_steps.py`، والمعجم (545 رمزاً)، وقاعدة البيانات، وبيان بوابات الجودة `training_1m_manifest.json`.
+                  ملف الأوزان الثنائي الأصلي (PyTorch Binary Weights) لـ 1,000,000 خطوة عصبية و552,704 معلمات، مع مصفوفات التضمين وطبقات الانتباه ومنع الهلوسة، جاهز للتنزيل الفوري إلى هاتفك.
                 </p>
               </div>
 
@@ -1146,7 +1146,52 @@ export const MagicMindGen2Dashboard: React.FC = () => {
                   <div className="text-[#D4AF37] font-semibold mb-1 flex items-center justify-between">
                     <span>بصمة SHA-256:</span>
                     <button
-                      onClick={() => handleCopy('049d7986e46ea6eb1a0f52777df428a340afcaaab5539d45f4c0255f8baa301f', 'hash1')}
+                      onClick={() => handleCopy('0629a783ba0eb0805991700a922bae486da2a0c18f6161d1129934a9b91d74ee', 'hash_master_pt')}
+                      className="flex items-center gap-1 text-[#E7C779] hover:underline cursor-pointer"
+                    >
+                      {copiedHash === 'hash_master_pt' ? <Check className="w-3 h-3 text-[#22c55e]" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedHash === 'hash_master_pt' ? 'تم النسخ' : 'نسخ'}</span>
+                    </button>
+                  </div>
+                  <div className="font-mono text-[#F5E5BD]/80 break-all select-all text-[9.5px]">
+                    0629a783ba0eb0805991700a922bae486da2a0c18f6161d1129934a9b91d74ee
+                  </div>
+                </div>
+
+                <a
+                  href="/api/download/master-checkpoint"
+                  download="ATTYA_LEGAL_MIND_MASTER_1000K.pt"
+                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 via-[#D4AF37] to-amber-500 hover:brightness-110 text-[#1a0f0c] font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>تنزيل ملف الوزن (Download .PT)</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Standalone Package 1 (ZIP) */}
+            <div className="p-5 rounded-xl bg-[#1a0f0c] border border-[#D4AF37]/30 space-y-4 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="px-2 py-0.5 rounded bg-[#D4AF37]/20 text-[#E7C779] font-mono text-[10px] font-bold">
+                    المشروع الأول (Standalone Engine)
+                  </span>
+                  <span className="text-[11px] text-[#22c55e] font-mono font-bold">49.85 MB</span>
+                </div>
+                <h4 className="font-bold text-sm text-[#F5E5BD]">
+                  ATTYA_LEGAL_MIND.zip
+                </h4>
+                <p className="text-xs text-[#F5E5BD]/70 leading-relaxed">
+                  مستودع الكود الكامل لنموذج Transformer المستقل، ويتضمن جميع ملفات نقاط الاستعادة الأربعة (.pt)، وسكربت المليون خطوة، والمعجم (545 رمزاً)، والبيانات التدريبية لـ 600 ألف مثال (128M Token).
+                </p>
+              </div>
+
+              <div className="space-y-3 pt-2 border-t border-[#D4AF37]/20">
+                <div className="bg-[#2B1914] p-2.5 rounded-lg border border-[#D4AF37]/20 text-[10px]">
+                  <div className="text-[#D4AF37] font-semibold mb-1 flex items-center justify-between">
+                    <span>بصمة SHA-256:</span>
+                    <button
+                      onClick={() => handleCopy('afcc7f29c3a3df8dfd4adc768b90ee2125e79b87579fd20942a3a28b58dcb64f', 'hash1')}
                       className="flex items-center gap-1 text-[#E7C779] hover:underline cursor-pointer"
                     >
                       {copiedHash === 'hash1' ? <Check className="w-3 h-3 text-[#22c55e]" /> : <Copy className="w-3 h-3" />}
@@ -1154,7 +1199,7 @@ export const MagicMindGen2Dashboard: React.FC = () => {
                     </button>
                   </div>
                   <div className="font-mono text-[#F5E5BD]/80 break-all select-all text-[9.5px]">
-                    049d7986e46ea6eb1a0f52777df428a340afcaaab5539d45f4c0255f8baa301f
+                    afcc7f29c3a3df8dfd4adc768b90ee2125e79b87579fd20942a3a28b58dcb64f
                   </div>
                 </div>
 
@@ -1169,20 +1214,20 @@ export const MagicMindGen2Dashboard: React.FC = () => {
               </div>
             </div>
 
-            {/* Integrated Application Package 2 */}
+            {/* Integrated Application Package 2 (ZIP) */}
             <div className="p-5 rounded-xl bg-[#1a0f0c] border border-[#D4AF37]/30 space-y-4 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="px-2 py-0.5 rounded bg-[#D4AF37]/20 text-[#E7C779] font-mono text-[10px] font-bold">
-                    المشروع الثاني (Full Integrated Platform)
+                    المشروع الثاني (Full Platform)
                   </span>
-                  <span className="text-[11px] text-[#22c55e] font-mono font-bold">2.98 MB</span>
+                  <span className="text-[11px] text-[#22c55e] font-mono font-bold">55.70 MB</span>
                 </div>
                 <h4 className="font-bold text-sm text-[#F5E5BD]">
                   ATTYA_LEGAL_ADVISOR_MAGIC_MIND.zip
                 </h4>
                 <p className="text-xs text-[#F5E5BD]/70 leading-relaxed">
-                  تطبيق المنصة الملكية المتكامل للمستشار عطيه الهلباوي مع دمج خط أنابيب معالجة البيانات، واستوديو المليون خطوة والمراحل الأربعة، وجميع نقاط النهاية API.
+                  تطبيق المنصة الملكية المتكامل للمستشار عطيه الهلباوي مع دمج العقل اللغوي المستقل في الشات العام والخاص، وملفات الأوزان الكاملة.
                 </p>
               </div>
 
@@ -1191,7 +1236,7 @@ export const MagicMindGen2Dashboard: React.FC = () => {
                   <div className="text-[#D4AF37] font-semibold mb-1 flex items-center justify-between">
                     <span>بصمة SHA-256:</span>
                     <button
-                      onClick={() => handleCopy('82fba27239d5491e6c717a9139858d5b18034eb93ff013fcee5b62573daeda80', 'hash2')}
+                      onClick={() => handleCopy('721a390f225fbf0903e2feb8fb36e76357716836d38356270098eb2fd5edef38', 'hash2')}
                       className="flex items-center gap-1 text-[#E7C779] hover:underline cursor-pointer"
                     >
                       {copiedHash === 'hash2' ? <Check className="w-3 h-3 text-[#22c55e]" /> : <Copy className="w-3 h-3" />}
@@ -1199,7 +1244,7 @@ export const MagicMindGen2Dashboard: React.FC = () => {
                     </button>
                   </div>
                   <div className="font-mono text-[#F5E5BD]/80 break-all select-all text-[9.5px]">
-                    82fba27239d5491e6c717a9139858d5b18034eb93ff013fcee5b62573daeda80
+                    721a390f225fbf0903e2feb8fb36e76357716836d38356270098eb2fd5edef38
                   </div>
                 </div>
 
@@ -1209,7 +1254,7 @@ export const MagicMindGen2Dashboard: React.FC = () => {
                   className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] hover:brightness-110 text-[#2B1914] font-bold text-xs flex items-center justify-center gap-2 shadow-md transition cursor-pointer"
                 >
                   <Download className="w-4 h-4" />
-                  <span>تنزيل تطبيق المنصة المدمجة بالكامل (ZIP)</span>
+                  <span>تنزيل تطبيق المنصة المدمجة (ZIP)</span>
                 </a>
               </div>
             </div>

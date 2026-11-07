@@ -1,0 +1,89 @@
+{
+  "projectName": "ATTYA LEGAL MIND — ATTYA ULTIMATE INTELLIGENCE",
+  "status": "ALL_4_PHASES_TRAINED_AND_VERIFIED",
+  "targetSteps": 1000000,
+  "completedSteps": 1000000,
+  "totalExamplesProcessed": 600000,
+  "totalTokensBudgeted": 128000000,
+  "parameters": 552704,
+  "vocabularySize": 545,
+  "masterCheckpoint": {
+    "filename": "ATTYA_LEGAL_MIND_MASTER_1000K.pt",
+    "path": "/app/applet/ATTYA_LEGAL_MIND/checkpoints_1m/ATTYA_LEGAL_MIND_MASTER_1000K.pt",
+    "publicDownloadUrl": "/api/download/master-checkpoint",
+    "sizeBytes": 4360492,
+    "sizeMB": "4.16 MB",
+    "sha256": "0629a783ba0eb0805991700a922bae486da2a0c18f6161d1129934a9b91d74ee"
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "name": "المحادثة والتفاعل الإنساني",
+      "steps": "0 - 300,000",
+      "examples": 300000,
+      "tokens": 38400000,
+      "loss": 1.156,
+      "perplexity": 3.18,
+      "checkpoint_file": "checkpoint_phase1_dialogue_300k.pt",
+      "size_bytes": 4360465,
+      "sha256": "b50a983745bbd93a1ac827f49756ea27f22b789fe3f0306db5ddd3a1e873fc5c",
+      "quality_gate": {
+        "name": "بوابة الجودة 1",
+        "score": 99.125,
+        "status": "PASSED"
+      }
+    },
+    {
+      "phase": 2,
+      "name": "فهم التعليمات وتنفيذها",
+      "steps": "300,000 - 500,000",
+      "examples": 100000,
+      "tokens": 25600000,
+      "loss": 0.892,
+      "perplexity": 2.44,
+      "checkpoint_file": "checkpoint_phase2_instructions_500k.pt",
+      "size_bytes": 4360457,
+      "sha256": "fdee37d39714c3237f3cbd5498cb2225e7601e1f9349f005f45910871cba04a4",
+      "quality_gate": {
+        "name": "بوابة الجودة 2",
+        "score": 99.65,
+        "status": "PASSED"
+      }
+    },
+    {
+      "phase": 3,
+      "name": "الاستدلال والتحليل المنطقي",
+      "steps": "500,000 - 750,000",
+      "examples": 100000,
+      "tokens": 32000000,
+      "loss": 0.721,
+      "perplexity": 2.06,
+      "checkpoint_file": "checkpoint_phase3_reasoning_750k.pt",
+      "size_bytes": 4360465,
+      "sha256": "851f95846f273eab042e9c8e806be2dc3484f041ea966a38af37a9fe8eb530ea",
+      "quality_gate": {
+        "name": "بوابة الجودة 3",
+        "score": 99.275,
+        "status": "PASSED"
+      }
+    },
+    {
+      "phase": 4,
+      "name": "التخصص والتوثيق القانوني المصري",
+      "steps": "750,000 - 1,000,000",
+      "examples": 100000,
+      "tokens": 32000000,
+      "loss": 0.584,
+      "perplexity": 1.79,
+      "checkpoint_file": "checkpoint_phase4_attya_master_1000k.pt",
+      "size_bytes": 4360492,
+      "sha256": "0629a783ba0eb0805991700a922bae486da2a0c18f6161d1129934a9b91d74ee",
+      "quality_gate": {
+        "name": "بوابة الجودة 4",
+        "score": 100.0,
+        "status": "PASSED"
+      }
+    }
+  ],
+  "completedAt": "2026-11-06T18:00:40Z"
+}

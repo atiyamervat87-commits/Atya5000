@@ -430,6 +430,20 @@ export class AttyaMagicMindEngine {
   };
 
   public get1MCurriculumStatus() {
+    try {
+      const reportPath = path.resolve(process.cwd(), 'ATTYA_LEGAL_MIND', 'checkpoints_1m', 'curriculum_execution_report.json');
+      if (fs.existsSync(reportPath)) {
+        const raw = fs.readFileSync(reportPath, 'utf-8');
+        const report = JSON.parse(raw);
+        return {
+          ...this.curriculum1mState,
+          ...report,
+          executionReport: report
+        };
+      }
+    } catch (e) {
+      console.warn('[MagicMindEngine] Notice: Reading default curriculum state.');
+    }
     return this.curriculum1mState;
   }
 

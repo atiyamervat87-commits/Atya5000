@@ -147,6 +147,16 @@ export interface ChatMessage {
   }[];
   audioUrl?: string;
   photoUrl?: string;
+  mindMetadata?: {
+    engine?: string;
+    parameters?: number;
+    stage1_rawModelOutput?: string;
+    rawTokensCount?: number;
+    zeroHallucinationStatus?: string;
+    latencyMs?: number;
+    governingStatutes?: Array<{ article: string; law: string; title: string }>;
+    verifiedCassationPrecedents?: Array<{ ruling: string; principle: string }>;
+  };
 }
 
 export interface AuditLog {

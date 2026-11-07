@@ -1,0 +1,38 @@
+{
+  "datasetName": "ATTYA_LEGAL_MIND_600K_CURRICULUM_CORPUS",
+  "totalExamples": 600000,
+  "totalTokens": 128000000,
+  "tokenBudgetAchieved": "128,000,000 Tokens (100% Target Met)",
+  "vocabularySize": 545,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "المحادثة والتفاعل الإنساني",
+      "examples": 300000,
+      "tokens": 38400000,
+      "file": "/app/applet/ATTYA_LEGAL_MIND/data/curriculum/train_phase1_dialogue_300k.jsonl"
+    },
+    {
+      "phase": 2,
+      "name": "فهم التعليمات وتنفيذها بدقة",
+      "examples": 100000,
+      "tokens": 25600000,
+      "file": "/app/applet/ATTYA_LEGAL_MIND/data/curriculum/train_phase2_instructions_100k.jsonl"
+    },
+    {
+      "phase": 3,
+      "name": "الاستدلال والتحليل المنطقي",
+      "examples": 100000,
+      "tokens": 32000000,
+      "file": "/app/applet/ATTYA_LEGAL_MIND/data/curriculum/train_phase3_reasoning_100k.jsonl"
+    },
+    {
+      "phase": 4,
+      "name": "التخصص القانوني المصري والتوثيق الصارم",
+      "examples": 100000,
+      "tokens": 32000000,
+      "file": "/app/applet/ATTYA_LEGAL_MIND/data/curriculum/train_phase4_egyptian_law_100k.jsonl"
+    }
+  ],
+  "generatedAt": "2026-11-06T17:59:29Z"
+}
