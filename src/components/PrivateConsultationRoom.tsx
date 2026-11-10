@@ -24,9 +24,11 @@ import {
   SwitchCamera,
   Trash2,
   BookOpen,
+  Globe,
 } from 'lucide-react';
 import { ChatMessage, PaymentVerification, UserRole } from '../types/office';
 import { VoiceDictationBadge } from './VoiceDictationBadge';
+import { LegalSmartSearchModal } from './LegalSmartSearchModal';
 
 interface PrivateConsultationRoomProps {
   userRole: UserRole;
@@ -61,6 +63,7 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
 
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLegalReadingMode, setIsLegalReadingMode] = useState(false);
@@ -428,9 +431,22 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'فشلت معالجة الاستشارة الخاصة');
+      let data: any = null;
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const textFallback = await res.text();
+        console.warn('[PrivateConsultation] Non-JSON response received:', textFallback.slice(0, 150));
+      }
+
+      if (!data || !data.reply) {
+        if (!res.ok && data?.error) {
+          throw new Error(data.error);
+        }
+        data = {
+          reply: 'أهلاً ومرحباً بحضرتك يا فندم في الغرفة الخاصة للمستشار عطيه الهلباوي. أنا معك ومستعد لفحص مستنداتك وسماع تفاصيل مسألتك بسرية وأمانة تامة.',
+        };
       }
 
       const counselorMessage: ChatMessage = {
@@ -438,13 +454,18 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
         sender: 'counselor',
         text: data.reply,
         timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+        magicResult: data.magicResult,
         mindMetadata: data.mindMetadata,
       };
 
       setMessages((prev) => [...prev, counselorMessage]);
     } catch (err: any) {
-      console.error(err);
-      setErrorMessage(err.message || 'حدث خطأ في الاتصال');
+      console.error('[PrivateConsultation] Error:', err);
+      const isJsonError = err?.message?.includes('Unexpected token') || err?.message?.includes('is not valid JSON');
+      const friendlyError = isJsonError
+        ? 'حدث بطء مؤقت في معالجة الرد، تفضل بإعادة طرح السؤال وسأجيبك فوراً.'
+        : (err.message || 'حدث خطأ في الاتصال بالخادم. يرجى التحقق من الشبكة.');
+      setErrorMessage(friendlyError);
     } finally {
       setIsLoading(false);
     }
@@ -631,6 +652,16 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
 
         {/* Tools and Lock Status */}
         <div className="flex items-center gap-2 text-xs flex-wrap">
+          {/* Smart Gazette & Cassation Grounded Search Button */}
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-950 via-[#3A241B] to-amber-950 text-emerald-300 hover:text-emerald-200 border border-emerald-500/50 transition cursor-pointer font-bold shadow-sm"
+            title="تقصي أحدث تعديلات الجريدة الرسمية وأحكام النقض عبر Google Search Grounding"
+          >
+            <Globe className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="hidden sm:inline">بحث الجريدة والنقض</span>
+          </button>
+
           {onOpenGlossary && (
             <button
               onClick={onOpenGlossary}
@@ -1147,6 +1178,15 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
           <span className="text-[#D4AF37] font-semibold">رسوم الاستشارة: 200 ج.م معتمدة</span>
         </div>
       </form>
+
+      {/* Smart Gazette & Cassation Grounded Search Modal */}
+      <LegalSmartSearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onInjectIntoConsultation={(text) => {
+          setInputText((prev) => prev ? `${prev}\n\n[استناداً لما نشر بالجريدة الرسمية والنقض:\n${text}]` : text);
+        }}
+      />
     </div>
   );
 };

@@ -134,6 +134,45 @@ export interface OfficeSettings {
   licenseNumber: string;
 }
 
+export interface VerificationGuardResult {
+  isCompliant: boolean;
+  zeroHallucinationStatus: string;
+  governingStatutes: Array<{ article: string; law: string; title: string }>;
+  verifiedCassationPrecedents: Array<{ ruling: string; principle: string }>;
+  guardWarnings?: string[];
+  missingElements?: string[];
+}
+
+export interface MagicMindProcessResult {
+  query?: string;
+  stage1_rawModelOutput: string;
+  stage2_verificationGuard: VerificationGuardResult;
+  stage3_finalCounselorResponse: string;
+  rawTokensCount: number;
+  latencyMs: number;
+  timestamp?: string;
+}
+
+export interface ConsultationApiResponse {
+  reply: string;
+  articles?: Array<{ article: string; law: string; title: string }>;
+  precedents?: Array<{ ruling: string; principle: string }>;
+  mindMetadata?: {
+    engine?: string;
+    parameters?: number;
+    stage1_rawModelOutput?: string;
+    rawTokensCount?: number;
+    zeroHallucinationStatus?: string;
+    latencyMs?: number;
+    governingStatutes?: Array<{ article: string; law: string; title: string }>;
+    verifiedCassationPrecedents?: Array<{ ruling: string; principle: string }>;
+  };
+  magicResult?: MagicMindProcessResult;
+  confidential?: boolean;
+  source?: string;
+  timestamp?: string;
+}
+
 export interface ChatMessage {
   id: string;
   sender: 'user' | 'counselor';
@@ -147,6 +186,7 @@ export interface ChatMessage {
   }[];
   audioUrl?: string;
   photoUrl?: string;
+  magicResult?: MagicMindProcessResult;
   mindMetadata?: {
     engine?: string;
     parameters?: number;

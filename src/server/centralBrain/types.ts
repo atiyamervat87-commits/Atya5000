@@ -119,6 +119,7 @@ export interface ReasoningResult {
   isConceptualOrHistorical?: boolean;
   detailedAnalysis?: string;
   customAdvice?: string;
+  userRequestedLegislativeExplanation?: boolean;
 }
 
 export interface BrainEngineResponse {

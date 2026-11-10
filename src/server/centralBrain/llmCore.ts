@@ -1,6 +1,6 @@
 /**
  * ABQARYNO CENTRAL BRAIN — LLM CORE
- * محرك الربط بالنموذج اللغوي الكبير (Gemini 2.5 Flash عبر @google/genai)
+ * محرك الربط بالنموذج اللغوي الكبير (Gemini 3.8 Flash عبر @google/genai)
  * مع إدارة الاتصال والحصص ومفاتيح API المعرفة من المنصة
  */
 
@@ -30,7 +30,7 @@ export class CentralBrainLLMCore {
         apiKey: this.currentApiKey,
         httpOptions: {
           headers: {
-            'User-Agent': 'aistudio-abqaryno-central-brain',
+            'User-Agent': 'aistudio-build',
           },
         },
       });
@@ -67,7 +67,7 @@ export class CentralBrainLLMCore {
     const start = Date.now();
     try {
       const response = await this.aiClient.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3.8-flash',
         contents: 'قل كلمة واحدة فقط: متصل',
       });
       const latencyMs = Date.now() - start;
@@ -75,7 +75,7 @@ export class CentralBrainLLMCore {
       return {
         success: true,
         latencyMs,
-        message: `تم التحقق بنجاح من اتصال النموذج اللغوي السحابي (Gemini 2.5 Flash). زمن الاستجابة: ${latencyMs}ms. الرد: ${text.trim()}`,
+        message: `تم التحقق بنجاح من اتصال النموذج اللغوي السحابي (Gemini 3.8 Flash). زمن الاستجابة: ${latencyMs}ms. الرد: ${text.trim()}`,
       };
     } catch (err: any) {
       return {
@@ -87,7 +87,7 @@ export class CentralBrainLLMCore {
   }
 
   /**
-   * توليد استجابة لغوية ذكية باستخدام Gemini 2.5 Flash
+   * توليد استجابة لغوية ذكية باستخدام Gemini 3.8 Flash مع مهلة أمان قصوى
    */
   public async generateTurn(
     userMessage: string,
@@ -99,16 +99,29 @@ export class CentralBrainLLMCore {
     }
 
     try {
-      // إعداد سجل المحادثة بتنسيق متعدد الأدوار
-      const contents: Array<{ role: 'user' | 'model'; parts: Array<{ text: string }> }> = [];
+      // إعداد سجل المحادثة بتنسيق متعدد الأدوار مع التحقق الصارم من تناوب الأدوار (user -> model)
+      const sanitizedContents: Array<{ role: 'user' | 'model'; parts: Array<{ text: string }> }> = [];
+      let expectedRole: 'user' | 'model' = 'user';
 
-      // إضافة آخر 10 أدوار فقط لترشيد التوكنز والحفاظ على السياق
-      const recentTurns = history.slice(-10);
+      // فحص آخر 8 أدوار مع ضمان عدم تكرار دورين متتاليين لنفس الطرف
+      const recentTurns = (history || []).slice(-8);
       for (const t of recentTurns) {
-        contents.push({
-          role: t.role === 'model' ? 'model' : 'user',
-          parts: [{ text: t.text }],
-        });
+        const text = (t.text || '').trim();
+        if (!text) continue;
+        const role: 'user' | 'model' = t.role === 'model' ? 'model' : 'user';
+
+        if (role === expectedRole) {
+          sanitizedContents.push({
+            role,
+            parts: [{ text }],
+          });
+          expectedRole = expectedRole === 'user' ? 'model' : 'user';
+        }
+      }
+
+      // إذا انتهى السجل المحفوظ بدور user، نحذفه لكي يحل محله prompt المستخدم الحالي بالتوجيه الملزم
+      if (sanitizedContents.length > 0 && sanitizedContents[sanitizedContents.length - 1].role === 'user') {
+        sanitizedContents.pop();
       }
 
       // توجيه إضافي محدد للنية الحالية إذا وجد
@@ -117,20 +130,24 @@ export class CentralBrainLLMCore {
         finalPrompt = `${userMessage}\n\n[توجيه قضائي داخلي ملزم للعقل]: ${customDirective}`;
       }
 
-      contents.push({
+      sanitizedContents.push({
         role: 'user',
         parts: [{ text: finalPrompt }],
       });
 
-      const response = await this.aiClient.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents,
-        config: {
-          systemInstruction: AL_HELBAWY_SYSTEM_INSTRUCTION,
-          temperature: 0.3,
-          maxOutputTokens: 2500,
-        },
-      });
+      // مهلة أمان قصوى 10 ثوانٍ لمنع أي تعليق على اتصال السحابة
+      const response = await Promise.race([
+        this.aiClient.models.generateContent({
+          model: 'gemini-3.8-flash',
+          contents: sanitizedContents,
+          config: {
+            systemInstruction: AL_HELBAWY_SYSTEM_INSTRUCTION,
+          },
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('LLM_GENERATION_TIMEOUT')), 10000)
+        ),
+      ]);
 
       return response.text || null;
     } catch (err: any) {
@@ -139,6 +156,8 @@ export class CentralBrainLLMCore {
         this.isQuotaExceeded = true;
         this.quotaResetTime = Date.now() + 60 * 1000;
         console.warn('[LLMCore] Gemini Quota hit. Fallback to Autonomous Engine active for 60s.');
+      } else if (errMsg.includes('LLM_GENERATION_TIMEOUT')) {
+        console.warn('[LLMCore] Gemini call timed out after 10s. Seamlessly falling back to Autonomous Engine.');
       } else {
         console.error('[LLMCore] Gemini generation failed:', err);
       }

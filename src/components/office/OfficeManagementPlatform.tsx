@@ -32,13 +32,16 @@ import {
   GitMerge,
   BarChart3,
   PieChart,
+  Globe,
 } from 'lucide-react';
 import { LegalIndexDisplay } from './LegalIndexDisplay';
 import { EgyptianLawsIndex } from './EgyptianLawsIndex';
 import { SmartContractLibrary } from './SmartContractLibrary';
 import { SubscriptionSettings } from './SubscriptionSettings';
 import { CentralBrainTrainer } from './CentralBrainTrainer';
+import { RoyalErrorBoundary } from '../RoyalErrorBoundary';
 import { LegalDataPipelineStudio } from './LegalDataPipelineStudio';
+import { LegalSmartSearchModal } from '../LegalSmartSearchModal';
 import { VisualCasesAnalyticsDashboard } from './VisualCasesAnalyticsDashboard';
 import {
   Client,
@@ -83,6 +86,7 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
   const [reportQueryInput, setReportQueryInput] = useState('تقرير الأتعاب والمصروفات والتحصيل');
   const [smartReportResult, setSmartReportResult] = useState<any>(null);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [showSmartSearch, setShowSmartSearch] = useState(false);
 
   // Modals & Forms
   const [showAddClientModal, setShowAddClientModal] = useState(false);
@@ -504,6 +508,15 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
           >
             <GitMerge className="w-3.5 h-3.5 text-emerald-400" />
             <span>خط أنابيب البيانات القانونية (8 مراحل)</span>
+          </button>
+
+          <button
+            onClick={() => setShowSmartSearch(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-teal-950 via-[#3A241B] to-emerald-950/70 hover:from-teal-900 text-teal-300 border border-teal-500/50 font-bold transition cursor-pointer shadow-sm"
+            title="تقصي أحكام النقض والتعديلات التشريعية المنشورة بالجريدة الرسمية عبر Google Grounding"
+          >
+            <Globe className="w-3.5 h-3.5 text-teal-400" />
+            <span>بحث الجريدة الرسمية والنقض (Grounded)</span>
           </button>
 
           <button
@@ -1587,7 +1600,9 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
 
           {/* SECTION: CENTRAL COGNITIVE BRAIN & LLM TRAINING STUDIO */}
           {activeSection === 'central_brain' && (
-            <CentralBrainTrainer />
+            <RoyalErrorBoundary fallbackTitle="استوديو تدريب وضبط العقل المركزي">
+              <CentralBrainTrainer />
+            </RoyalErrorBoundary>
           )}
 
           {/* SECTION: SUBSCRIPTION & ACCOUNT PLAN */}
@@ -1959,6 +1974,12 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
           </form>
         </div>
       )}
+
+      {/* Google Search Grounding for Official Gazette & Cassation Modal */}
+      <LegalSmartSearchModal
+        isOpen={showSmartSearch}
+        onClose={() => setShowSmartSearch(false)}
+      />
     </div>
   );
 };

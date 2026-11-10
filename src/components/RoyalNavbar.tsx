@@ -12,17 +12,20 @@ import {
   CheckCircle2,
   Crown,
   BookOpen,
+  Globe,
+  History,
 } from 'lucide-react';
 import { UserRole } from '../types/office';
 
 interface RoyalNavbarProps {
-  currentScreen: 'home' | 'public_consultation' | 'private_consultation' | 'office_management';
-  setCurrentScreen: (screen: 'home' | 'public_consultation' | 'private_consultation' | 'office_management') => void;
+  currentScreen: 'home' | 'public_consultation' | 'private_consultation' | 'office_management' | 'legal_history';
+  setCurrentScreen: (screen: 'home' | 'public_consultation' | 'private_consultation' | 'office_management' | 'legal_history') => void;
   userRole: UserRole;
   setUserRole: (role: UserRole) => void;
   onOpenCharter: () => void;
   onOpenAndroidModal: () => void;
   onOpenGlossary?: () => void;
+  onOpenSmartSearch?: () => void;
 }
 
 export const RoyalNavbar: React.FC<RoyalNavbarProps> = ({
@@ -33,6 +36,7 @@ export const RoyalNavbar: React.FC<RoyalNavbarProps> = ({
   onOpenCharter,
   onOpenAndroidModal,
   onOpenGlossary,
+  onOpenSmartSearch,
 }) => {
   return (
     <header className="sticky top-0 z-40 bg-[#2B1914]/95 border-b border-[#D4AF37]/30 backdrop-blur-md shadow-lg shadow-black/40">
@@ -101,6 +105,18 @@ export const RoyalNavbar: React.FC<RoyalNavbarProps> = ({
             <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
             <span>شهر مجاني (نشط ✓)</span>
           </button>
+
+          {/* Smart Legal Grounded Search Button */}
+          {onOpenSmartSearch && (
+            <button
+              onClick={onOpenSmartSearch}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-950 via-[#2B1914] to-amber-950 text-emerald-300 hover:text-emerald-200 border border-emerald-500/50 text-xs font-bold transition cursor-pointer shadow-sm shadow-emerald-950/40"
+              title="بحث ذكي في الجريدة الرسمية وأحكام محكمة النقض الحديثة عبر Google Grounding"
+            >
+              <Globe className="w-3.5 h-3.5 text-emerald-400" />
+              <span>الجريدة الرسمية والنقض (بحث ذكي)</span>
+            </button>
+          )}
 
           {/* Legal Glossary Button */}
           {onOpenGlossary && (
@@ -183,6 +199,18 @@ export const RoyalNavbar: React.FC<RoyalNavbarProps> = ({
           >
             <Briefcase className="w-4 h-4" />
             <span>الوحدة الثالثة: برنامج إدارة المحاماة</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentScreen('legal_history')}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap ${
+              currentScreen === 'legal_history'
+                ? 'bg-[#D4AF37] text-[#2B1914] shadow-md shadow-black/40'
+                : 'text-[#F5E5BD]/75 hover:bg-[#3A241B] hover:text-[#F5E5BD]'
+            }`}
+          >
+            <History className="w-4 h-4" />
+            <span>سجل القضايا والمسودات (Legal History)</span>
           </button>
         </nav>
       </div>

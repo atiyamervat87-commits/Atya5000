@@ -243,12 +243,16 @@ export class CentralBrainIntentEngine {
       };
     }
 
-    // 7. حديث خاص أو شخصي بعيد عن التقاضي
-    const confidentialKeywords = ['حاجه خاصه', 'حاجه شخصيه', 'موضوع خاص', 'موضوع شخصي', 'فضفضه', 'بعيد عن القانون', 'مش قانون', 'بيني وبينك'];
+    // 7. حديث خاص أو شخصي أو نداء إنساني وطلب مساعدة بعيداً عن النزاع
+    const confidentialKeywords = [
+      'حاجه خاصه', 'حاجه شخصيه', 'موضوع خاص', 'موضوع شخصي', 'فضفضه', 'بعيد عن القانون',
+      'مش قانون', 'بيني وبينك', 'محتاجك', 'محتاج مساعدتك', 'عايزك تساعدني', 'عاوزك تساعدني',
+      'محتاج مساعده', 'محتاج مساعدة', 'الحقني', 'ساعدني', 'ورطه', 'ورطة', 'محتار', 'متضايق', 'مش عارف اعمل ايه'
+    ];
     if (confidentialKeywords.some(k => normalized.includes(k))) {
       return {
         intent: 'CONFIDENTIAL_PERSONAL',
-        confidence: 0.93,
+        confidence: 0.95,
         normalizedText: normalized,
         extractedEntities: {},
         requiresClarification: false,

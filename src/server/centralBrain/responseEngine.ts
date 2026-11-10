@@ -11,6 +11,7 @@ import {
   ContractClause,
 } from './types.ts';
 import { CentralBrainDocumentEngine } from './documentEngine.ts';
+import { multilingualCounselorEngine } from './multilingualEngine.ts';
 
 export class CentralBrainResponseEngine {
   private documentEngine: CentralBrainDocumentEngine;
@@ -67,7 +68,7 @@ ${changeSummary}
   public formatLegalInquiryResponse(reasoning: ReasoningResult): string {
     // 1. معالجة الاستفسارات الفقهية المقارنة والمسائل التوثيقية والتاريخية القضائية
     if (reasoning.isConceptualOrHistorical && reasoning.detailedAnalysis) {
-      const statutesFormatted = reasoning.statutoryBasis.length > 0
+      const statutesFormatted = (reasoning.userRequestedLegislativeExplanation && reasoning.statutoryBasis && reasoning.statutoryBasis.length > 0)
         ? `\n\n📜 **السند التشريعي والتأصيل القانوني:**\n` +
           reasoning.statutoryBasis
             .map(s => `• **${s.officialReference}**:\n  «${s.text}»\n  *الأثر والتطبيق*: ${s.summary}`)
@@ -116,19 +117,20 @@ ${stepsFormatted}
       sections.push(`⚖️ **التكييف القضائي السليم:**\n${reasoning.characterization}`);
     }
 
-    // فلترة السند التشريعي لمنع إقحام نصوص القانون المدني العامة في غير موضعها
-    // مثل (المادة 147 العقد شريعة المتعاقدين، أو المادة 4 و 5 في التعسف العام) ما لم يكن النزاع تعاقدياً صريحاً
-    const strictlyRelevantStatutes = (reasoning.statutoryBasis || []).filter(s => {
-      const isGeneralCivil147 = s.articleNumber?.toString().includes('147') && s.text.includes('شريعة المتعاقدين');
-      const isGeneralCivil4_5 = (s.articleNumber?.toString().includes('4') || s.articleNumber?.toString().includes('5')) && s.text.includes('استعمل حقه');
-      return !(isGeneralCivil147 || isGeneralCivil4_5);
-    });
+    // منطق شرطي صارم: منع إدراج مقتطفات من القانون المدني أو نصوص عامة إلا إذا طلب المستخدم صراحة 'شرحاً تشريعياً' للمسألة
+    if (reasoning.userRequestedLegislativeExplanation && reasoning.statutoryBasis && reasoning.statutoryBasis.length > 0) {
+      const strictlyRelevantStatutes = reasoning.statutoryBasis.filter(s => {
+        const isGeneralCivil147 = s.articleNumber?.toString().includes('147') && s.text.includes('شريعة المتعاقدين');
+        const isGeneralCivil4_5 = (s.articleNumber?.toString().includes('4') || s.articleNumber?.toString().includes('5')) && s.text.includes('استعمل حقه');
+        return !(isGeneralCivil147 || isGeneralCivil4_5);
+      });
 
-    if (strictlyRelevantStatutes.length > 0) {
-      const statutesFormatted = strictlyRelevantStatutes
-        .map(s => `• **${s.officialReference}**:\n  «${s.text}»\n  *الأثر والتطبيق*: ${s.summary}`)
-        .join('\n\n');
-      sections.push(`📜 **السند التشريعي المباشر في القانون المصري:**\n${statutesFormatted}`);
+      if (strictlyRelevantStatutes.length > 0) {
+        const statutesFormatted = strictlyRelevantStatutes
+          .map(s => `• **${s.officialReference}**:\n  «${s.text}»\n  *الأثر والتطبيق*: ${s.summary}`)
+          .join('\n\n');
+        sections.push(`📜 **السند التشريعي المباشر في القانون المصري:**\n${statutesFormatted}`);
+      }
     }
 
     // أحكام محكمة النقض المؤصلة المتطابقة
@@ -174,6 +176,22 @@ ${stepsFormatted}
 شرف عظيم وكبير جداً، وأسأل الله أن يتمم بخير ويجعل أيامكم كلها أفراحاً ومسرات، ويسعدني ويشرفني دائماً مشاركتكم هذه المناسبات الطيبة المباركة.`;
 
       case 'CONFIDENTIAL_PERSONAL':
+        if (
+          message.includes('محتاجك') ||
+          message.includes('مساعدتك') ||
+          message.includes('مساعدة') ||
+          message.includes('مساعده') ||
+          message.includes('ساعدني') ||
+          message.includes('الحقني') ||
+          message.includes('ورطة') ||
+          message.includes('ورطه') ||
+          message.includes('محتار') ||
+          message.includes('متضايق')
+        ) {
+          return `أهلاً ومرحباً بحضرتك يا فندم.. أنا معاك وتحت أمرك بكل اهتمام وأمانة.
+
+خير إن شاء الله؟ احكِ لي إيه الموضوع أو الموقف اللي شاغل بالك، وسواء كانت مسألة قانونية محتاجة تكييف وحفظ حقوق، أو استشارة عامة، هكون معاك خطوة بخطوة للوصول للحل السليم وصيانة حقك وتطمين خاطرك.`;
+        }
         return `على الرحب والسعة وبكل أمانة وأخوة؛ اعتبرني أخاً كبيراً لك ومستودع سرك الأمين.
 
 كافة ما يدور بيننا محاط بقدسية تامة وسرية مهنية وإنسانية مطلقة. تفضل بما في صدرك، وكلي آذان صاغية وقلب مفتوح.`;
@@ -198,8 +216,11 @@ ${stepsFormatted}
 
 نحن نلتزم بالأمانة القضائية الصارمة ولا نعتمد سوى النصوص والأحكام المقيدة رسمياً في مضابط الجريدة الرسمية وأحكام النقض والدستورية العليا.`;
 
+      case 'GENERAL_CONVERSATION':
       default:
-        return `أهلاً ومرحباً بحضرتكم يا فندم في رحاب المستشار عطيه الهلباوي. تفضلوا بطرح استفساركم أو مسألتكم وسأقدم لكم التكييف القضائي السليم والحل العملي المباشر.`;
+        return `أهلاً ومرحباً بحضرتكم يا فندم في محراب المستشار عطيه الهلباوي.
+
+أنا في خدمتكم وتحت أمركم في أي وقت؛ تفضلوا بطرح استفساركم أو مسألتكم وسأكون عوناً وسنداً لكم بإذن الله.`;
     }
   }
 }

@@ -13,6 +13,7 @@ import { CentralBrainKnowledgeEngine } from './knowledgeEngine.ts';
 import { CentralBrainDocumentEngine } from './documentEngine.ts';
 import { CentralBrainResponseEngine } from './responseEngine.ts';
 import { CentralBrainEvaluationEngine } from './evaluationEngine.ts';
+import { multilingualCounselorEngine } from './multilingualEngine.ts';
 import {
   BrainEngineResponse,
   BrainIntentType,
@@ -166,11 +167,59 @@ export class AbqarynoCentralBrainEngine {
         }
       }
 
-      // إذا لم يتوفر Gemini، يعمل محرك الاستدلال الذاتي المتقدم فوراً
+      // إذا لم يتوفر Gemini، يعمل محرك الاستدلال واللغات واللهجات الذاتي المتقدم فوراً
       if (!responseText) {
-        const reasoning = this.reasoningEngine.analyzeIssue(rawMessage);
-        responseText = this.responseEngine.formatLegalInquiryResponse(reasoning);
-        sourceEngine = 'autonomous_reasoning_core';
+        const cleanMsg = rawMessage.trim();
+        const isPureBareGreeting =
+          cleanMsg === 'مرحبا' || cleanMsg === 'أهلا' || cleanMsg === 'اهلا' ||
+          cleanMsg === 'سلام' || cleanMsg === 'السلام عليكم' || cleanMsg === 'صباح الخير' ||
+          cleanMsg === 'مساء الخير' || cleanMsg === 'الو' || cleanMsg === 'يا هلا' ||
+          (cleanMsg.length < 6 && !cleanMsg.includes('؟') && !cleanMsg.includes('?'));
+
+        if (intent === 'GENERAL_CONVERSATION' && isPureBareGreeting) {
+          responseText = this.responseEngine.formatSocialResponse('GENERAL_CONVERSATION', rawMessage);
+          sourceEngine = 'autonomous_reasoning_core';
+        } else {
+          // فحص اللغة واللهجة وطبيعة المسألة عبر محرك اللغات واللهجات العالمية
+          const dialectAnalysis = multilingualCounselorEngine.analyzeLanguageAndDialect(cleanMsg);
+
+          if (
+            dialectAnalysis.language !== 'ar_standard' ||
+            dialectAnalysis.isEverydayLifeQuery ||
+            dialectAnalysis.isMaritalOrFamily ||
+            dialectAnalysis.isFinancialDilemma ||
+            dialectAnalysis.isSeekingAdvice ||
+            intent === 'GENERAL_CONVERSATION'
+          ) {
+            responseText = multilingualCounselorEngine.generateResponse(cleanMsg);
+            sourceEngine = 'autonomous_reasoning_core';
+          } else {
+            const reasoning = this.reasoningEngine.analyzeIssue(rawMessage);
+            const lowerRaw = rawMessage.toLowerCase();
+            reasoning.userRequestedLegislativeExplanation =
+              lowerRaw.includes('شرح تشريعي') ||
+              lowerRaw.includes('شرحا تشريعيا') ||
+              lowerRaw.includes('شرحاً تشريعياً') ||
+              lowerRaw.includes('سند تشريعي') ||
+              lowerRaw.includes('سندا تشريعيا') ||
+              lowerRaw.includes('السند التشريعي') ||
+              lowerRaw.includes('نص القانون') ||
+              lowerRaw.includes('نصوص القانون') ||
+              lowerRaw.includes('المواد القانونية') ||
+              lowerRaw.includes('مواد القانون') ||
+              lowerRaw.includes('نص المادة') ||
+              lowerRaw.includes('نصوص المواد') ||
+              lowerRaw.includes('التأصيل التشريعي') ||
+              lowerRaw.includes('المواد الحاكمة') ||
+              lowerRaw.includes('ما هي المواد') ||
+              lowerRaw.includes('ما هى المواد') ||
+              lowerRaw.includes('اذكر المادة') ||
+              lowerRaw.includes('اذكر النص');
+
+            responseText = this.responseEngine.formatLegalInquiryResponse(reasoning);
+            sourceEngine = 'autonomous_reasoning_core';
+          }
+        }
       }
     }
 

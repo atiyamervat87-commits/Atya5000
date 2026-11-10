@@ -17,14 +17,16 @@ import {
   Cpu,
   Layers,
   Download,
+  History,
 } from 'lucide-react';
 
 interface HomeScreenProps {
   onSelectUnit: (unit: 'public_consultation' | 'private_consultation' | 'office_management') => void;
   onOpenAndroidModal: () => void;
+  onOpenHistory?: () => void;
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectUnit, onOpenAndroidModal }) => {
+export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectUnit, onOpenAndroidModal, onOpenHistory }) => {
   const [stats, setStats] = useState<any>(null);
 
   useEffect(() => {
@@ -293,6 +295,39 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectUnit, onOpenAndr
           </div>
         </div>
       </div>
+
+      {/* Legal History & Drafts Tracking Spotlight Card */}
+      {onOpenHistory && (
+        <div className="p-6 rounded-2xl bg-gradient-to-r from-[#2B1914] via-[#352119] to-[#1f120e] border border-[#D4AF37]/40 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4 text-right">
+            <div className="w-12 h-12 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] shadow-inner shrink-0">
+              <History className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-lg font-bold font-amiri text-[#F5E5BD]">
+                  سجل القضايا والمسودات القضائية (Legal History Tracker)
+                </h3>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-[#D4AF37]/20 text-[#E7C779] border border-[#D4AF37]/40 font-mono font-semibold">
+                  حفظ وتصدير تلقائي
+                </span>
+              </div>
+              <p className="text-xs text-[#F5E5BD]/70 mt-1">
+                تتبع استفساراتك الأخيرة، وتكييفات المسائل القضائية، ومسودات العقود والمذكرات المحررة في هذه الجلسة، مع إمكانية التصدير بصيغ (JSON / Markdown / TXT / طباعة رسمية).
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={onOpenHistory}
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] hover:brightness-105 text-[#2B1914] font-bold text-xs sm:text-sm flex items-center gap-2 transition cursor-pointer shadow-md shadow-black/40 whitespace-nowrap shrink-0"
+          >
+            <History className="w-4 h-4" />
+            <span>فتح سجل الجلسة والمسودات</span>
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Real-time Office Statistics Bar */}
       {stats && (

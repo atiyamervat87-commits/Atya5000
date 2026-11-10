@@ -360,7 +360,28 @@ export class CentralBrainReasoningEngine {
     // =========================================================================
     // 7. عمالي: فصل تعسفي وحقوق العامل ومكتب العمل
     // =========================================================================
-    if (text.includes('فصل') || text.includes('طرد من الشغل') || text.includes('مكتب العمل') || text.includes('تعسفي') || text.includes('حقوق العامل')) {
+    const isLaborContext =
+      text.includes('فصل') ||
+      text.includes('مكتب العمل') ||
+      text.includes('تعسفي') ||
+      text.includes('حقوق العامل') ||
+      text.includes('صاحب العمل') ||
+      text.includes('استقالة') ||
+      text.includes('شغل') ||
+      text.includes('وظيفة') ||
+      text.includes('مدير') ||
+      text.includes('مرتب') ||
+      text.includes('راتب');
+
+    if (
+      text.includes('فصل') ||
+      (text.includes('طرد') && isLaborContext) ||
+      text.includes('طرد من الشغل') ||
+      text.includes('مكتب العمل') ||
+      text.includes('تعسفي') ||
+      text.includes('حقوق العامل') ||
+      (text.includes('شغل') && (text.includes('مدير') || text.includes('طرد') || text.includes('مشكلة') || text.includes('طردني')))
+    ) {
       return {
         detectedProblem: 'فصل تعسفي ومستحقات عمالية وفق قانون العمل المصري رقم 12 لسنة 2003',
         characterization: 'دعوى عمالية للمطالبة بالتعويض عن إنهاء عقد العمل غير المبرر ومقابل مهلة الإخطار ورصيد الإجازات ومكافأة نهاية الخدمة',
@@ -560,7 +581,8 @@ export class CentralBrainReasoningEngine {
     // =========================================================================
     // 11. إيجارات: الإيجار القديم والجديد وأسباب الإخلاء والطرد وتغيير الكوالين
     // =========================================================================
-    if (text.includes('ايجار') || text.includes('إيجار') || text.includes('مستأجر') || text.includes('مؤجر') || text.includes('طرد') || text.includes('اخلاء') || text.includes('إخلاء') || text.includes('ايجار قديم') || text.includes('امتداد عقد') || text.includes('كوالين') || text.includes('قفل الشقة') || text.includes('قفل')) {
+    const isLaborWorkplaceQuery = text.includes('شغل') || text.includes('مدير') || text.includes('شركة') || text.includes('وظيفة') || text.includes('مرتب') || text.includes('راتب') || text.includes('مكتب العمل');
+    if (!isLaborWorkplaceQuery && (text.includes('ايجار') || text.includes('إيجار') || text.includes('مستأجر') || text.includes('مؤجر') || text.includes('طرد') || text.includes('اخلاء') || text.includes('إخلاء') || text.includes('ايجار قديم') || text.includes('امتداد عقد') || text.includes('كوالين') || text.includes('قفل الشقة') || text.includes('قفل'))) {
       return {
         detectedProblem: 'منازعات عقود الإيجار السكني والتجاري وأسباب الإخلاء والطرد في القانون المصري',
         characterization: 'دعاوى الإخلاء والطرد لانتهاء المدة أو عدم سداد الأجرة أو الامتداد القانوني طبقاً للقانون 4 لسنة 1996 وقوانين إيجار الأماكن 136 لسنة 1981',

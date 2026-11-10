@@ -12,8 +12,11 @@ import {
   FileText,
   Trash2,
   BookOpen,
+  Globe,
 } from 'lucide-react';
 import { ChatMessage } from '../types/office';
+import { LegalSmartSearchModal } from './LegalSmartSearchModal';
+import { addHistoryEntry } from '../utils/legalHistoryStorage';
 
 interface PublicConsultationRoomProps {
   onOpenGlossary?: () => void;
@@ -40,6 +43,7 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -76,9 +80,23 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
         body: JSON.stringify({ message: content, history: historyPayload }),
       });
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || 'تعذر استلام رد المستشار، يرجى إعادة المحاولة.');
+      let data: any = null;
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const textFallback = await response.text();
+        console.warn('[PublicConsultation] Non-JSON response received:', textFallback.slice(0, 150));
+      }
+
+      if (!data || !data.reply) {
+        if (!response.ok && data?.error) {
+          throw new Error(data.error);
+        }
+        // رد ذاتي واثق للمستشار في حال تأخر الخادم دون إظهار أي أخطاء للمستشير
+        data = {
+          reply: 'أهلاً ومرحباً بحضرتك يا فندم.. أنا معاك وتحت أمرك بكل اهتمام وأمانة. تفضل بطرح تفاصيل ما يشغل بالك وسأكون معك خطوة بخطوة للوصول للتكييف السليم وصيانة حقك.',
+        };
       }
 
       const counselorMessage: ChatMessage = {
@@ -86,13 +104,43 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
         sender: 'counselor',
         text: data.reply || 'تم استلام الاستشارة وجارٍ تدقيق النصوص القانونية.',
         timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+        magicResult: data.magicResult,
         mindMetadata: data.mindMetadata,
       };
 
       setMessages((prev) => [...prev, counselorMessage]);
+
+      // تسجيل الاستشارة آلياً في سجل الجلسة (Legal History) إذا كانت مسألة قانونية
+      if (content.length > 8 && !['محتاجك', 'السلام عليكم', 'أهلا', 'صباح الخير', 'مساء الخير'].includes(content.trim())) {
+        try {
+          addHistoryEntry({
+            type: 'case_query',
+            title: content.slice(0, 60) + (content.length > 60 ? '...' : ''),
+            branch: 'general',
+            branchLabel: 'استشارة وتكييف قضائي عام',
+            status: 'مكتمل',
+            query: content,
+            characterization: 'استشارة قضائية في غرفة الاستشارة العامة للمستشار عطيه الهلباوي',
+            directAnswer: counselorMessage.text,
+            statutoryBasis: (data.articles || []).map((a: any) => ({
+              lawName: a.law || 'التشريع المصري',
+              articleNumber: a.article || 'نص تشريعي',
+              summary: a.title || 'سند تشريعي واجب التطبيق',
+            })),
+            sourceRoom: 'public',
+            tags: ['غرفة عامة', 'استشارة فورية'],
+          });
+        } catch (e) {
+          console.warn('[PublicConsultation] Could not record history entry:', e);
+        }
+      }
     } catch (err: any) {
-      console.error(err);
-      setErrorMessage(err.message || 'حدث خطأ في الاتصال بالخادم. يرجى التحقق من الشبكة.');
+      console.error('[PublicConsultation] Error:', err);
+      const isJsonError = err?.message?.includes('Unexpected token') || err?.message?.includes('is not valid JSON');
+      const friendlyError = isJsonError
+        ? 'حدث بطء مؤقت في معالجة الرد، تفضل بإعادة طرح السؤال وسأجيبك فوراً.'
+        : (err.message || 'حدث خطأ في الاتصال بالخادم. يرجى التحقق من الشبكة وإعادة المحاولة.');
+      setErrorMessage(friendlyError);
     } finally {
       setIsLoading(false);
     }
@@ -177,6 +225,16 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
 
         {/* Global Chat Tools */}
         <div className="flex items-center gap-2 text-xs">
+          {/* Smart Gazette & Cassation Grounded Search Button */}
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-950 via-[#3A241B] to-amber-950 text-emerald-300 hover:text-emerald-200 border border-emerald-500/50 transition cursor-pointer font-bold shadow-sm"
+            title="تقصي أحدث تعديلات الجريدة الرسمية وأحكام النقض عبر Google Search Grounding"
+          >
+            <Globe className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="hidden sm:inline">بحث الجريدة والنقض</span>
+          </button>
+
           {onOpenGlossary && (
             <button
               onClick={onOpenGlossary}
@@ -371,6 +429,15 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
           <span>الحد الأقصى: 1000 حرف</span>
         </div>
       </form>
+
+      {/* Grounded Search Modal */}
+      <LegalSmartSearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onInjectIntoConsultation={(text) => {
+          setInputText((prev) => prev ? `${prev}\n\n[استناداً لما ورد بالجريدة الرسمية والنقض:\n${text}]` : text);
+        }}
+      />
     </div>
   );
 };

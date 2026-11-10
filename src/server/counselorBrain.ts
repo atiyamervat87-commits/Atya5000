@@ -9,6 +9,7 @@
  */
 
 import { EGYPTIAN_LEGAL_ARTICLES, CASSATION_RULINGS } from '../data/egyptianLaws.ts';
+import { multilingualCounselorEngine } from './centralBrain/multilingualEngine.ts';
 
 export interface ConsultationTurn {
   role: 'user' | 'model';
@@ -248,13 +249,18 @@ export function detectIntent(message: string, history: ConsultationTurn[] = []):
     return 'CELEBRATION_INVITATION';
   }
 
-  // 6. حديث خاص / شخصي / إنساني بعيد عن التقاضي (CONFIDENTIAL_PERSONAL)
+  // 6. حديث خاص / شخصي / إنساني / طلب نجدة ومساعدة (CONFIDENTIAL_PERSONAL)
   const confidentialPersonalKeywords = [
     'حاجه خاصه', 'حاجة خاصة', 'حاجه شخصيه', 'حاجة شخصية', 'موضوع خاص', 'موضوع شخصي',
     'حاجه شخصي', 'حاجة شخصي', 'بعيد عن القانون', 'بعيده عن القانون', 'بعيد عن القوانين',
     'بعيده عن القوانين', 'مش قانوني', 'مش قانون', 'فضفضه', 'فضفضة', 'افضفض', 'أفضفض',
     'احكي معاك في حاجه', 'احكي معاك في موضوع', 'اتكلم معاك في حاجه', 'اتكلم معاك في موضوع',
-    'حاجه بيني وبينك', 'حاجة بيني وبينك', 'مش قضيه', 'مش قضية'
+    'حاجه بيني وبينك', 'حاجة بيني وبينك', 'مش قضيه', 'مش قضية',
+    'محتاجك', 'محتاجك يا فندم', 'محتاجك يا مستشار', 'محتاجك ضروري', 'محتاج مساعدتك',
+    'محتاج مساعدة', 'محتاج مساعده', 'عايزك تساعدني', 'عاوزك تساعدني', 'محتاجك معايا',
+    'انا متضايق', 'أنا متضايق', 'متضايق', 'في ورطة', 'في ورطه', 'عندي ورطة', 'عندي ورطه',
+    'عندي مشكلة ومحتاجك', 'عندي مشكله ومحتاجك', 'مش عارف اعمل ايه', 'مش عارف أعمل إيه',
+    'الحقني', 'ساعدني', 'محتار', 'تعبان', 'مهموم'
   ];
   const isConfidentialPersonal =
     confidentialPersonalKeywords.some((k) => q.includes(k)) ||
@@ -619,6 +625,23 @@ export function generateCounselorAutonomousResponse(
   // الحالة 8: الأحاديث الشخصية والسرية (CONFIDENTIAL_PERSONAL)
   // =========================================================================
   if (intent === 'CONFIDENTIAL_PERSONAL') {
+    if (
+      q.includes('محتاجك') ||
+      q.includes('مساعدتك') ||
+      q.includes('مساعدة') ||
+      q.includes('مساعده') ||
+      q.includes('ساعدني') ||
+      q.includes('الحقني') ||
+      q.includes('ورطة') ||
+      q.includes('ورطه') ||
+      q.includes('محتار') ||
+      q.includes('متضايق')
+    ) {
+      return `أهلاً ومرحباً بحضرتك يا فندم.. أنا معاك وتحت أمرك بكل اهتمام وأمانة.
+
+خير إن شاء الله؟ احكِ لي إيه الموضوع أو الموقف اللي شاغل بالك، وسواء كانت مسألة قانونية محتاجة تكييف وحفظ حقوق، أو استشارة عامة، هكون معاك خطوة بخطوة للوصول للحل السليم وصيانة حقك وتطمين خاطرك.`;
+    }
+
     return `على الرحب والسعة وبكل أمان وسرية تامة يا فندم؛ فالحياة وتجاربها أوسع بكثير من مجرد نصوص ومحاكم وقوانين، والإنسان أولاً وأخيراً يحتاج إلى من يستمع إليه بأمانة ومودة وتجرد.
 
 اعتبرني أخاً كبيراً ومستشاراً شخصياً يسمعك بقلبه قبل عقله؛ تفضل وقول لي اللي مضايقك أو شاغل خاطرك براحتك خالص وبلا أي تحفظ، وكلي آذان صاغية وسرك في بئر أمين ومحمي تماماً.`;
@@ -845,12 +868,29 @@ export function generateCounselorAutonomousResponse(
     'سلاح', 'تهديد', 'ابتزاز', 'سب', 'قذف', 'تشهير', 'اغتصاب', 'هتك عرض', 'تحرش', 'دفاع شرعي',
     'سبق إصرار', 'ترصد', 'مادة', 'قانون', 'تشريع', 'دستور', 'جنائي', 'جنائية'
   ];
-  const hasSpecificDispute = generalDisputeKeywords.some((k) => q.includes(k));
+  const isPureBareGreeting =
+    q === 'مرحبا' || q === 'أهلا' || q === 'اهلا' ||
+    q === 'سلام' || q === 'السلام عليكم' || q === 'صباح الخير' ||
+    q === 'مساء الخير' || q === 'الو' || q === 'يا هلا' ||
+    (q.length < 6 && !q.includes('؟') && !q.includes('?'));
 
-  if (!hasSpecificDispute || intent === 'GENERAL') {
+  if (isPureBareGreeting) {
     return `${mixedPreamble}أهلاً ومرحباً بحضرتك يا فندم في رحاب مكتب المستشار عطيه الهلباوي.
 
 يسعدني ويشرفني تواصلكم الكريم؛ تفضلوا بطرح ما لديكم من موضوع أو استفسار أو مسألة ترغبون في بحثها، وكلي آذان صاغية لمعاونتكم وتقديم الرأي والمشورة الصادقة بكل أمانة وترحيب.`;
+  }
+
+  // إذا كانت المسألة تتضمن استفساراً، أو لهجة عامية، أو لغات عالمية، أو مشكلة عائلية وحياتية
+  const dialectAnalysis = multilingualCounselorEngine.analyzeLanguageAndDialect(query);
+  if (
+    dialectAnalysis.language !== 'ar_standard' ||
+    dialectAnalysis.isEverydayLifeQuery ||
+    dialectAnalysis.isMaritalOrFamily ||
+    dialectAnalysis.isFinancialDilemma ||
+    dialectAnalysis.isSeekingAdvice ||
+    !hasSpecificDispute
+  ) {
+    return `${mixedPreamble}${multilingualCounselorEngine.generateResponse(query)}`;
   }
 
   // 7. استشارة مدنية أو قضائية موضوعية عامة

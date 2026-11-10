@@ -75,6 +75,12 @@ export const ConsultationRoom: React.FC = () => {
         }),
       });
 
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        await response.text();
+        throw new Error('تعذر معالجة الاستشارة حالياً نظراً لتحديث النظام، يرجى إعادة المحاولة.');
+      }
+
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.error || 'فشلت معالجة الاستشارة');

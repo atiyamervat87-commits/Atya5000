@@ -7,18 +7,22 @@ import { OfficeManagementPlatform } from './components/office/OfficeManagementPl
 import { SystemCharterModal } from './components/SystemCharterModal';
 import { AndroidPackageModal } from './components/AndroidPackageModal';
 import { LegalGlossaryModal } from './components/LegalGlossaryModal';
+import { LegalSmartSearchModal } from './components/LegalSmartSearchModal';
+import { LegalHistory } from './components/LegalHistory';
+import { RoyalErrorBoundary } from './components/RoyalErrorBoundary';
 import { UserRole } from './types/office';
 import { Scale, Phone, ShieldCheck, Award } from 'lucide-react';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<
-    'home' | 'public_consultation' | 'private_consultation' | 'office_management'
+    'home' | 'public_consultation' | 'private_consultation' | 'office_management' | 'legal_history'
   >('home');
 
   const [userRole, setUserRole] = useState<UserRole>('owner');
   const [isCharterOpen, setIsCharterOpen] = useState<boolean>(false);
   const [isAndroidModalOpen, setIsAndroidModalOpen] = useState<boolean>(false);
   const [isGlossaryOpen, setIsGlossaryOpen] = useState<boolean>(false);
+  const [isSmartSearchOpen, setIsSmartSearchOpen] = useState<boolean>(false);
 
   return (
     <div className="min-h-screen bg-[#1a0f0c] text-[#F5E5BD] flex flex-col font-sans selection:bg-[#D4AF37]/30 selection:text-[#E7C779]">
@@ -31,34 +35,45 @@ export default function App() {
         onOpenCharter={() => setIsCharterOpen(true)}
         onOpenAndroidModal={() => setIsAndroidModalOpen(true)}
         onOpenGlossary={() => setIsGlossaryOpen(true)}
+        onOpenSmartSearch={() => setIsSmartSearchOpen(true)}
       />
 
       {/* Main Screen Content */}
       <main className="flex-1 pb-16">
-        {currentScreen === 'home' && (
-          <HomeScreen
-            onSelectUnit={(unit) => setCurrentScreen(unit)}
-            onOpenAndroidModal={() => setIsAndroidModalOpen(true)}
-          />
-        )}
+        <RoyalErrorBoundary fallbackTitle="منظومة المستشار القضائية">
+          {currentScreen === 'home' && (
+            <HomeScreen
+              onSelectUnit={(unit) => setCurrentScreen(unit)}
+              onOpenAndroidModal={() => setIsAndroidModalOpen(true)}
+              onOpenHistory={() => setCurrentScreen('legal_history')}
+            />
+          )}
 
-        {currentScreen === 'public_consultation' && (
-          <PublicConsultationRoom onOpenGlossary={() => setIsGlossaryOpen(true)} />
-        )}
+          {currentScreen === 'public_consultation' && (
+            <PublicConsultationRoom onOpenGlossary={() => setIsGlossaryOpen(true)} />
+          )}
 
-        {currentScreen === 'private_consultation' && (
-          <PrivateConsultationRoom
-            userRole={userRole}
-            onOpenGlossary={() => setIsGlossaryOpen(true)}
-          />
-        )}
+          {currentScreen === 'private_consultation' && (
+            <PrivateConsultationRoom
+              userRole={userRole}
+              onOpenGlossary={() => setIsGlossaryOpen(true)}
+            />
+          )}
 
-        {currentScreen === 'office_management' && (
-          <OfficeManagementPlatform
-            userRole={userRole}
-            onOpenConsultation={() => setCurrentScreen('private_consultation')}
-          />
-        )}
+          {currentScreen === 'office_management' && (
+            <OfficeManagementPlatform
+              userRole={userRole}
+              onOpenConsultation={() => setCurrentScreen('private_consultation')}
+            />
+          )}
+
+          {currentScreen === 'legal_history' && (
+            <LegalHistory
+              onBackToHome={() => setCurrentScreen('home')}
+              onOpenConsultation={() => setCurrentScreen('public_consultation')}
+            />
+          )}
+        </RoyalErrorBoundary>
       </main>
 
       {/* Foundational Charter Modal */}
@@ -77,6 +92,12 @@ export default function App() {
       <LegalGlossaryModal
         isOpen={isGlossaryOpen}
         onClose={() => setIsGlossaryOpen(false)}
+      />
+
+      {/* Google Search Grounding for Official Gazette & Cassation Modal */}
+      <LegalSmartSearchModal
+        isOpen={isSmartSearchOpen}
+        onClose={() => setIsSmartSearchOpen(false)}
       />
 
       {/* Royal Judicial Footer */}
