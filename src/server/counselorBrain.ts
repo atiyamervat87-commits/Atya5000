@@ -31,6 +31,7 @@ export type IntentType =
   | 'MISSING_INFO_PROMPT'   // استفسار غير مكتمل يتطلب أسئلة استيضاحية جوهرية
   | 'ZERO_HALLUCINATION'    // سؤال عن مواد أو أحكام وهمية أو مفبركة
   | 'CONGRATULATIONS_PLATFORM' // تهنئة على المنصة أو إنجازات المكتب
+  | 'FORMAL_PLEADING_AUDIT' // فحص وتدقيق مذكرات الدفاع وصحف الدعاوى والطلبات الختامية
   | 'GENERAL'               // حديث عام أو استفسار فكري/قانوني عام دون نزاع محدد
   | 'MIXED'                 // تحية متبوعة باستفسار قانوني
   | 'LEGAL';                // استشارة قانونية موضوعية
@@ -160,6 +161,26 @@ export function detectIntent(message: string, history: ConsultationTurn[] = []):
     .replace(/ى/g, 'ي')
     .replace(/(.)\1{2,}/g, '$1')
     .toLowerCase();
+
+  // 0. فحص المذكرات وصحف الدعاوى القضائية والطلبات الختامية الرسمية (FORMAL_PLEADING_AUDIT)
+  const isFormalPleading =
+    normalized.includes('مذكرة ختامية') ||
+    normalized.includes('مذكرة دفاع') ||
+    normalized.includes('مذكرة شارحة') ||
+    normalized.includes('محكمة الخانكة') ||
+    normalized.includes('الدائرة المدنية') ||
+    normalized.includes('الطلبات الختامية') ||
+    normalized.includes('أوجه الدفاع') ||
+    normalized.includes('الدفع الاول') ||
+    normalized.includes('الدفع الثاني') ||
+    normalized.includes('حوض جبر') ||
+    normalized.includes('منع تعرض') ||
+    normalized.includes('حراسة قضائية') ||
+    (normalized.includes('محكمة') && (normalized.includes('مدع') || normalized.includes('الطلبات') || normalized.includes('مذكرة')));
+
+  if (isFormalPleading) {
+    return 'FORMAL_PLEADING_AUDIT';
+  }
 
   // 1. فحص طلبات المواد أو الطعون الوهمية لمنع الهلوسة قطعياً
   if (isHallucinationTrap(normalized)) {
@@ -881,7 +902,8 @@ export function generateCounselorAutonomousResponse(
   }
 
   // إذا كانت المسألة تتضمن استفساراً، أو لهجة عامية، أو لغات عالمية، أو مشكلة عائلية وحياتية
-  const dialectAnalysis = multilingualCounselorEngine.analyzeLanguageAndDialect(query);
+  const hasSpecificDispute = generalDisputeKeywords.some((kw) => q.includes(kw));
+  const dialectAnalysis = multilingualCounselorEngine.analyzeLanguageAndDialect(message);
   if (
     dialectAnalysis.language !== 'ar_standard' ||
     dialectAnalysis.isEverydayLifeQuery ||
@@ -890,7 +912,7 @@ export function generateCounselorAutonomousResponse(
     dialectAnalysis.isSeekingAdvice ||
     !hasSpecificDispute
   ) {
-    return `${mixedPreamble}${multilingualCounselorEngine.generateResponse(query)}`;
+    return `${mixedPreamble}${multilingualCounselorEngine.generateResponse(message)}`;
   }
 
   // 7. استشارة مدنية أو قضائية موضوعية عامة

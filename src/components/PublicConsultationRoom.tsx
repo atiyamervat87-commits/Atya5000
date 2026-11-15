@@ -17,6 +17,8 @@ import {
 import { ChatMessage } from '../types/office';
 import { LegalSmartSearchModal } from './LegalSmartSearchModal';
 import { addHistoryEntry } from '../utils/legalHistoryStorage';
+import { LanguageSettingsPanel, getStoredLanguageSettings, UserLanguageSettings } from './LanguageSettingsPanel';
+import { Cpu, Languages, Zap } from 'lucide-react';
 
 interface PublicConsultationRoomProps {
   onOpenGlossary?: () => void;
@@ -44,6 +46,18 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isLangPanelOpen, setIsLangPanelOpen] = useState(false);
+  const [engineMode, setEngineMode] = useState<'auto' | 'independent_mind_only'>('auto');
+  const [quotaNotice, setQuotaNotice] = useState<string | null>(null);
+  const [languageSettings, setLanguageSettings] = useState<UserLanguageSettings>(getStoredLanguageSettings());
+
+  useEffect(() => {
+    const handleLangUpdate = (e: any) => {
+      if (e.detail) setLanguageSettings(e.detail);
+    };
+    window.addEventListener('attya_language_settings_updated', handleLangUpdate);
+    return () => window.removeEventListener('attya_language_settings_updated', handleLangUpdate);
+  }, []);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +91,13 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
       const response = await fetch('/api/consultation/public', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: content, history: historyPayload }),
+        body: JSON.stringify({
+          message: content,
+          history: historyPayload,
+          engineMode,
+          preferredLanguage: languageSettings.preferredLanguage,
+          autoDetect: languageSettings.autoDetect,
+        }),
       });
 
       let data: any = null;
@@ -87,6 +107,12 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
       } else {
         const textFallback = await response.text();
         console.warn('[PublicConsultation] Non-JSON response received:', textFallback.slice(0, 150));
+      }
+
+      if (data?.quotaNotice) {
+        setQuotaNotice(data.quotaNotice);
+      } else {
+        setQuotaNotice(null);
       }
 
       if (!data || !data.reply) {
@@ -225,6 +251,16 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
 
         {/* Global Chat Tools */}
         <div className="flex items-center gap-2 text-xs">
+          {/* Language & Dialect Settings Button */}
+          <button
+            onClick={() => setIsLangPanelOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 text-[#E7C779] border border-[#D4AF37]/40 transition cursor-pointer font-medium"
+            title="تخصيص لغة الرد والكشف التلقائي عن اللهجات"
+          >
+            <Languages className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span className="hidden sm:inline">إعدادات اللغة واللهجات</span>
+          </button>
+
           {/* Smart Gazette & Cassation Grounded Search Button */}
           <button
             onClick={() => setIsSearchOpen(true)}
@@ -270,6 +306,61 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
           </button>
         </div>
       </div>
+
+      {/* Engine Routing Switcher & Quota Notification */}
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-[#1e100c] border border-[#D4AF37]/25 text-xs">
+        <div className="flex items-center gap-2">
+          <span className="text-[#F5E5BD]/60">محرك المعالجة المفضل:</span>
+          <div className="inline-flex rounded-lg bg-[#140b08] p-0.5 border border-[#D4AF37]/30">
+            <button
+              onClick={() => setEngineMode('auto')}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                engineMode === 'auto'
+                  ? 'bg-[#D4AF37] text-[#2B1914] shadow'
+                  : 'text-[#F5E5BD]/70 hover:text-[#F5E5BD]'
+              }`}
+            >
+              <Zap className="w-3 h-3" />
+              <span>تلقائي (Gemini 3.8 + العقل المستقل)</span>
+            </button>
+            <button
+              onClick={() => setEngineMode('independent_mind_only')}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                engineMode === 'independent_mind_only'
+                  ? 'bg-[#D4AF37] text-[#2B1914] shadow'
+                  : 'text-[#F5E5BD]/70 hover:text-[#F5E5BD]'
+              }`}
+            >
+              <Cpu className="w-3 h-3" />
+              <span>العقل المستقل فقط (ATTYA LEGAL MIND)</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="text-[11px] text-[#E7C779] flex items-center gap-2">
+          <span>اللغة النشطة:</span>
+          <span className="px-2 py-0.5 rounded bg-[#2e1a14] border border-[#D4AF37]/30 font-bold">
+            {languageSettings.preferredLanguage === 'ar_egyptian'
+              ? 'العامية المصرية'
+              : languageSettings.preferredLanguage === 'en'
+              ? 'English'
+              : languageSettings.preferredLanguage === 'fr'
+              ? 'Français'
+              : 'العربية الفصحى'}
+          </span>
+          {languageSettings.autoDetect && (
+            <span className="text-[10px] text-emerald-400 font-mono">(كشف تلقائي مفعّل)</span>
+          )}
+        </div>
+      </div>
+
+      {/* Quota Circuit Breaker Notice (If Active) */}
+      {quotaNotice && (
+        <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/50 text-xs text-amber-200 flex items-start gap-2.5 animate-pulse">
+          <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+          <p className="leading-relaxed">{quotaNotice}</p>
+        </div>
+      )}
 
       {/* Suggested Quick Topics */}
       <div className="space-y-2">
@@ -437,6 +528,13 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
         onInjectIntoConsultation={(text) => {
           setInputText((prev) => prev ? `${prev}\n\n[استناداً لما ورد بالجريدة الرسمية والنقض:\n${text}]` : text);
         }}
+      />
+
+      {/* Language & Dialect Settings Modal */}
+      <LanguageSettingsPanel
+        isOpen={isLangPanelOpen}
+        onClose={() => setIsLangPanelOpen(false)}
+        onSettingsChange={(newSettings) => setLanguageSettings(newSettings)}
       />
     </div>
   );

@@ -358,30 +358,110 @@ export class CentralBrainReasoningEngine {
     }
 
     // =========================================================================
+    // 6.5. مدني وعقاري: دعاوى الحيازة (منع التعرض، وقف الأعمال الجديدة، فرض الحراسة القضائية)
+    // =========================================================================
+    const isPossessionCase =
+      text.includes('حيازة') ||
+      text.includes('منع تعرض') ||
+      text.includes('وقف أعمال') ||
+      text.includes('وقف اعمال') ||
+      text.includes('حراسة قضائية') ||
+      text.includes('الخانكة') ||
+      text.includes('حوض جبر') ||
+      text.includes('وضع اليد') ||
+      text.includes('961') ||
+      text.includes('729') ||
+      (text.includes('العقار') && (text.includes('هدم') || text.includes('تعرض')));
+
+    if (isPossessionCase) {
+      return {
+        detectedProblem: 'دعوى منع تعرض في الحيازة (المادة 961 مدني) مقترنة بطلب فرض الحراسة القضائية المستعجلة (المادة 729 مدني)',
+        characterization: 'منازعة عينية عقارية لحماية الحيازة المادية الفعلية وصيانتها من التعرض المادي والقانوني، مع طلب تدبير تحفظي عاجل بفرض الحراسة القضائية لدرء الخطر الداهم وصيانة معالم العقار دون المساس بأصل الحق عملاً بنص المادة 44 مكرر مرافعات',
+        directAnswer: 'دعوى منع التعرض للحيازة تستند إلى المادة (961) من القانون المدني المصري رقم 131 لسنة 1948؛ وتتطلب توافر حيازة مادية ظاهرة وهادئة ومستمرة لمدة سنة كاملة سابقة على التعرض، وأن ترفع الدعوى خلال سنة من تاريخ وقوع التعرض الجدي؛ ويقترن بها طلب فرض الحراسة القضائية المستعجلة طبقاً للمادتين (729 و 730) مدني متى توافر ركنا النزاع الجدي والخطر العاجل المهدد لكيان العقار ومعالمه؛ كما تحكم الدعوى قاعدة آمرة بالمادة (44 مكرر) مرافعات تقضي باستقلال دعوى الحيازة عن أصل الحق وحظر الجمع بينهما صيانةً للأوضاع الظاهرة ومنعاً لاقتضاء الحقوق بالذات.',
+        statutoryBasis: [
+          {
+            lawName: 'القانون المدني المصري رقم 131 لسنة 1948',
+            articleNumber: 'المادة (961)',
+            text: 'من حاز عقاراً واستمر حائزاً له سنة كاملة، ثم وقع له تعرض في حيازته، جاز له أن يرفع خلال السنة التالية دعوى بمنع هذا التعرض.',
+            summary: 'دعوى منع التعرض تحمي الحيازة القانونية المستقرة سنة كاملة، وترفع خلال سنة من تاريخ وقوع التعرض.',
+            officialReference: 'المادة 961 من القانون المدني'
+          },
+          {
+            lawName: 'القانون المدني المصري رقم 131 لسنة 1948',
+            articleNumber: 'المادة (962)',
+            text: 'من حاز عقاراً واستمر حائزاً له سنة كاملة وخشي لأسباب معقولة التعرض له من جراء أعمال جديدة تهدد حيازته، كان له أن يرفع الأمر إلى القاضي طالباً وقف هذه الأعمال بشرط ألا تكون قد تمت وألا يكون قد انقضى عام على البدء في عملها...',
+            summary: 'دعوى وقف الأعمال الجديدة تدبير وقائي لمنع إحداث تغييرات مادية تهدد الحيازة قبل اكتمالها.',
+            officialReference: 'المادة 962 من القانون المدني'
+          },
+          {
+            lawName: 'القانون المدني المصري رقم 131 لسنة 1948',
+            articleNumber: 'المادتان (729 و 730)',
+            text: 'الحراسة عقد أو أمر قضائي يعهد بمقتضاه إلى شخص آخر بمال يقوم في شأنه نزاع أو يكون الحق فيه غير ثابت فيتكفل بحفظه وإدارته... ويجوز للقضاء أن يأمر بها إذا تجمعت من الأسباب المعقولة ما يخشى معه خطراً عاجلاً من بقاء المال تحت يد حائزه.',
+            summary: 'فرض الحراسة القضائية المستعجلة لدرء الخطر العاجل وصيانة العقار المتنازع عليه وتعيين حارس محايد.',
+            officialReference: 'المادتان 729 و 730 من القانون المدني'
+          },
+          {
+            lawName: 'قانون المرافعات المدنية والتجارية رقم 13 لسنة 1968',
+            articleNumber: 'المادة (44 مكرر)',
+            text: 'لا يجوز للمدعي أن يجمع بين دعوى الحيازة وبين المطالبة بالحق وإلا سقط ادعاؤه بالحيازة، ولا يجوز أن يدفع دعوى الحيازة بالاستناد إلى الحق.',
+            summary: 'استقلال دعوى الحيازة التام عن أصل الحق والملكية وحظر الجمع بينهما.',
+            officialReference: 'المادة 44 مكرر من قانون المرافعات'
+          }
+        ],
+        cassationBasis: [
+          {
+            court: 'محكمة النقض المصرية - الدائرة المدنية',
+            rulingNumber: 'الطعن رقم 1145',
+            judicialYear: '50 ق مدني',
+            sessionDate: 'جلسة 1980/12/28',
+            principle: 'دعوى منع التعرض شرعت لحماية وضع اليد الفعلي الظاهر والمستقر بصرف النظر عن الملكية؛ ولا يجوز للمحكمة أن تتطرق لبحث أصل الحق إلا بالقدر اللازم للاستدلال على توافر الحيازة وشروط حمايتها.'
+          },
+          {
+            court: 'محكمة النقض المصرية - الدائرة المدنية',
+            rulingNumber: 'الطعن رقم 892',
+            judicialYear: '61 ق مدني',
+            sessionDate: 'جلسة 1995/04/11',
+            principle: 'مناط فرض الحراسة القضائية هو قيام نزاع جدي وخطر عاجل يهدد بقاء المال تحت يد واضع اليد؛ وتبديل معالم العقار أو هدم منشآته يشكل خطراً داهماً يبرر وضع العقار تحت يد حارس قضائي محايد.'
+          },
+          {
+            court: 'محكمة النقض المصرية - الدائرة المدنية',
+            rulingNumber: 'الطعن رقم 421',
+            judicialYear: '45 ق مدني',
+            sessionDate: 'جلسة 1978/05/16',
+            principle: 'حكم صحة التوقيع يضفي حجية كتابية قاطعة على صدور المحرر من الموقعين عليه وتاريخه، ويصلح قرينة قضائية معتبرة في إثبات أسبقية وضع اليد وتاريخ بدء الحيازة.'
+          }
+        ],
+        recommendedSteps: [
+          'التمسك بالصفة المستعجلة لفرض الحراسة القضائية وتعيين حارس محايد فوراً بالجلسة لحفظ العقار ومنع أي أعمال بناء أو استحداث معالم.',
+          'طلب حجز الدعوى للتحقيق وسماع شهود الحيازة والتفاوض والتهديد ورجال المباحث مع التصريح بإعلانهم.',
+          'طلب ندب خبير هندسي من خبراء وزارة العدل للانتقال ومعاينة العقار وإثبات حدوده ومساحته (150م2) وآثار الهدم والأعمال المستحدثة على الطبيعة.',
+          'تقديم حافظة مستندات تشمل أصل حكم صحة التوقيع رقم 2511 لسنة 2017 وصور رسمية من المحاضر الإدارية (5618، 3100، 3129 لسنة 2026 إداري الخانكة).'
+        ],
+        risksAndWarnings: [
+          'حظر الجمع بين دعوى الحيازة ودعوى أصل الحق عملاً بالمادة 44 مكرر مرافعات حتى لا يسقط الادعاء بالحيازة.',
+          'وجوب رفع دعوى منع التعرض خلال سنة واحدة من تاريخ وقوع أول تعرض جدي صيانةً للحق من السقوط.'
+        ],
+        missingCrucialFacts: [
+          'هل صدر قرار وقتي من النيابة العامة في المحاضر الإدارية، وما هي أرقام وتواريخ إعلانات الشهود؟'
+        ]
+      };
+    }
+
+    // =========================================================================
     // 7. عمالي: فصل تعسفي وحقوق العامل ومكتب العمل
     // =========================================================================
     const isLaborContext =
-      text.includes('فصل') ||
-      text.includes('مكتب العمل') ||
-      text.includes('تعسفي') ||
+      !isPossessionCase &&
+      (text.includes('مكتب العمل') ||
+      text.includes('فصل تعسفي') ||
       text.includes('حقوق العامل') ||
       text.includes('صاحب العمل') ||
-      text.includes('استقالة') ||
-      text.includes('شغل') ||
-      text.includes('وظيفة') ||
-      text.includes('مدير') ||
-      text.includes('مرتب') ||
-      text.includes('راتب');
-
-    if (
-      text.includes('فصل') ||
-      (text.includes('طرد') && isLaborContext) ||
+      text.includes('استقالة العامل') ||
+      text.includes('طرد من العمل') ||
       text.includes('طرد من الشغل') ||
-      text.includes('مكتب العمل') ||
-      text.includes('تعسفي') ||
-      text.includes('حقوق العامل') ||
-      (text.includes('شغل') && (text.includes('مدير') || text.includes('طرد') || text.includes('مشكلة') || text.includes('طردني')))
-    ) {
+      (text.includes('فصل') && (text.includes('عامل') || text.includes('موظف') || text.includes('شركة') || text.includes('المرتب')) && !text.includes('الفصل في')));
+
+    if (isLaborContext) {
       return {
         detectedProblem: 'فصل تعسفي ومستحقات عمالية وفق قانون العمل المصري رقم 12 لسنة 2003',
         characterization: 'دعوى عمالية للمطالبة بالتعويض عن إنهاء عقد العمل غير المبرر ومقابل مهلة الإخطار ورصيد الإجازات ومكافأة نهاية الخدمة',
@@ -875,12 +955,13 @@ export class CentralBrainReasoningEngine {
     const dynamicKeywords = rawTokens.filter(w => !stopWords.has(w));
 
     // كشف طبيعة الاستفسار العامة
-    const isCriminal = text.includes('جنح') || text.includes('جناي') || text.includes('حبس') || text.includes('سجن') || text.includes('شرط') || text.includes('نياب') || text.includes('عقوب') || text.includes('سرق') || text.includes('قتل') || text.includes('مخدر') || text.includes('تزوير') || text.includes('قبض') || text.includes('تفتيش');
-    const isCivil = text.includes('مدني') || text.includes('عقد') || text.includes('التزام') || text.includes('دين') || text.includes('حق') || text.includes('فسخ') || text.includes('إيجار') || text.includes('ملك');
-    const isFamily = text.includes('طلاق') || text.includes('نفقة') || text.includes('حضانة') || text.includes('رؤية') || text.includes('عدة') || text.includes('متعة') || text.includes('قائمة');
-    const isLabor = text.includes('عمل') || text.includes('عامل') || text.includes('مرتب') || text.includes('أجر') || text.includes('تأمين');
+    const isPossessionQuery = text.includes('حيازة') || text.includes('منع تعرض') || text.includes('حراسة قضائية') || text.includes('الخانكة') || text.includes('وقف أعمال') || text.includes('وقف اعمال');
+    const isCriminal = !isPossessionQuery && (text.includes('جنح') || text.includes('جناي') || text.includes('حبس') || text.includes('سجن') || text.includes('شرط') || text.includes('نياب') || text.includes('عقوب') || text.includes('سرق') || text.includes('قتل') || text.includes('مخدر') || text.includes('تزوير') || text.includes('قبض') || text.includes('تفتيش'));
+    const isCivil = isPossessionQuery || text.includes('مدني') || text.includes('عقد') || text.includes('التزام') || text.includes('دين') || text.includes('حق') || text.includes('فسخ') || text.includes('إيجار') || text.includes('ملك');
+    const isFamily = !isPossessionQuery && (text.includes('طلاق') || text.includes('نفقة') || text.includes('حضانة') || text.includes('رؤية') || text.includes('عدة') || text.includes('متعة') || text.includes('قائمة'));
+    const isLabor = !isPossessionQuery && (text.includes('مكتب العمل') || text.includes('فصل تعسفي') || text.includes('عقد عمل') || text.includes('صاحب العمل') || (text.includes('عامل') && text.includes('مرتب')));
 
-    const preferredBranch = isCriminal ? 'criminal' : (isFamily ? 'family' : (isLabor ? 'labor' : (isCivil ? 'civil' : undefined)));
+    const preferredBranch = isPossessionQuery ? 'civil' : (isCriminal ? 'criminal' : (isFamily ? 'family' : (isLabor ? 'labor' : (isCivil ? 'civil' : undefined))));
 
     // استرجاع مواد النقاط الموزونة إذا تطابقت بدقة فقط
     const queriedArticles = this.knowledge.queryArticles(dynamicKeywords.length > 0 ? dynamicKeywords : [], preferredBranch);

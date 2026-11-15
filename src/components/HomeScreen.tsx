@@ -18,15 +18,25 @@ import {
   Layers,
   Download,
   History,
+  BookOpen,
+  BarChart3,
 } from 'lucide-react';
 
 interface HomeScreenProps {
   onSelectUnit: (unit: 'public_consultation' | 'private_consultation' | 'office_management') => void;
   onOpenAndroidModal: () => void;
   onOpenHistory?: () => void;
+  onOpenMillionVocab?: () => void;
+  onOpenKnowledgeLibrary?: () => void;
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectUnit, onOpenAndroidModal, onOpenHistory }) => {
+export const HomeScreen: React.FC<HomeScreenProps> = ({
+  onSelectUnit,
+  onOpenAndroidModal,
+  onOpenHistory,
+  onOpenMillionVocab,
+  onOpenKnowledgeLibrary,
+}) => {
   const [stats, setStats] = useState<any>(null);
 
   useEffect(() => {
@@ -122,6 +132,65 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onSelectUnit, onOpenAndr
           <span>فتح استوديو MAGIC MIND والحزم</span>
           <ChevronLeft className="w-4 h-4" />
         </button>
+      </div>
+
+      {/* Strategic Dual Pillars: Million Lexicon & Multi-Million Book Library */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Pillar 1: Million Lexicon & Frequency Distribution */}
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-[#2B1914] to-[#1f120e] border border-[#D4AF37]/35 shadow-xl flex flex-col justify-between space-y-4">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] px-2 py-0.5 rounded bg-[#D4AF37]/15 text-[#E7C779] border border-[#D4AF37]/30 font-bold">
+                1,000,000 مصطلح
+              </span>
+              <span className="text-[11px] text-emerald-400 font-mono">10 أفلاك معرفية</span>
+            </div>
+            <h3 className="text-lg font-bold font-amiri text-[#F5E5BD] flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-[#D4AF37]" />
+              <span>المعجم المليوني والتحليل البياني للترددات</span>
+            </h3>
+            <p className="text-xs text-[#F5E5BD]/70 leading-relaxed">
+              فحص شامل لملف المعجم الأصلي (545 رمزاً) وتوزيع ترددات مصطلحات القانون المصري، بجانب معجم المليون مصطلح وتطبيقات قانون زيف اللغوي.
+            </p>
+          </div>
+
+          <button
+            onClick={() => onOpenMillionVocab && onOpenMillionVocab()}
+            className="w-full py-2.5 rounded-xl bg-[#2e1a14] hover:bg-[#3d221a] border border-[#D4AF37]/40 text-xs font-bold text-[#E7C779] flex items-center justify-center gap-2 transition cursor-pointer"
+          >
+            <BarChart3 className="w-4 h-4 text-[#D4AF37]" />
+            <span>فتح الرسم البياني وفحص المعجم المليوني</span>
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Pillar 2: Multi-Million Book Knowledge Library */}
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-[#2B1914] to-[#1a0e0b] border border-[#D4AF37]/35 shadow-xl flex flex-col justify-between space-y-4">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 font-bold">
+                1,390,000+ مجلد
+              </span>
+              <span className="text-[11px] text-[#D4AF37] font-mono">12 حقلاً معرفياً</span>
+            </div>
+            <h3 className="text-lg font-bold font-amiri text-[#F5E5BD] flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-[#D4AF37]" />
+              <span>مكتبة المعرفة الإنسانية المليونية</span>
+            </h3>
+            <p className="text-xs text-[#F5E5BD]/70 leading-relaxed">
+              فهرس أمهات المصنفات وشروح السنهوري والمصادر الفلسفية والتاريخية والطب الشرعي وعلوم الذكاء الاصطناعي مع توثيق وصيغ استشهاد محققة.
+            </p>
+          </div>
+
+          <button
+            onClick={() => onOpenKnowledgeLibrary && onOpenKnowledgeLibrary()}
+            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] hover:brightness-110 text-[#2B1914] text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer shadow-md"
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>تصفح مكتبة المعرفة (ملايين الكتب)</span>
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* The Three Core Mandatory Units */}

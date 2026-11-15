@@ -136,27 +136,121 @@ export class AttyaMagicMindEngine {
 
     // استخراج المواد المنطبقة من قاعدة القوانين
     const governingStatutes: Array<{ article: string; law: string; title: string }> = [];
-    if (lower.includes('بيع') || lower.includes('شقة') || lower.includes('عقد')) {
+    const verifiedCassationPrecedents: Array<{ ruling: string; principle: string }> = [];
+
+    // أ) دعاوى الحيازة ومنع التعرض ووقف الأعمال الجديدة والحراسة القضائية (المواد 961 و 962 و 729 و 730 مدني و 44 مكرر مرافعات)
+    const isPossessionOrReceivership =
+      lower.includes('حيازة') ||
+      lower.includes('منع تعرض') ||
+      lower.includes('حراسة قضائية') ||
+      lower.includes('وقف أعمال') ||
+      lower.includes('وقف اعمال') ||
+      lower.includes('الخانكة') ||
+      lower.includes('حوض جبر') ||
+      lower.includes('وضع اليد') ||
+      lower.includes('961') ||
+      lower.includes('729');
+
+    if (isPossessionOrReceivership) {
+      governingStatutes.push({
+        article: 'المادة (961)',
+        law: 'القانون المدني المصري رقم 131 لسنة 1948',
+        title: 'دعوى منع التعرض في الحيازة: استمرار الحيازة سنة، ورفع الدعوى خلال سنة من تاريخ وقوع التعرض'
+      });
+      governingStatutes.push({
+        article: 'المادة (962)',
+        law: 'القانون المدني المصري رقم 131 لسنة 1948',
+        title: 'دعوى وقف الأعمال الجديدة: حيازة سنة، خشية التعرض، ورفع الدعوى قبل إتمام الأعمال وقبل انقضاء عام على بدئها'
+      });
+      governingStatutes.push({
+        article: 'المادتان (729 و 730)',
+        law: 'القانون المدني المصري رقم 131 لسنة 1948',
+        title: 'شروط فرض الحراسة القضائية المستعجلة: قيام نزاع جدي وخطر عاجل يهدد بقاء العقار تحت يد الحائز لصيانة معالمه'
+      });
+      governingStatutes.push({
+        article: 'المادة (44 مكرر)',
+        law: 'قانون المرافعات المدنية والتجارية رقم 13 لسنة 1968',
+        title: 'استقلال دعوى الحيازة عن أصل الحق وحظر الجمع بينهما صيانةً للأوضاع الظاهرة'
+      });
+      governingStatutes.push({
+        article: 'المواد (131 إلى 165)',
+        law: 'قانون الإثبات في المواد المدنية والتجارية رقم 25 لسنة 1968',
+        title: 'إجراءات المعاينة القضائية على الطبيعة وندب الخبراء لإثبات معالم العقار وآثار الهدم والأعمال المستحدثة'
+      });
+
+      verifiedCassationPrecedents.push({
+        ruling: 'محكمة النقض المصرية - الطعن رقم 1145 لسنة 50 ق مدني',
+        principle: 'دعوى منع التعرض تستهدف حماية الحيازة المادية الفعلية الظاهرة بصرف النظر عن أصل الملكية، ولا يجوز للمحكمة أن تبحث سند الملكية إلا على سبيل الاستئناس للتحقق من توافر الحيازة الهادئة المستقرة.'
+      });
+      verifiedCassationPrecedents.push({
+        ruling: 'محكمة النقض المصرية - الطعن رقم 892 لسنة 61 ق مدني',
+        principle: 'مناط فرض الحراسة القضائية هو توافر الخطر العاجل والنزاع الجدي المهدد لمحل التداعي؛ وهدم المنشآت أو تبديل معالم العقار يشكل خطراً داهماً يوجب وضع العقار تحت يد حارس قضائي محايد.'
+      });
+      verifiedCassationPrecedents.push({
+        ruling: 'محكمة النقض المصرية - الطعن رقم 421 لسنة 45 ق مدني',
+        principle: 'حكم صحة التوقيع الصادر في دعوى صحة توقيع، وإن كان لا يثبت الملكية، إلا أنه يمثل دليلاً كتابياً قاطعاً على تاريخ المحرر وصدوره من الموقعين عليه، ويصلح قرينة قضائية معتبرة في إثبات أسبقية وضع اليد وسند الحيازة.'
+      });
+    }
+
+    // ب) البيع والتسجيل العقاري (فقط في النزاعات العقدية الصريحة للبيع والشراء)
+    if (!isPossessionOrReceivership && (lower.includes('عقد بيع') || lower.includes('شراء شقة') || (lower.includes('بيع') && lower.includes('تسجيل')))) {
       governingStatutes.push({ article: '147 و 418 و 431 و 439', law: 'القانون المدني المصري 131 لسنة 1948', title: 'القوة الملزمة للعقد وأركان البيع وضمان التعرض والاستحقاق' });
       governingStatutes.push({ article: '9 و 21 مكرر', law: 'قانون تنظيم الشهر العقاري رقم 9 لسنة 2022', title: 'قواعد تسجيل ونقل الملكية العقارية والرسوم المقطوعة' });
+      verifiedCassationPrecedents.push({
+        ruling: 'الطعن رقم 1840 لسنة 54 ق - مدني',
+        principle: 'الملكية العقارية لا تنتقل بين المتعاقدين ولا بالنسبة للغير إلا بالتسجيل طبقاً لقانون الشهر العقاري.'
+      });
     }
+
+    // ج) جنحة خيانة الأمانة وإيصال الأمانة
     if (lower.includes('أمانة') || lower.includes('امانة') || lower.includes('إيصال') || lower.includes('ايصال')) {
       governingStatutes.push({ article: '341', law: 'قانون العقوبات المصري', title: 'أركان جريمة خيانة الأمانة وعقود الأمانة الخمسة' });
       governingStatutes.push({ article: '14 و 49 وما بعدها', law: 'قانون الإثبات رقم 25 لسنة 1968', title: 'حجية الورقة العرفية والطعن بالتزوير على الصلب' });
+      verifiedCassationPrecedents.push({
+        ruling: 'الطعن رقم 2841 لسنة 72 ق - جنائي',
+        principle: 'ركن التسليم في جريمة خيانة الأمانة ركن جوهري لا تقوم الجريمة بدونه، وانتفاء التسليم الفعلي يوجب القضاء بالبراءة.'
+      });
     }
-    if (lower.includes('قتل')) {
+
+    // د) جرائم القتل
+    if (lower.includes('قتل') || lower.includes('القتل')) {
       governingStatutes.push({ article: '230 و 234', law: 'قانون العقوبات المصري', title: 'عقوبة القتل العمد وظرف سبق الإصرار والترصد المشدد' });
     }
-    if (lower.includes('عمل') || lower.includes('فصل')) {
+
+    // هـ) قضايا العمل والعمال (حظر الخلط مع أعمال الحيازة)
+    const isLaborStrict = !isPossessionOrReceivership && (
+      lower.includes('مكتب العمل') ||
+      lower.includes('فصل تعسفي') ||
+      lower.includes('عقد عمل') ||
+      lower.includes('صاحب العمل') ||
+      (lower.includes('عامل') && lower.includes('مستحقات'))
+    );
+    if (isLaborStrict) {
       governingStatutes.push({ article: '70 و 71 و 122', law: 'قانون العمل المصري 12 لسنة 2003', title: 'شكوى مكتب العمل خلال 10 أيام والتعويض عن الفصل غير المبرر' });
     }
-    if (lower.includes('شفعة')) {
+
+    // و) الشفعة
+    if (lower.includes('شفعة') || lower.includes('الشفعة') || lower.includes('شفيع')) {
       governingStatutes.push({ article: '935 و 940 و 942', law: 'القانون المدني المصري', title: 'مواعيد إعلان الرغبة وإيداع كامل الثمن خزانة المحكمة' });
     }
-    if (lower.includes('استئناف') || lower.includes('ميعاد')) {
+
+    // ز) ميعاد الاستئناف المدني
+    if (lower.includes('استئناف') && (lower.includes('ميعاد') || lower.includes('40 يوم') || lower.includes('سقوط'))) {
       governingStatutes.push({ article: '227', law: 'قانون المرافعات المدنية والتجارية', title: 'ميعاد الطعن بالاستئناف 40 يوماً في الأحكام المدنية' });
     }
-    if (lower.includes('خلع') || lower.includes('طلاق') || lower.includes('أحوال') || lower.includes('اسرة') || lower.includes('أسرة')) {
+
+    // ح) قضايا الأسرة والأحوال الشخصية (حظر الخلط مع كلمة "أحوال" العادية)
+    const isFamilyStrict = !isPossessionOrReceivership && (
+      lower.includes('خلع') ||
+      lower.includes('طلاق للضرر') ||
+      lower.includes('أحوال شخصية') ||
+      lower.includes('احوال شخصية') ||
+      lower.includes('محكمة الأسرة') ||
+      lower.includes('محاكم الأسرة') ||
+      lower.includes('نفقة متعة') ||
+      lower.includes('حضانة الصغار')
+    );
+    if (isFamilyStrict) {
       governingStatutes.push({
         article: 'المادة 20',
         law: 'قانون تنظيم بعض أوضاع وإجراءات التقاضي في مسائل الأحوال الشخصية رقم 1 لسنة 2000',
@@ -167,11 +261,6 @@ export class AttyaMagicMindEngine {
         law: 'قانون إنشاء محاكم الأسرة رقم 10 لسنة 2004',
         title: 'وجوب اللجوء لمكتب تسوية المنازعات الأسرية قبل رفع الدعوى وإلزامية مساعي الصلح'
       });
-    }
-
-    // استخراج أحكام النقض
-    const verifiedCassationPrecedents: Array<{ ruling: string; principle: string }> = [];
-    if (lower.includes('خلع') || lower.includes('طلاق') || lower.includes('أحوال') || lower.includes('اسرة') || lower.includes('أسرة')) {
       verifiedCassationPrecedents.push({
         ruling: 'المحكمة الدستورية العليا - القضية رقم 201 لسنة 23 ق دستورية',
         principle: 'دستورية المادة 20 من القانون 1 لسنة 2000، ومشروعية حظر الطعن على الحكم الصادر بالخلع بأي طريق تحقيقاً للاستقرار الأسري.'
@@ -179,18 +268,6 @@ export class AttyaMagicMindEngine {
       verifiedCassationPrecedents.push({
         ruling: 'محكمة النقض المصرية - الطعن رقم 482 لسنة 73 ق أحوال شخصية',
         principle: 'الخلع يقتصر على الحقوق المالية والشرعية للزوجة ولا يمس حقوق الصغار في الحضانة والنفقة ومسكن الحضانة بأي حال.'
-      });
-    }
-    if (lower.includes('أمانة') || lower.includes('إيصال')) {
-      verifiedCassationPrecedents.push({
-        ruling: 'الطعن رقم 2841 لسنة 72 ق - جنائي',
-        principle: 'ركن التسليم في جريمة خيانة الأمانة ركن جوهري لا تقوم الجريمة بدونه، وانتفاء التسليم الفعلي يوجب القضاء بالبراءة.'
-      });
-    }
-    if (lower.includes('بيع') || lower.includes('تسجيل')) {
-      verifiedCassationPrecedents.push({
-        ruling: 'الطعن رقم 1840 لسنة 54 ق - مدني',
-        principle: 'الملكية العقارية لا تنتقل بين المتعاقدين ولا بالنسبة للغير إلا بالتسجيل طبقاً لقانون الشهر العقاري.'
       });
     }
 

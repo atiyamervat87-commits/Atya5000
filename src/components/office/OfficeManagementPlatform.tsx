@@ -43,6 +43,8 @@ import { RoyalErrorBoundary } from '../RoyalErrorBoundary';
 import { LegalDataPipelineStudio } from './LegalDataPipelineStudio';
 import { LegalSmartSearchModal } from '../LegalSmartSearchModal';
 import { VisualCasesAnalyticsDashboard } from './VisualCasesAnalyticsDashboard';
+import { VocabularyDistributionChart } from '../VocabularyDistributionChart';
+import { UniversalKnowledgeLibraryModal } from '../UniversalKnowledgeLibraryModal';
 import {
   Client,
   LegalCase,
@@ -87,6 +89,8 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
   const [smartReportResult, setSmartReportResult] = useState<any>(null);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [showSmartSearch, setShowSmartSearch] = useState(false);
+  const [showMillionVocab, setShowMillionVocab] = useState(false);
+  const [showKnowledgeLibrary, setShowKnowledgeLibrary] = useState(false);
 
   // Modals & Forms
   const [showAddClientModal, setShowAddClientModal] = useState(false);
@@ -536,6 +540,22 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
           >
             <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
             <span>خطة الاشتراك (شهر مجاني)</span>
+          </button>
+
+          <button
+            onClick={() => setShowMillionVocab(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#3A241B] hover:bg-[#4d3023] text-[#E7C779] border border-[#D4AF37]/40 font-bold transition cursor-pointer shadow-sm"
+          >
+            <BarChart3 className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span>المعجم المليوني والتحليل البياني</span>
+          </button>
+
+          <button
+            onClick={() => setShowKnowledgeLibrary(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#3A241B] hover:bg-[#4d3023] text-[#F5E5BD] border border-[#D4AF37]/40 font-bold transition cursor-pointer shadow-sm"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span>مكتبة المعرفة (ملايين الكتب)</span>
           </button>
 
           <button
@@ -1979,6 +1999,20 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
       <LegalSmartSearchModal
         isOpen={showSmartSearch}
         onClose={() => setShowSmartSearch(false)}
+      />
+
+      {/* Vocabulary Frequency & 1M Lexicon Distribution Modal */}
+      {showMillionVocab && (
+        <VocabularyDistributionChart
+          isModal
+          onClose={() => setShowMillionVocab(false)}
+        />
+      )}
+
+      {/* Multi-Million Book Knowledge Library Modal */}
+      <UniversalKnowledgeLibraryModal
+        isOpen={showKnowledgeLibrary}
+        onClose={() => setShowKnowledgeLibrary(false)}
       />
     </div>
   );

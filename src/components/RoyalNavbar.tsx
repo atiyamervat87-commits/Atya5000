@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Scale,
   MessageSquare,
@@ -14,6 +13,9 @@ import {
   BookOpen,
   Globe,
   History,
+  Languages,
+  Layers,
+  BarChart3,
 } from 'lucide-react';
 import { UserRole } from '../types/office';
 
@@ -26,6 +28,9 @@ interface RoyalNavbarProps {
   onOpenAndroidModal: () => void;
   onOpenGlossary?: () => void;
   onOpenSmartSearch?: () => void;
+  onOpenMillionVocab?: () => void;
+  onOpenKnowledgeLibrary?: () => void;
+  onOpenLanguageSettings?: () => void;
 }
 
 export const RoyalNavbar: React.FC<RoyalNavbarProps> = ({
@@ -37,6 +42,9 @@ export const RoyalNavbar: React.FC<RoyalNavbarProps> = ({
   onOpenAndroidModal,
   onOpenGlossary,
   onOpenSmartSearch,
+  onOpenMillionVocab,
+  onOpenKnowledgeLibrary,
+  onOpenLanguageSettings,
 }) => {
   return (
     <header className="sticky top-0 z-40 bg-[#2B1914]/95 border-b border-[#D4AF37]/30 backdrop-blur-md shadow-lg shadow-black/40">
@@ -105,6 +113,43 @@ export const RoyalNavbar: React.FC<RoyalNavbarProps> = ({
             <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
             <span>شهر مجاني (نشط ✓)</span>
           </button>
+
+          {/* Language & Dialect Settings Button */}
+          {onOpenLanguageSettings && (
+            <button
+              onClick={onOpenLanguageSettings}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1f120e] hover:bg-[#3A241B] text-[#E7C779] border border-[#D4AF37]/35 text-xs font-semibold transition cursor-pointer shadow-sm"
+              title="إعدادات اللغة واللهجات والكشف التلقائي"
+            >
+              <Languages className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="hidden lg:inline">إعدادات اللغة</span>
+            </button>
+          )}
+
+          {/* Million Vocabulary & Frequency Chart Button */}
+          {onOpenMillionVocab && (
+            <button
+              onClick={onOpenMillionVocab}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#3A241B] to-[#2B1914] hover:bg-[#3A241B] text-[#E7C779] border border-[#D4AF37]/40 text-xs font-bold transition cursor-pointer shadow-sm"
+              title="فحص المعجم اللغوي وتوزيع الترددات وفلك المليون مصطلح"
+            >
+              <BarChart3 className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="hidden xl:inline">المعجم المليوني والرسم البياني</span>
+              <span className="xl:hidden">المعجم المليوني</span>
+            </button>
+          )}
+
+          {/* Multi-Million Book Knowledge Library Button */}
+          {onOpenKnowledgeLibrary && (
+            <button
+              onClick={onOpenKnowledgeLibrary}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#2B1914] via-[#351d16] to-[#1f120e] text-[#F5E5BD] hover:text-white border border-[#D4AF37]/40 text-xs font-bold transition cursor-pointer shadow-sm"
+              title="مكتبة المعرفة الإنسانية المليونية (1.39M+ مجلد ومخطوطة)"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="hidden sm:inline">مكتبة المعرفة (ملايين الكتب)</span>
+            </button>
+          )}
 
           {/* Smart Legal Grounded Search Button */}
           {onOpenSmartSearch && (

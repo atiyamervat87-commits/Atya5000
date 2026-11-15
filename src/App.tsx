@@ -9,6 +9,9 @@ import { AndroidPackageModal } from './components/AndroidPackageModal';
 import { LegalGlossaryModal } from './components/LegalGlossaryModal';
 import { LegalSmartSearchModal } from './components/LegalSmartSearchModal';
 import { LegalHistory } from './components/LegalHistory';
+import { VocabularyDistributionChart } from './components/VocabularyDistributionChart';
+import { UniversalKnowledgeLibraryModal } from './components/UniversalKnowledgeLibraryModal';
+import { LanguageSettingsPanel } from './components/LanguageSettingsPanel';
 import { RoyalErrorBoundary } from './components/RoyalErrorBoundary';
 import { UserRole } from './types/office';
 import { Scale, Phone, ShieldCheck, Award } from 'lucide-react';
@@ -23,6 +26,9 @@ export default function App() {
   const [isAndroidModalOpen, setIsAndroidModalOpen] = useState<boolean>(false);
   const [isGlossaryOpen, setIsGlossaryOpen] = useState<boolean>(false);
   const [isSmartSearchOpen, setIsSmartSearchOpen] = useState<boolean>(false);
+  const [isMillionVocabOpen, setIsMillionVocabOpen] = useState<boolean>(false);
+  const [isKnowledgeLibraryOpen, setIsKnowledgeLibraryOpen] = useState<boolean>(false);
+  const [isLanguageSettingsOpen, setIsLanguageSettingsOpen] = useState<boolean>(false);
 
   return (
     <div className="min-h-screen bg-[#1a0f0c] text-[#F5E5BD] flex flex-col font-sans selection:bg-[#D4AF37]/30 selection:text-[#E7C779]">
@@ -36,6 +42,9 @@ export default function App() {
         onOpenAndroidModal={() => setIsAndroidModalOpen(true)}
         onOpenGlossary={() => setIsGlossaryOpen(true)}
         onOpenSmartSearch={() => setIsSmartSearchOpen(true)}
+        onOpenMillionVocab={() => setIsMillionVocabOpen(true)}
+        onOpenKnowledgeLibrary={() => setIsKnowledgeLibraryOpen(true)}
+        onOpenLanguageSettings={() => setIsLanguageSettingsOpen(true)}
       />
 
       {/* Main Screen Content */}
@@ -46,6 +55,8 @@ export default function App() {
               onSelectUnit={(unit) => setCurrentScreen(unit)}
               onOpenAndroidModal={() => setIsAndroidModalOpen(true)}
               onOpenHistory={() => setCurrentScreen('legal_history')}
+              onOpenMillionVocab={() => setIsMillionVocabOpen(true)}
+              onOpenKnowledgeLibrary={() => setIsKnowledgeLibraryOpen(true)}
             />
           )}
 
@@ -98,6 +109,26 @@ export default function App() {
       <LegalSmartSearchModal
         isOpen={isSmartSearchOpen}
         onClose={() => setIsSmartSearchOpen(false)}
+      />
+
+      {/* Vocabulary Frequency & 1M Lexicon Distribution Modal */}
+      {isMillionVocabOpen && (
+        <VocabularyDistributionChart
+          isModal
+          onClose={() => setIsMillionVocabOpen(false)}
+        />
+      )}
+
+      {/* Multi-Million Book Knowledge Library Modal */}
+      <UniversalKnowledgeLibraryModal
+        isOpen={isKnowledgeLibraryOpen}
+        onClose={() => setIsKnowledgeLibraryOpen(false)}
+      />
+
+      {/* Language & Dialect Settings Modal */}
+      <LanguageSettingsPanel
+        isOpen={isLanguageSettingsOpen}
+        onClose={() => setIsLanguageSettingsOpen(false)}
       />
 
       {/* Royal Judicial Footer */}
