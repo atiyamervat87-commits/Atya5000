@@ -22,6 +22,9 @@ import { Cpu, Languages, Zap } from 'lucide-react';
 
 interface PublicConsultationRoomProps {
   onOpenGlossary?: () => void;
+  geminiBalance?: number;
+  onOpenPaymentModal?: () => void;
+  onDeductCredit?: () => void;
 }
 
 const QUICK_TOPICS = [
@@ -31,7 +34,12 @@ const QUICK_TOPICS = [
   'ما هو ميعاد الطعن بالاستئناف في الأحكام المدنية وسقوط الحق؟',
 ];
 
-export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ onOpenGlossary }) => {
+export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({
+  onOpenGlossary,
+  geminiBalance,
+  onOpenPaymentModal,
+  onDeductCredit,
+}) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome-msg',
@@ -66,8 +74,16 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
   }, [messages, isLoading]);
 
   const handleSendMessage = async (textToSend?: string) => {
+    if (geminiBalance !== undefined && geminiBalance <= 0 && onOpenPaymentModal) {
+      onOpenPaymentModal();
+      return;
+    }
     const content = (textToSend || inputText).trim();
     if (!content || isLoading) return;
+
+    if (onDeductCredit) {
+      onDeductCredit();
+    }
 
     setErrorMessage(null);
 
@@ -251,6 +267,19 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({ 
 
         {/* Global Chat Tools */}
         <div className="flex items-center gap-2 text-xs">
+          {/* Gemini Quota & Recharge Button */}
+          {onOpenPaymentModal && (
+            <button
+              onClick={onOpenPaymentModal}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#D4AF37]/20 hover:bg-[#D4AF37]/30 text-[#E7C779] border border-[#D4AF37]/40 transition cursor-pointer font-bold shadow-sm"
+              title="رصيد حصص Gemini الذكية — انقر لشحن باقات الحصص"
+            >
+              <Zap className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>حصص Gemini: {geminiBalance ?? 0}</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#D4AF37] text-[#2B1914]">شحن ⚡</span>
+            </button>
+          )}
+
           {/* Language & Dialect Settings Button */}
           <button
             onClick={() => setIsLangPanelOpen(true)}

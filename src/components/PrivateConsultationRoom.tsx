@@ -37,9 +37,18 @@ import { LanguageSettingsPanel, getStoredLanguageSettings, UserLanguageSettings 
 interface PrivateConsultationRoomProps {
   userRole: UserRole;
   onOpenGlossary?: () => void;
+  geminiBalance?: number;
+  onOpenPaymentModal?: () => void;
+  onDeductCredit?: () => void;
 }
 
-export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = ({ userRole, onOpenGlossary }) => {
+export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = ({
+  userRole,
+  onOpenGlossary,
+  geminiBalance,
+  onOpenPaymentModal,
+  onDeductCredit,
+}) => {
   // Session & payment state
   const userId = 'user-current-session';
   const userName = 'المستشير الخاص';
@@ -409,8 +418,16 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
 
   // --- Send Message ---
   const handleSendMessage = async () => {
+    if (geminiBalance !== undefined && geminiBalance <= 0 && onOpenPaymentModal) {
+      onOpenPaymentModal();
+      return;
+    }
     const text = inputText.trim();
     if (!text && !recordedAudioUrl && attachedFiles.length === 0) return;
+
+    if (onDeductCredit) {
+      onDeductCredit();
+    }
 
     setErrorMessage(null);
 
@@ -677,6 +694,19 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
 
         {/* Tools and Lock Status */}
         <div className="flex items-center gap-2 text-xs flex-wrap">
+          {/* Gemini Quota & Recharge Button */}
+          {onOpenPaymentModal && (
+            <button
+              onClick={onOpenPaymentModal}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#D4AF37]/20 hover:bg-[#D4AF37]/30 text-[#E7C779] border border-[#D4AF37]/40 transition cursor-pointer font-bold shadow-sm"
+              title="رصيد حصص Gemini الذكية — انقر لشحن باقات الحصص"
+            >
+              <Zap className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>حصص Gemini: {geminiBalance ?? 0}</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#D4AF37] text-[#2B1914]">شحن ⚡</span>
+            </button>
+          )}
+
           {/* Language & Dialect Settings Button */}
           <button
             onClick={() => setIsLangPanelOpen(true)}

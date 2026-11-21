@@ -12,6 +12,7 @@ import { LegalHistory } from './components/LegalHistory';
 import { VocabularyDistributionChart } from './components/VocabularyDistributionChart';
 import { UniversalKnowledgeLibraryModal } from './components/UniversalKnowledgeLibraryModal';
 import { LanguageSettingsPanel } from './components/LanguageSettingsPanel';
+import { PaymentGatewayModal } from './components/PaymentGatewayModal';
 import { RoyalErrorBoundary } from './components/RoyalErrorBoundary';
 import { UserRole } from './types/office';
 import { Scale, Phone, ShieldCheck, Award } from 'lucide-react';
@@ -29,6 +30,26 @@ export default function App() {
   const [isMillionVocabOpen, setIsMillionVocabOpen] = useState<boolean>(false);
   const [isKnowledgeLibraryOpen, setIsKnowledgeLibraryOpen] = useState<boolean>(false);
   const [isLanguageSettingsOpen, setIsLanguageSettingsOpen] = useState<boolean>(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
+
+  const [geminiBalance, setGeminiBalance] = useState<number>(() => {
+    const saved = localStorage.getItem('attya_gemini_balance');
+    return saved ? parseInt(saved, 10) : 25;
+  });
+
+  const handlePaymentSuccess = (_packageName: string, creditsAdded: number) => {
+    const newBal = geminiBalance + creditsAdded;
+    setGeminiBalance(newBal);
+    localStorage.setItem('attya_gemini_balance', newBal.toString());
+  };
+
+  const handleDeductCredit = () => {
+    if (geminiBalance > 0) {
+      const newBal = geminiBalance - 1;
+      setGeminiBalance(newBal);
+      localStorage.setItem('attya_gemini_balance', newBal.toString());
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#1a0f0c] text-[#F5E5BD] flex flex-col font-sans selection:bg-[#D4AF37]/30 selection:text-[#E7C779]">
@@ -61,13 +82,21 @@ export default function App() {
           )}
 
           {currentScreen === 'public_consultation' && (
-            <PublicConsultationRoom onOpenGlossary={() => setIsGlossaryOpen(true)} />
+            <PublicConsultationRoom
+              onOpenGlossary={() => setIsGlossaryOpen(true)}
+              geminiBalance={geminiBalance}
+              onOpenPaymentModal={() => setIsPaymentModalOpen(true)}
+              onDeductCredit={handleDeductCredit}
+            />
           )}
 
           {currentScreen === 'private_consultation' && (
             <PrivateConsultationRoom
               userRole={userRole}
               onOpenGlossary={() => setIsGlossaryOpen(true)}
+              geminiBalance={geminiBalance}
+              onOpenPaymentModal={() => setIsPaymentModalOpen(true)}
+              onDeductCredit={handleDeductCredit}
             />
           )}
 
@@ -129,6 +158,14 @@ export default function App() {
       <LanguageSettingsPanel
         isOpen={isLanguageSettingsOpen}
         onClose={() => setIsLanguageSettingsOpen(false)}
+      />
+
+      {/* Gemini Quota & Payment Gateway Modal */}
+      <PaymentGatewayModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        onSuccess={handlePaymentSuccess}
+        currentBalance={geminiBalance}
       />
 
       {/* Royal Judicial Footer */}
