@@ -408,7 +408,7 @@ export const EGYPTIAN_KNOWLEDGE_GRAPH_NODES: LegalArticleNode[] = [
         sessionDate: '1978/05/16',
         heldPrinciple:
           'حكم صحة التوقيع الصادر في دعوى صحة توقيع، وإن كان لا ينقل الملكية بذاته، إلا أنه يشكل دليلاً كتابياً قاطعاً على تاريخ المحرر وصدوره من الموقعين عليه، ويصلح قرينة قضائية معتبرة في إثبات أسبقية وضع اليد وتاريخ بدء الحيازة.',
-        relevance: 'قرينة إثبات الحيازة',
+        relevance: 'استقرار قضائي',
       },
     ],
     retrievalMetadata: {
@@ -519,7 +519,7 @@ export const EGYPTIAN_KNOWLEDGE_GRAPH_NODES: LegalArticleNode[] = [
         sessionDate: '1987/05/21',
         heldPrinciple:
           'قاعدة حظر الجمع بين دعوى الحيازة ودعوى أصل الحق المنصوص عليها بالمادة 44 مكرر مرافعات قاعدة إجرائية آمرة؛ وعلتها الحيلولة دون اتخاذ النزاع على الملكية ذريعة لانتزاع الحيازة أو إهدار الحماية التي أسبغها القانون على وضع اليد الظاهر المستقر.',
-        relevance: 'قاعدة آمرة',
+        relevance: 'استقرار قضائي',
       },
     ],
     retrievalMetadata: {
@@ -618,7 +618,7 @@ export const EGYPTIAN_KNOWLEDGE_GRAPH_EDGES: LegalCrossReferenceEdge[] = [
     id: 'EDGE-CIVIL961-CIVIL729',
     sourceUrn: 'urn:lex:eg:code:civil:1948-131:art:961',
     targetUrn: 'urn:lex:eg:code:civil:1948-131:art:729',
-    relationType: 'SUBSTANTIVE_OVERLAP',
+    relationType: 'GENERAL_VS_SPECIAL',
     weight: 9,
     legalRationale:
       'يقترن طلب منع التعرض في الحيازة بطلب فرض الحراسة القضائية المستعجلة (المادتان 729 و 730 مدني) كإجراء تحفظي عاجل متى طرأ على العقار هدم أو تغيير معالم يهدد وضعه المادي لحين الفصل في النزاع.',
@@ -628,7 +628,7 @@ export const EGYPTIAN_KNOWLEDGE_GRAPH_EDGES: LegalCrossReferenceEdge[] = [
     id: 'EDGE-CIVIL961-CIVIL962',
     sourceUrn: 'urn:lex:eg:code:civil:1948-131:art:961',
     targetUrn: 'urn:lex:eg:code:civil:1948-131:art:962',
-    relationType: 'SUBSTANTIVE_OVERLAP',
+    relationType: 'GENERAL_VS_SPECIAL',
     weight: 9,
     legalRationale:
       'دعوى وقف الأعمال الجديدة (المادة 962 مدني) هي الوجه الوقائي لحماية الحيازة من الأعمال المستحدثة قبل اكتمالها، وتتكامل مع دعوى منع التعرض للحيازة (المادة 961 مدني).',
