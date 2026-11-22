@@ -54,14 +54,39 @@ def create_advisor_app_zip(output_zip="ATTYA_LEGAL_ADVISOR_MAGIC_MIND.zip"):
     print(f"Created {output_zip} ({size_mb:.2f} MB) - SHA256: {sha}")
     return sha, size_mb
 
+def create_full_weights_zip(output_zip="public/downloads/ATTYA_LEGAL_MIND_FULL_WEIGHTS_MASTER.zip", source_dir="ATTYA_LEGAL_MIND"):
+    os.makedirs("public/downloads", exist_ok=True)
+    print(f"Creating {output_zip}...")
+    with zipfile.ZipFile(output_zip, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(source_dir):
+            if "__pycache__" in root:
+                continue
+            for file in files:
+                full_path = os.path.join(root, file)
+                rel_path = os.path.relpath(full_path, ".")
+                zipf.write(full_path, rel_path)
+    sha = compute_sha256(output_zip)
+    size_mb = os.path.getsize(output_zip) / (1024 * 1024)
+    print(f"Created {output_zip} ({size_mb:.2f} MB) - SHA256: {sha}")
+    return sha, size_mb
+
 if __name__ == "__main__":
     mind_sha, mind_size = create_attya_mind_zip()
     app_sha, app_size = create_advisor_app_zip()
+    full_sha, full_size = create_full_weights_zip()
 
     manifest = {
         "release_title": "ATTYA LEGAL MIND — MAGIC MIND GEN-2 OFFICIAL RELEASE",
         "timestamp": "2026-11-05T22:30:00Z",
         "archives": [
+            {
+                "name": "ATTYA_LEGAL_MIND_FULL_WEIGHTS_MASTER.zip",
+                "description": "نسخة كاملة بأوزان عقل المستشار عطيه الهلباوي النهائية (1000K Master Checkpoint + Vocabulary + Inference)",
+                "parameters": 552704,
+                "size_mb": round(full_size, 2),
+                "sha256": full_sha,
+                "download_url": "/downloads/ATTYA_LEGAL_MIND_FULL_WEIGHTS_MASTER.zip"
+            },
             {
                 "name": "ATTYA_LEGAL_MIND.zip",
                 "description": "العقل المستقل: الكود والأوزان والبيانات والقاموس وحزمة التقييم المعيارية المستقلة",
@@ -84,6 +109,7 @@ if __name__ == "__main__":
         json.dump(manifest, f, ensure_ascii=False, indent=2)
 
     with open("FINAL_SHA256SUMS.txt", "w", encoding="utf-8") as f:
+        f.write(f"{full_sha}  public/downloads/ATTYA_LEGAL_MIND_FULL_WEIGHTS_MASTER.zip\n")
         f.write(f"{mind_sha}  ATTYA_LEGAL_MIND.zip\n")
         f.write(f"{app_sha}  ATTYA_LEGAL_ADVISOR_MAGIC_MIND.zip\n")
 

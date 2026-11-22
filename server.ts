@@ -1794,6 +1794,15 @@ app.get('/api/download/attya-advisor-zip', (_req: Request, res: Response) => {
   res.download(filePath, 'ATTYA_LEGAL_ADVISOR_MAGIC_MIND.zip');
 });
 
+// Full Weights Master ZIP Download (Direct to Phone Downloads folder)
+app.get('/api/download/full-weights-zip', (_req: Request, res: Response) => {
+  const filePath = path.resolve(process.cwd(), 'public/downloads/ATTYA_LEGAL_MIND_FULL_WEIGHTS_MASTER.zip');
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: 'ملف الأوزان الكاملة المضغوط غير موجود.' });
+  }
+  res.download(filePath, 'ATTYA_LEGAL_MIND_FULL_WEIGHTS_MASTER.zip');
+});
+
 // Master Weight Direct Download (.pt PyTorch weight)
 app.get('/api/download/master-checkpoint', (_req: Request, res: Response) => {
   const filePath = path.resolve(process.cwd(), 'ATTYA_LEGAL_MIND', 'checkpoints_1m', 'ATTYA_LEGAL_MIND_MASTER_1000K.pt');

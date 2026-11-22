@@ -3,18 +3,26 @@
   "timestamp": "2026-11-05T22:30:00Z",
   "archives": [
     {
+      "name": "ATTYA_LEGAL_MIND_FULL_WEIGHTS_MASTER.zip",
+      "description": "نسخة كاملة بأوزان عقل المستشار عطيه الهلباوي النهائية (1000K Master Checkpoint + Vocabulary + Inference)",
+      "parameters": 552704,
+      "size_mb": 40.78,
+      "sha256": "e7c08af33f5bb71b0bd9ef9a1ff4b2631ac602c673e3f46504ea526151a70552",
+      "download_url": "/downloads/ATTYA_LEGAL_MIND_FULL_WEIGHTS_MASTER.zip"
+    },
+    {
       "name": "ATTYA_LEGAL_MIND.zip",
       "description": "العقل المستقل: الكود والأوزان والبيانات والقاموس وحزمة التقييم المعيارية المستقلة",
       "parameters": 552704,
       "size_mb": 40.78,
-      "sha256": "41cc824bb7e9bd7e0f5b2a03909b9a24f9117e6a32fb3b3f3ab51455dcf9bb1a",
+      "sha256": "e7c08af33f5bb71b0bd9ef9a1ff4b2631ac602c673e3f46504ea526151a70552",
       "download_url": "/api/download/attya-legal-mind-zip"
     },
     {
       "name": "ATTYA_LEGAL_ADVISOR_MAGIC_MIND.zip",
       "description": "برنامج المستشار عطيه الهلباوي المطور بعد دمج العقل الجديد وخط المعالجة ثلاثي المراحل",
-      "size_mb": 46.66,
-      "sha256": "0379279ddbfa536804cdbfc287f7f4d77eb03961d3e72bd636bd4c0f85f26b15",
+      "size_mb": 46.81,
+      "sha256": "08186440b8acb3dd541234cc32a3fd2048b3f489a4780944be8dae48248a3310",
       "download_url": "/api/download/attya-advisor-zip"
     }
   ]
