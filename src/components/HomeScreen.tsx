@@ -20,6 +20,7 @@ import {
   History,
   BookOpen,
   BarChart3,
+  Activity,
 } from 'lucide-react';
 
 interface HomeScreenProps {
@@ -28,6 +29,7 @@ interface HomeScreenProps {
   onOpenHistory?: () => void;
   onOpenMillionVocab?: () => void;
   onOpenKnowledgeLibrary?: () => void;
+  onOpenDiagnostics?: () => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
@@ -36,6 +38,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onOpenHistory,
   onOpenMillionVocab,
   onOpenKnowledgeLibrary,
+  onOpenDiagnostics,
 }) => {
   const [stats, setStats] = useState<any>(null);
 
@@ -124,14 +127,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </p>
         </div>
 
-        <button
-          onClick={() => onSelectUnit('office_management')}
-          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] hover:brightness-110 text-[#2B1914] font-bold text-xs flex items-center gap-2 shadow-lg transition cursor-pointer shrink-0"
-        >
-          <Layers className="w-4 h-4" />
-          <span>فتح استوديو MAGIC MIND والحزم</span>
-          <ChevronLeft className="w-4 h-4" />
-        </button>
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          {onOpenDiagnostics && (
+            <button
+              onClick={onOpenDiagnostics}
+              className="px-4 py-2.5 rounded-xl bg-[#2B1914] hover:bg-[#3A241B] text-[#E7C779] border border-[#D4AF37]/50 font-bold text-xs flex items-center gap-2 transition cursor-pointer"
+              title="تشخيص عقل المستشار وحالة الروابط مع نماذج الذكاء الاصطناعي"
+            >
+              <Activity className="w-4 h-4 text-[#D4AF37]" />
+              <span>فحص المحركات والتشخيص 🩺</span>
+            </button>
+          )}
+          <button
+            onClick={() => onSelectUnit('office_management')}
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E7C779] hover:brightness-110 text-[#2B1914] font-bold text-xs flex items-center gap-2 shadow-lg transition cursor-pointer"
+          >
+            <Layers className="w-4 h-4" />
+            <span>فتح استوديو MAGIC MIND والحزم</span>
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Strategic Dual Pillars: Million Lexicon & Multi-Million Book Library */}

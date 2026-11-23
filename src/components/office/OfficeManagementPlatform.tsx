@@ -45,6 +45,8 @@ import { LegalSmartSearchModal } from '../LegalSmartSearchModal';
 import { VisualCasesAnalyticsDashboard } from './VisualCasesAnalyticsDashboard';
 import { VocabularyDistributionChart } from '../VocabularyDistributionChart';
 import { UniversalKnowledgeLibraryModal } from '../UniversalKnowledgeLibraryModal';
+import { RoyalSelfHealingDashboard } from './RoyalSelfHealingDashboard';
+import { RoyalPhase2TestingDashboard } from './RoyalPhase2TestingDashboard';
 import {
   Client,
   LegalCase,
@@ -447,6 +449,8 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
     { id: 'visual_analytics', label: 'المتابعة البصرية والرسوم (Dashboard)', icon: BarChart3, badge: 'تفاعلي', highlight: true },
     { id: 'legal_pipeline', label: 'خط أنابيب البيانات القانونية', icon: GitMerge, badge: '8 مراحل', highlight: true },
     { id: 'central_brain', label: 'العقل المركزي وتدريب النموذج', icon: Cpu, badge: 'AI', highlight: true },
+    { id: 'self_healing', label: 'وحدة الإصلاح الذاتي الملكي', icon: Shield, badge: 'سري', highlight: true },
+    { id: 'phase2_testing', label: 'اختبار العقل المستقل (المرحلة الثانية)', icon: Cpu, badge: 'ملكـي', highlight: true },
     { id: 'subscription', label: 'خطة الاشتراك والشهر المجاني', icon: Crown, badge: 'تجربة', highlight: true },
     { id: 'smart_contracts', label: 'مكتبة العقود الذكية', icon: FileCheck, badge: 8, highlight: true },
     { id: 'egyptian_laws', label: 'فهرس القوانين المصرية', icon: BookOpen, badge: 8, highlight: true },
@@ -651,6 +655,11 @@ export const OfficeManagementPlatform: React.FC<OfficeManagementPlatformProps> =
 
         {/* Content View Area (9 cols) */}
         <div className="lg:col-span-9 p-6 rounded-2xl bg-[#1f120e] border border-[#D4AF37]/30 shadow-xl space-y-6">
+          {/* SECTION: ROYAL SELF-HEALING ENGINE */}
+          {activeSection === 'self_healing' && <RoyalSelfHealingDashboard />}
+          {/* SECTION: PHASE 2 TESTING */}
+          {activeSection === 'phase2_testing' && <RoyalPhase2TestingDashboard />}
+
           {/* SECTION 1: DASHBOARD */}
           {activeSection === 'dashboard' && stats && (
             <div className="space-y-6">

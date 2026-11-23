@@ -18,6 +18,7 @@ import { ChatMessage } from '../types/office';
 import { LegalSmartSearchModal } from './LegalSmartSearchModal';
 import { addHistoryEntry } from '../utils/legalHistoryStorage';
 import { LanguageSettingsPanel, getStoredLanguageSettings, UserLanguageSettings } from './LanguageSettingsPanel';
+import { classifyIntent } from '../utils/intentRouter';
 import { Cpu, Languages, Zap } from 'lucide-react';
 
 interface PublicConsultationRoomProps {
@@ -80,6 +81,26 @@ export const PublicConsultationRoom: React.FC<PublicConsultationRoomProps> = ({
     }
     const content = (textToSend || inputText).trim();
     if (!content || isLoading) return;
+
+    // Intent Router: handle greetings, social chat, and general help requests with warm empathy without rigid legal templates
+    const intentResult = classifyIntent(content);
+    if ((intentResult.intent === 'Greeting' || intentResult.intent === 'Social' || intentResult.intent === 'HelpRequest') && intentResult.empathyMessage) {
+      const userMessage: ChatMessage = {
+        id: `msg-${Date.now()}`,
+        sender: 'user',
+        text: content,
+        timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+      };
+      const counselorMessage: ChatMessage = {
+        id: `counselor-${Date.now()}`,
+        sender: 'counselor',
+        text: intentResult.empathyMessage,
+        timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages((prev) => [...prev, userMessage, counselorMessage]);
+      setInputText('');
+      return;
+    }
 
     if (onDeductCredit) {
       onDeductCredit();

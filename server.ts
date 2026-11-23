@@ -28,6 +28,10 @@ import { legalSearchGroundingService } from './src/server/legalSearchService.ts'
 import { multilingualCounselorEngine } from './src/server/centralBrain/multilingualEngine.ts';
 import { analyzeVocabularyFrequency, searchMillionLexicon, MILLION_LEXICON_MANIFEST } from './src/utils/vocabularyAnalyzer.ts';
 import { universalKnowledgeLibraryService } from './src/services/universalKnowledgeLibraryService.ts';
+import { royalRepairGuard } from './src/server/selfHealing/repairGuard.ts';
+import { royalFaultDetector } from './src/server/selfHealing/faultDetector.ts';
+import { royalAutoRecovery } from './src/server/selfHealing/autoRecovery.ts';
+import { royalPhase2Tester } from './src/server/selfHealing/phase2Tester.ts';
 
 dotenv.config();
 
@@ -113,6 +117,45 @@ function getQuotaStatusNotice(): string | null {
   }
   return null;
 }
+
+// ----------------------------------------------------
+// Royal Self-Healing Engine APIs (Master Owner Only)
+// ----------------------------------------------------
+app.get('/api/self-healing/status', (req: Request, res: Response) => {
+  const userEmail = (req.headers['x-user-email'] as string) || '';
+  if (!royalRepairGuard.verifyMasterAccess(userEmail)) {
+    return res.status(403).json({ error: 'وصول مرفوض: وحدة الإصلاح الذاتي متاحة فقط للمالك الرئيسي.' });
+  }
+  const health = royalFaultDetector.detectFaults(quotaManager.isExceeded, quotaManager.lastErrorReason);
+  const auditLogs = royalAutoRecovery.getAuditLogs();
+  res.json({ health, auditLogs });
+});
+
+app.post('/api/self-healing/trigger-repair', (req: Request, res: Response) => {
+  const userEmail = (req.headers['x-user-email'] as string) || '';
+  if (!royalRepairGuard.verifyMasterAccess(userEmail)) {
+    return res.status(403).json({ error: 'وصول مرفوض: وحدة الإصلاح الذاتي متاحة فقط للمالك الرئيسي.' });
+  }
+  const { faultId } = req.body;
+  const health = royalFaultDetector.detectFaults(quotaManager.isExceeded, quotaManager.lastErrorReason);
+  const targetFault = health.activeFaults.find((f) => f.id === faultId) || health.activeFaults[0];
+
+  if (!targetFault) {
+    return res.json({ success: true, message: 'لا توجد أخطاء نشطة تتطلب تدخلاً. النظام يعمل بكفاءة مثالية.' });
+  }
+
+  const log = royalAutoRecovery.executeRecovery(targetFault, userEmail);
+  res.json({ success: true, log, health: royalFaultDetector.detectFaults(quotaManager.isExceeded, quotaManager.lastErrorReason) });
+});
+
+app.post('/api/royal/phase2-test', async (req: Request, res: Response) => {
+  const userEmail = (req.headers['x-user-email'] as string) || '';
+  if (!royalRepairGuard.verifyMasterAccess(userEmail)) {
+    return res.status(403).json({ error: 'وصول مرفوض: اختبارات المرحلة الثانية متاحة فقط للمالك الرئيسي.' });
+  }
+  const results = await royalPhase2Tester.runAllTests();
+  res.json({ success: true, results });
+});
 
 // ----------------------------------------------------
 // 1. Office Management Platform APIs

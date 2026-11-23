@@ -13,6 +13,7 @@ import { VocabularyDistributionChart } from './components/VocabularyDistribution
 import { UniversalKnowledgeLibraryModal } from './components/UniversalKnowledgeLibraryModal';
 import { LanguageSettingsPanel } from './components/LanguageSettingsPanel';
 import { PaymentGatewayModal } from './components/PaymentGatewayModal';
+import { SystemDiagnostics } from './components/SystemDiagnostics';
 import { RoyalErrorBoundary } from './components/RoyalErrorBoundary';
 import { UserRole } from './types/office';
 import { Scale, Phone, ShieldCheck, Award } from 'lucide-react';
@@ -31,6 +32,7 @@ export default function App() {
   const [isKnowledgeLibraryOpen, setIsKnowledgeLibraryOpen] = useState<boolean>(false);
   const [isLanguageSettingsOpen, setIsLanguageSettingsOpen] = useState<boolean>(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
+  const [isDiagnosticsOpen, setIsDiagnosticsOpen] = useState<boolean>(false);
 
   const [geminiBalance, setGeminiBalance] = useState<number>(() => {
     const saved = localStorage.getItem('attya_gemini_balance');
@@ -78,6 +80,7 @@ export default function App() {
               onOpenHistory={() => setCurrentScreen('legal_history')}
               onOpenMillionVocab={() => setIsMillionVocabOpen(true)}
               onOpenKnowledgeLibrary={() => setIsKnowledgeLibraryOpen(true)}
+              onOpenDiagnostics={() => setIsDiagnosticsOpen(true)}
             />
           )}
 
@@ -166,6 +169,12 @@ export default function App() {
         onClose={() => setIsPaymentModalOpen(false)}
         onSuccess={handlePaymentSuccess}
         currentBalance={geminiBalance}
+      />
+
+      {/* System Diagnostics & Engine Health Check Modal */}
+      <SystemDiagnostics
+        isOpen={isDiagnosticsOpen}
+        onClose={() => setIsDiagnosticsOpen(false)}
       />
 
       {/* Royal Judicial Footer */}
