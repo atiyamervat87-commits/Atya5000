@@ -1004,7 +1004,7 @@ app.post('/api/consultation/public', counselorLinguisticMiddleware, async (req: 
     // If Gemini was not used or failed -> Execute Independent Mind Pipeline
     if (!finalReply) {
       console.log(`[PublicConsultation] Routing to Independent Mind (ATTYA LEGAL MIND 552K Decoder)...`);
-      magicResultObj = await attyaMagicMindEngine.processTurn(message.trim(), sid);
+      magicResultObj = await attyaMagicMindEngine.processTurn(message.trim(), sid, engineMode);
 
       // التوجيه الذكي الآمن: ضمان وصول الاستفسارات القانونية والأحوال الشخصية إلى العقل القانوني المستقل
       const currentIntent = context?.intent || detectIntent(message.trim(), conversationHistory);
@@ -1211,12 +1211,17 @@ app.post('/api/consultation/private', counselorLinguisticMiddleware, async (req:
     // If Gemini was not used or failed -> Execute Independent Mind Pipeline
     if (!finalReply) {
       console.log(`[PrivateConsultation] Routing to Independent Mind (ATTYA LEGAL MIND 552K Decoder)...`);
-      magicResultObj = await attyaMagicMindEngine.processTurn(userPrompt, sid);
+      magicResultObj = await attyaMagicMindEngine.processTurn(userPrompt, sid, engineMode);
 
-      if (dialectAnalysis.isEverydayLifeQuery || dialectAnalysis.isMaritalOrFamily || dialectAnalysis.isFinancialDilemma) {
+      const privateIntent = detectIntent(userPrompt, conversationHistory);
+      const isPrivateLegalOrDrafting = privateIntent === 'LEGAL' || privateIntent === 'LEGAL_EXPLANATION' || privateIntent === 'DRAFTING' || privateIntent === 'ZERO_HALLUCINATION' || privateIntent === 'MISSING_INFO_PROMPT' || privateIntent === 'FORMAL_PLEADING_AUDIT';
+
+      if (isPrivateLegalOrDrafting) {
+        finalReply = magicResultObj?.stage3_finalCounselorResponse || generateCounselorAutonomousResponse(userPrompt, conversationHistory, { isPrivateRoom: true });
+      } else if (dialectAnalysis.isEverydayLifeQuery || dialectAnalysis.isFinancialDilemma) {
         finalReply = multilingualCounselorEngine.generateResponse(userPrompt);
       } else {
-        finalReply = magicResultObj.stage3_finalCounselorResponse || generateCounselorAutonomousResponse(userPrompt, conversationHistory, { isPrivateRoom: true });
+        finalReply = magicResultObj?.stage3_finalCounselorResponse || generateCounselorAutonomousResponse(userPrompt, conversationHistory, { isPrivateRoom: true });
       }
 
       sourceUsed = isQuotaActive || quotaNotice

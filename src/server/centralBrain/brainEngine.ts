@@ -52,7 +52,8 @@ export class AbqarynoCentralBrainEngine {
   public async processTurn(
     sessionId: string,
     userMessage: string,
-    roomType: 'public' | 'private' | 'office' = 'public'
+    roomType: 'public' | 'private' | 'office' = 'public',
+    engineMode: string = 'auto'
   ): Promise<BrainEngineResponse> {
     const rawMessage = (userMessage || '').trim();
     const context = this.contextEngine.getContext(sessionId, roomType);
@@ -151,7 +152,7 @@ export class AbqarynoCentralBrainEngine {
     else {
       // محاولة استدعاء Gemini السحابي أولاً إن وجد المفتاح وكانت الحصة متاحة
       let geminiResponse: string | null = null;
-      if (this.llmCore.hasActiveKey() && !this.llmCore.isQuotaBlocked()) {
+      if (engineMode !== 'independent_mind_only' && this.llmCore.hasActiveKey() && !this.llmCore.isQuotaBlocked()) {
         try {
           geminiResponse = await this.llmCore.generateTurn(
             rawMessage,

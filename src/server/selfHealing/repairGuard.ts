@@ -18,7 +18,7 @@ const PROTECTED_WEIGHTS = [
   },
   {
     name: 'ATTYA_LEGAL_MIND_MASTER_1000K.pt',
-    relativePath: 'ATTYA_LEGAL_MIND_MASTER_1000K.pt',
+    relativePath: 'ATTYA_LEGAL_MIND/checkpoints_1m/ATTYA_LEGAL_MIND_MASTER_1000K.pt',
     expectedHash: '0629a783ba0eb0805991700a922bae486da2a0c18f6161d1129934a9b91d74ee',
   },
 ];
