@@ -1006,11 +1006,16 @@ app.post('/api/consultation/public', counselorLinguisticMiddleware, async (req: 
       console.log(`[PublicConsultation] Routing to Independent Mind (ATTYA LEGAL MIND 552K Decoder)...`);
       magicResultObj = await attyaMagicMindEngine.processTurn(message.trim(), sid);
 
-      // Check if everyday or marital dialect query needs rich conversational response
-      if (dialectAnalysis.isEverydayLifeQuery || dialectAnalysis.isMaritalOrFamily || dialectAnalysis.isFinancialDilemma) {
+      // التوجيه الذكي الآمن: ضمان وصول الاستفسارات القانونية والأحوال الشخصية إلى العقل القانوني المستقل
+      const currentIntent = context?.intent || detectIntent(message.trim(), conversationHistory);
+      const isPureLegalOrDrafting = currentIntent === 'LEGAL' || currentIntent === 'LEGAL_EXPLANATION' || currentIntent === 'DRAFTING' || currentIntent === 'ZERO_HALLUCINATION' || currentIntent === 'MISSING_INFO_PROMPT' || currentIntent === 'FORMAL_PLEADING_AUDIT';
+
+      if (isPureLegalOrDrafting) {
+        finalReply = magicResultObj?.stage3_finalCounselorResponse || generateLocalJudicialOpinion(message);
+      } else if (dialectAnalysis.isEverydayLifeQuery || dialectAnalysis.isFinancialDilemma) {
         finalReply = multilingualCounselorEngine.generateResponse(message.trim());
       } else {
-        finalReply = magicResultObj.stage3_finalCounselorResponse || context?.instantReply || generateLocalJudicialOpinion(message);
+        finalReply = magicResultObj?.stage3_finalCounselorResponse || context?.instantReply || generateLocalJudicialOpinion(message);
       }
 
       sourceUsed = isQuotaActive || quotaNotice
@@ -1947,6 +1952,36 @@ app.get('/api/pipeline/export', (req: Request, res: Response) => {
   res.setHeader('Content-Type', 'application/x-jsonlines');
   res.setHeader('Content-Disposition', 'attachment; filename="egyptian_legal_corpus_processed.jsonl"');
   res.send(jsonl);
+});
+
+// ----------------------------------------------------
+// Download Endpoints for Neural Checkpoints & Release Zips
+// ----------------------------------------------------
+app.get('/api/download/attya-legal-mind-zip', (_req: Request, res: Response) => {
+  const zipPath = path.resolve(process.cwd(), 'ATTYA_LEGAL_MIND.zip');
+  if (fs.existsSync(zipPath)) {
+    res.download(zipPath, 'ATTYA_LEGAL_MIND.zip');
+  } else {
+    res.status(404).json({ error: 'ملف الأرشيف غير موجود.' });
+  }
+});
+
+app.get('/api/download/attya-advisor-zip', (_req: Request, res: Response) => {
+  const zipPath = path.resolve(process.cwd(), 'ATTYA_LEGAL_ADVISOR_MAGIC_MIND.zip');
+  if (fs.existsSync(zipPath)) {
+    res.download(zipPath, 'ATTYA_LEGAL_ADVISOR_MAGIC_MIND.zip');
+  } else {
+    res.status(404).json({ error: 'ملف أرشيف المستشار غير موجود.' });
+  }
+});
+
+app.get('/api/download/manifest-and-checksums', (_req: Request, res: Response) => {
+  const sumsPath = path.resolve(process.cwd(), 'FINAL_SHA256SUMS.txt');
+  if (fs.existsSync(sumsPath)) {
+    res.download(sumsPath, 'FINAL_SHA256SUMS.txt');
+  } else {
+    res.status(404).json({ error: 'ملف الشفرات غير موجود.' });
+  }
 });
 
 // ----------------------------------------------------

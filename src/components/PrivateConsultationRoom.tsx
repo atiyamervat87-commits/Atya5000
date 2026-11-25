@@ -977,7 +977,7 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
       )}
 
       {/* Messages Stream */}
-      <div className="p-4 sm:p-6 rounded-2xl bg-[#1a0e0b]/90 border border-[#D4AF37]/30 shadow-2xl min-h-[420px] max-h-[580px] overflow-y-auto space-y-4 printable-area">
+      <div className="p-4 sm:p-6 rounded-2xl bg-[#1a0e0b]/90 border border-[#D4AF37]/30 shadow-2xl min-h-[500px] overflow-y-auto space-y-4 printable-area">
         {messages.map((msg) => {
           const isUser = msg.sender === 'user';
           return (
