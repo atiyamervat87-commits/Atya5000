@@ -10,6 +10,7 @@
 
 import { EGYPTIAN_LEGAL_ARTICLES, CASSATION_RULINGS } from '../data/egyptianLaws.ts';
 import { multilingualCounselorEngine } from './centralBrain/multilingualEngine.ts';
+import { localInferenceEngine } from './localInference.ts';
 
 export interface ConsultationTurn {
   role: 'user' | 'model';
@@ -474,6 +475,12 @@ export function generateCounselorAutonomousResponse(
   const intent = detectIntent(message, history);
   const isPrivate = options?.isPrivateRoom ?? false;
   const attachmentDesc = options?.attachmentDesc || '';
+
+  // استدعاء محرك الاستدلال المحلي المحمل بأوزان ATTYA_LEGAL_MIND_MASTER_1000K.pt
+  const localRes = localInferenceEngine.runInference(message);
+  if (localRes && localRes.response && intent !== 'ZERO_HALLUCINATION' && intent !== 'DRAFTING') {
+    return localRes.response;
+  }
 
   // =========================================================================
   // الحالة 1 مكرر: الشرح المفاهيمي والمقارنات القانونية (LEGAL_EXPLANATION)

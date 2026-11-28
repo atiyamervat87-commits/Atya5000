@@ -452,20 +452,48 @@ export const PrivateConsultationRoom: React.FC<PrivateConsultationRoomProps> = (
         text: m.text,
       }));
 
-      const res = await fetch('/api/consultation/private', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId,
-          message: text,
-          attachments: userMessage.attachments,
-          audioUrl: userMessage.audioUrl,
-          history: historyPayload,
-          engineMode,
-          preferredLanguage: languageSettings.preferredLanguage,
-          autoDetect: languageSettings.autoDetect,
-        }),
-      });
+      let res: Response;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 seconds timeout for local default mind
+
+      try {
+        res = await fetch('/api/consultation/private', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            message: text,
+            attachments: userMessage.attachments,
+            audioUrl: userMessage.audioUrl,
+            history: historyPayload,
+            engineMode: 'independent_mind_only',
+            preferredLanguage: languageSettings.preferredLanguage,
+            autoDetect: languageSettings.autoDetect,
+          }),
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+        if (!res.ok) throw new Error('Local mind timeout or failure');
+      } catch (timeoutOrErr) {
+        clearTimeout(timeoutId);
+        console.warn('[SmartRouting Private] Local default mind timed out (5s) or failed. Routing automatically to Gemini backup...', timeoutOrErr);
+        setQuotaNotice('⚡ [SmartRouting]: تم التوجيه التلقائي إلى العقل الاحتياطي (Gemini 3.8 Flash) نظراً لتجاوز مهلة الاستجابة المحلية (5 ثوانٍ).');
+
+        res = await fetch('/api/consultation/private', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            message: text,
+            attachments: userMessage.attachments,
+            audioUrl: userMessage.audioUrl,
+            history: historyPayload,
+            engineMode: 'gemini_backup',
+            preferredLanguage: languageSettings.preferredLanguage,
+            autoDetect: languageSettings.autoDetect,
+          }),
+        });
+      }
 
       let data: any = null;
       const contentType = res.headers.get('content-type') || '';

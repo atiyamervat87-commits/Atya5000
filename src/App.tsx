@@ -4,6 +4,7 @@ import { HomeScreen } from './components/HomeScreen';
 import { PublicConsultationRoom } from './components/PublicConsultationRoom';
 import { PrivateConsultationRoom } from './components/PrivateConsultationRoom';
 import { OfficeManagementPlatform } from './components/office/OfficeManagementPlatform';
+import { LogicChainVisualizer } from './components/LogicChainVisualizer';
 import { SystemCharterModal } from './components/SystemCharterModal';
 import { AndroidPackageModal } from './components/AndroidPackageModal';
 import { LegalGlossaryModal } from './components/LegalGlossaryModal';
@@ -16,11 +17,11 @@ import { PaymentGatewayModal } from './components/PaymentGatewayModal';
 import { SystemDiagnostics } from './components/SystemDiagnostics';
 import { RoyalErrorBoundary } from './components/RoyalErrorBoundary';
 import { UserRole } from './types/office';
-import { Scale, Phone, ShieldCheck, Award } from 'lucide-react';
+import { Scale, Phone, ShieldCheck } from 'lucide-react';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<
-    'home' | 'public_consultation' | 'private_consultation' | 'office_management' | 'legal_history'
+    'home' | 'public_consultation' | 'private_consultation' | 'office_management' | 'legal_history' | 'logic_chain'
   >('home');
 
   const [userRole, setUserRole] = useState<UserRole>('owner');
@@ -75,7 +76,7 @@ export default function App() {
         <RoyalErrorBoundary fallbackTitle="منظومة المستشار القضائية">
           {currentScreen === 'home' && (
             <HomeScreen
-              onSelectUnit={(unit) => setCurrentScreen(unit)}
+              onSelectUnit={(unit) => setCurrentScreen(unit as any)}
               onOpenAndroidModal={() => setIsAndroidModalOpen(true)}
               onOpenHistory={() => setCurrentScreen('legal_history')}
               onOpenMillionVocab={() => setIsMillionVocabOpen(true)}
@@ -115,6 +116,10 @@ export default function App() {
               onBackToHome={() => setCurrentScreen('home')}
               onOpenConsultation={() => setCurrentScreen('public_consultation')}
             />
+          )}
+
+          {currentScreen === 'logic_chain' && (
+            <LogicChainVisualizer />
           )}
         </RoyalErrorBoundary>
       </main>

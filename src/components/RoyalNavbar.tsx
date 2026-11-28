@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Scale,
   MessageSquare,
@@ -5,23 +6,21 @@ import {
   Briefcase,
   Smartphone,
   ScrollText,
-  ShieldCheck,
   UserCheck,
   Home,
-  CheckCircle2,
   Crown,
   BookOpen,
   Globe,
   History,
   Languages,
-  Layers,
   BarChart3,
+  GitBranch,
 } from 'lucide-react';
 import { UserRole } from '../types/office';
 
 interface RoyalNavbarProps {
-  currentScreen: 'home' | 'public_consultation' | 'private_consultation' | 'office_management' | 'legal_history';
-  setCurrentScreen: (screen: 'home' | 'public_consultation' | 'private_consultation' | 'office_management' | 'legal_history') => void;
+  currentScreen: 'home' | 'public_consultation' | 'private_consultation' | 'office_management' | 'legal_history' | 'logic_chain';
+  setCurrentScreen: (screen: 'home' | 'public_consultation' | 'private_consultation' | 'office_management' | 'legal_history' | 'logic_chain') => void;
   userRole: UserRole;
   setUserRole: (role: UserRole) => void;
   onOpenCharter: () => void;
@@ -255,7 +254,19 @@ export const RoyalNavbar: React.FC<RoyalNavbarProps> = ({
             }`}
           >
             <History className="w-4 h-4" />
-            <span>سجل القضايا والمسودات (Legal History)</span>
+            <span>سجل القضايا والمسودات</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentScreen('logic_chain')}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap ${
+              currentScreen === 'logic_chain'
+                ? 'bg-[#D4AF37] text-[#2B1914] shadow-md shadow-black/40'
+                : 'text-[#F5E5BD]/75 hover:bg-[#3A241B] hover:text-[#F5E5BD]'
+            }`}
+          >
+            <GitBranch className="w-4 h-4 text-[#D4AF37]" />
+            <span>شجرة الاستدلال (LogicChain)</span>
           </button>
         </nav>
       </div>
